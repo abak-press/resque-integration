@@ -2,33 +2,25 @@
 # coding: utf-8
 
 # Скрипт для мониторинга состояния resque
-# Запускается из директории проекта
 
-require 'yaml'
-require 'redis'
+require 'bundler/setup'
 require 'resque'
-require 'active_support/core_ext/hash/keys'
-require 'active_support/core_ext/hash/deep_merge'
+require 'resque/integration/configuration'
 
-# parse config
-config_dir = File.join(Dir.pwd, 'config')
+paths  = File.join(Dir.pwd, 'config', 'resque.yml'),
+         File.join(Dir.pwd, 'config', 'resque.local.yml')
 
-local_config_path = File.join(config_dir, 'config.local.yml')
-config_path = File.join(config_dir, 'config.yml')
+config = Resque::Integration::Configuration.new(*paths)
+redis = config.redis
 
-config = YAML.load(File.read(config_path))
+Resque.redis = [redis.host, redis.port, redis.db].join(':')
+Resque.redis.namespace = redis.namespace
 
-if File.exists?(local_config_path)
-  local_config = YAML.load(File.read(local_config_path))
-  config.deep_merge!(local_config)
-end
-
-redis_config = config["common"]["redis"].symbolize_keys
-resque_config = config["common"]["resque"].symbolize_keys
-
-# configure resque
-Resque.redis = Redis.new(redis_config)
-Resque.redis.namespace = resque_config[:namespace]
-
+info = Resque.info
 key = (ARGV.shift || :pending).to_sym
-puts Resque.info[key]
+
+if info.key?(key)
+  puts info[key]
+else
+  $stderr.puts "Unknown key. Should be one of the [#{info.keys.join(', ')}]"
+end

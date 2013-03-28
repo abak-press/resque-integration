@@ -4,13 +4,12 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'resque/integration/version'
 
 Gem::Specification.new do |gem|
-  gem.name          = "resque-integration"
+  gem.name          = 'resque-integration'
   gem.version       = Resque::Integration::VERSION
-  gem.authors       = ["Alexei Mikhailov"]
+  gem.authors       = ['Alexei Mikhailov']
   gem.email         = %w(amikhailov83@gmail.com)
-  gem.description   = %q{Seamless integration of resque with resque-progress and resque-lock}
   gem.summary       = %q{Seamless integration of resque with resque-progress and resque-lock}
-  gem.homepage      = ""
+  gem.homepage      = 'https://github.com/abak-press/resque-integration'
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
@@ -24,6 +23,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'resque-lock', '~> 1.1.0'
   gem.add_runtime_dependency 'resque-meta', '>= 2.0.0'
   gem.add_runtime_dependency 'resque-progress', '~> 1.0.1'
+  gem.add_runtime_dependency 'resque-multi-job-forks', '~> 0.3.4'
 
   gem.add_runtime_dependency 'multi_json'
   gem.add_runtime_dependency 'rake'

@@ -1,49 +1,56 @@
 # Resque::Integration
 
-Seamless integration of resque with some useful plugins: resque-progress and resque-lock, for example.
+Интеграция Resque в Rails-приложения с поддержкой плагинов [resque-progress](https://github.com/idris/resque-progress), [resque-lock](https://github.com/defunkt/resque-lock) и [resque-multi-job-forks](https://github.com/stulentsev/resque-multi-job-forks).
+Этот гем существует затем, чтобы избежать повторения чужих ошибок и сократить время, необходимое для включения resque в проект.
 
-## Installation
+## Установка
 
-Add this line to your application's Gemfile:
+Добавьте в `Gemfile`:
 ```ruby
-gem 'resque-meta', :git => 'git://github.com/broglep-koubachi/resque-meta.git' # current master is somewhat buggy
-gem 'resque-integration', :path => 'vendor/gems/resque-integration'
+gem 'resque-integration'
 ```
 
-And then execute:
-```bash
-$ bundle
-```
-
-Add this line to your `config/routes.rb`:
+Добавьте в `config/routes.rb`:
 ```ruby
 mount Resque::Integration::Application => "/_job_", :as => "job_status"
 ```
 
-Create an initializer `config/initializers/resque.rb`:
+Вместо `_job_` можно прописать любой другой адрес. По этому адресу прогресс-бар будет узнавать о состоянии джоба.
+
+Создайте `config/initializers/resque.rb`:
 ```ruby
 Resque.redis = $redis
 Resque.inline = Rails.env.test?
 Resque.redis.namespace = "your_project_resque"
 ```
 
-Run built-in generator if you are still on Rails 3.0 without assets pipeline:
+Если вы до сих пор не используете sprockets, то сделайте что-то вроде этого:
 ```bash
 $ rails generate resque:integration:install
 ```
+(результат не гарантирован, т.к. не тестировалось)
 
-## Usage
+## Задачи
 
-Create a job `app/jobs/resque_job_test.rb`:
+Создайте файл `app/jobs/resque_job_test.rb`:
 ```ruby
 class ResqueJobTest
   include Resque::Integration
 
+  # это название очереди, в которой будет выполняться джою
   queue :my_queue
 
-  # there shall be no two jobs with same first argument
+  # с помощью lock_on можно указать, какие аргументы определяют уникальность задачи.
+  # в данном случае не может быть двух одновременных задач ResqueJobTest с одинаковым первым аргументом
+  # (второй аргумент может быть любым)
   lock_on { |id, description| [id] }
 
+  # В отличие от обычных джобов resque, надо определять метод execute.
+  #
+  # Либо же вы можете определить метод perform, но первым аргументом должен быть указан meta_id (уникальный ID джоба):
+  #   def self.perform(meta_id, id, description)
+  #     ...
+  #   end
   def self.execute(id, description)
     (1..100).each do |t|
       at(t, 100, "Processing #{id}: at #{t} of 100")
@@ -53,32 +60,98 @@ class ResqueJobTest
 end
 ```
 
-Please pay your attention: if you are using Resque::Integration you should not use `perform` method in your jobs. Use its `execute` method.
+## Конфигурация воркеров resque
 
-Run worker:
+Создайте файл `config/resque.yml` с несколькими секциями:
+```yaml
+# конфигурация redis
+redis:
+  host: bz-redis
+  port: 6379
+  namespace: blizko
+  thread_safe: true
+
+resque:
+  interval: 5 # частота, с которой resque берет задачи из очереди в секундах (по умолчанию 5)
+  verbosity: 1 # "шумность" логера (0 - ничего не пишет, 1 - пишет о начале/конце задачи, 2 - пишет все)
+  log_file: "log/resque.log" # путь до log-файла от корня проекта
+
+# конфигурация воркеров (названия воркеров являются названиями очередей)
+workers:
+  kirby: 2 # 2 воркера в очереди kirby
+  images:
+    count: 8 # 8 воркеров в очереди images
+    jobs_per_fork: 250 # каждый воркер обрабатывает 250 задач прежде, чем форкается заново
+    minutes_per_fork: 30 # альтернатива предыдущей настройке - сколько минут должен работать воркер, прежде чем форкнуться заново
+```
+
+Для разработки можно (и нужно) создать файл `config/resque.local.yml`, в котором можно переопределить любые параметры:
+```yaml
+redis:
+  host: localhost
+  port: 6379
+
+resque:
+  verbosity: 2
+
+workers:
+  '*': 1
+```
+
+## Запуск воркеров
+
+Ручной запуск воркера (см. [официальную документацию resque](https://github.com/resque/resque/blob/1-x-stable/README.markdown))
 ```bash
 $ QUEUE=* rake resque:work
 ```
 
-Enqueue your new shiny job:
+Запуск всех воркеров так, как они сконфигурированы в `config/resque.yml`:
+```bash
+$ rake resque:start
+```
+
+Останов всех воркеров:
+```bash
+$ rake resque:stop
+```
+
+Перезапуск воркеров:
+```bash
+$ rake resque:restart
+```
+
+## Постановка задач в очередь
+
+### Для задач, в который включен модуль `Resque::Integration`
 ```ruby
 meta = ResqueJobTest.enqueue(id=2)
 @job_id = meta.meta_id
 ```
 
-Show progress bar:
+Вот так можно показать прогресс-бар:
 ```haml
 %div#progressbar
 
 :javascript
   $('#progressbar').progressBar({
-    url: #{job_status_path.to_json}, // path to status backend
+    url: #{job_status_path.to_json}, // адрес джоб-бэкенда (определяется в ваших маршрутах)
     pid: #{@job_id.to_json}, // job id
-    interval: 1100, // polling interval
+    interval: 1100, // частота опроса джоб-бэкэнда в миллисекундах
     text: "Initializing" // initializing text appears on progress bar when job is already queued but not started yet
   }).show();
 ```
 
-## Supervisor
+### Для обычных задач Resque
+```ruby
+Resque.enqueue(ImageProcessingJob, id=2)
+```
 
-This gem also contains simple supervisor script which watches for dead workers and prunes them. It can be activated with `rake resque:supervisor:start`.
+## Супервизор
+
+Бывает так, что задачи завершаются внезапно (например, `kill -9` или приход OOM-киллера). Чтобы такие задачи не стали "зомби" и были завершены корректно, нужен супервизор.
+
+Супервизор запускается при каждом деплое и висит в фоне, периодически проверяя resque на наличие мертвых воркеров.
+
+```bash
+$ rake resque:supervisor:restart
+```

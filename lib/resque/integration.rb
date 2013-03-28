@@ -18,7 +18,12 @@ require "active_support/concern"
 require "resque/integration/engine"
 require "resque/integration/backtrace"
 
+require "active_support/core_ext/module/attribute_accessors"
+
 module Resque
+  # Resque.config is available now
+  mattr_accessor :config
+
   # Seamless resque integration with all necessary plugins
   # You should define an +execute+ method (not +perform+)
   #
@@ -37,6 +42,9 @@ module Resque
   #   end
   module Integration
     autoload :Application, "resque/integration/application"
+    autoload :CLI, "resque/integration/cli"
+    autoload :Configuration, "resque/integration/configuration"
+    autoload :Supervisor, "resque/integration/supervisor"
 
     extend ActiveSupport::Concern
 
@@ -112,5 +120,5 @@ module Resque
         Resque.redis.del(lock(*args))
       end
     end
-  end
-end
+  end # module Integration
+end # module Resque
