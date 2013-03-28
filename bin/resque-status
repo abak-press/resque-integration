@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+# Скрипт для мониторинга состояния resque
+# Запускается из директории проекта
+
+require 'yaml'
+require 'redis'
+require 'resque'
+require 'active_support/core_ext/hash/keys'
+require 'active_support/core_ext/hash/deep_merge'
+
+# parse config
+config_dir = File.join(Dir.pwd, 'config')
+
+local_config_path = File.join(config_dir, 'config.local.yml')
+config_path = File.join(config_dir, 'config.yml')
+
+config = YAML.load(File.read(config_path))
+
+if File.exists?(local_config_path)
+  local_config = YAML.load(File.read(local_config_path))
+  config.deep_merge!(local_config)
+end
+
+redis_config = config["common"]["redis"].symbolize_keys
+resque_config = config["common"]["resque"].symbolize_keys
+
+# configure resque
+Resque.redis = Redis.new(redis_config)
+Resque.redis.namespace = resque_config[:namespace]
+
+key = (ARGV.shift || :pending).to_sym
+puts Resque.info[key]
