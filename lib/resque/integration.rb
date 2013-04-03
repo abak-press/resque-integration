@@ -38,6 +38,7 @@ module Resque
     autoload :Backtrace, 'resque/integration/backtrace'
     autoload :CLI, 'resque/integration/cli'
     autoload :Configuration, 'resque/integration/configuration'
+    autoload :Continuous, 'resque/integration/continuous'
     autoload :Supervisor, 'resque/integration/supervisor'
     autoload :Unique, 'resque/integration/unique'
 
@@ -50,9 +51,13 @@ module Resque
     end
 
     module ClassMethods
-      # Set queue name (just a synonym to resque native methodology)
-      def queue(name)
-        @queue = name
+      # Get or set queue name (just a synonym to resque native methodology)
+      def queue(name = nil)
+        if name
+          @queue = name
+        else
+          @queue
+        end
       end
 
       # Mark Job as unique and set given +callback+ or +block+ as Unique Arguments procedure
@@ -60,6 +65,11 @@ module Resque
         extend Unique
 
         lock_on(&(callback || block))
+      end
+
+      # Extend job with 'continuous' functionality so you can re-enqueue job with +continue+ method.
+      def continuous
+        extend Continuous
       end
 
       def unique?
