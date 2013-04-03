@@ -77,22 +77,24 @@ module Resque
 
         # When job is failed we should remove lock
         def on_failure_lock(e, *args)
-          Resque.redis.del(lock(*args))
+          unlock(*args)
         end
 
         # Before dequeue check if job is running
-        def before_dequeue_lock(meta_id, *args)
-          (meta = get_meta(meta_id)) && !meta.working?
+        def before_dequeue_lock(*args)
+          (meta_id = args.first) &&
+          (meta = get_meta(meta_id)) &&
+          !meta.working?
         end
 
         # When job is dequeued we should remove lock
         def after_dequeue_lock(*args)
-          Resque.redis.del(lock(*args))
+          unlock(*args) if args.any?
         end
 
         # Fail metadata if dequeue succeed
-        def after_dequeue_meta(meta_id, *args)
-          if (meta = get_meta(meta_id))
+        def after_dequeue_meta(*args)
+          if (meta_id = args.first) && (meta = get_meta(meta_id))
             meta.fail!
           end
         end
@@ -129,6 +131,11 @@ module Resque
         end
 
         private
+        # Remove lock for job with given +args+
+        def unlock(*args)
+          Resque.redis.del(lock(*args))
+        end
+
         def secret_token
           ::Rails.respond_to?(:application) &&
           ::Rails.application &&

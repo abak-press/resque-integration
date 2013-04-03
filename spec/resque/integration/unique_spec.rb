@@ -73,6 +73,10 @@ describe Resque::Integration::Unique, '#dequeue' do
     extend Resque::Integration::Unique
 
     @queue = :queue2
+
+    def self.execute(x)
+      sleep 0.1
+    end
   end
 
   it 'dequeues and unlocks job if job is not in work now' do
@@ -82,5 +86,28 @@ describe Resque::Integration::Unique, '#dequeue' do
     JobDequeueTest.dequeue(1)
     JobDequeueTest.should_not be_enqueued(1)
     JobDequeueTest.should_not be_locked(1)
+
+    meta = JobDequeueTest.get_meta(JobDequeueTest.meta_id(1))
+    meta.should be_failed
+  end
+
+  it 'does not dequeue jobs in progress' do
+    meta = JobDequeueTest.enqueue(1)
+
+    job = Resque.reserve(:queue2)
+
+    worker = Thread.new {
+      job.perform
+    }
+
+    sleep 0.01 # give a worker some time to start
+    meta.reload!
+    meta.should be_working
+
+    JobDequeueTest.dequeue(1)
+    JobDequeueTest.should be_locked(1)
+    JobDequeueTest.should be_enqueued(1)
+
+    worker.join
   end
 end
