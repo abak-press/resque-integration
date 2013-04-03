@@ -18,6 +18,13 @@ module Resque::Integration
       Resque.config = Resque::Integration::Configuration.new(*paths.map(&:to_s))
     end
 
+    initializer 'resque-integration.redis' do
+      redis = Resque.config.redis
+
+      Resque.redis = [redis.host, redis.port, redis.db].join(':')
+      Resque.redis.namespace = redis.namespace
+    end
+
     initializer 'resque-multi-job-forks.hook' do
       # Support for resque-multi-job-forks
       if ENV['JOBS_PER_FORK'] || ENV['MINUTES_PER_FORK']
