@@ -25,11 +25,13 @@ module Resque
 
         # Returns hash of ENV variables that should be associated with this worker
         def env
-          env = {:QUEUE => queue}
-          env[:JOBS_PER_FORK] = jobs_per_fork.to_s if jobs_per_fork
-          env[:MINUTES_PER_FORK] = minutes_per_fork.to_s if minutes_per_fork
+          env = super || {}
 
-          env
+          env[:QUEUE] ||= queue
+          env[:JOBS_PER_FORK] ||= jobs_per_fork if jobs_per_fork
+          env[:MINUTES_PER_FORK] ||= minutes_per_fork if minutes_per_fork
+
+          Hash[env.map { |k, v| [k, v.to_s] }]
         end
       end
 
@@ -65,12 +67,13 @@ module Resque
 
       # Returns environment variables that should be associated with this configuration
       def env
-        env = {:INTERVAL => interval.to_s}
+        env = self['env'] || {}
 
+        env[:INTERVAL] ||= interval
         env[:VERBOSE] = '1' if verbosity == 1
         env[:VVERBOSE] = '1' if verbosity == 2
 
-        env
+        Hash[env.map { |k, v| [k, v.to_s] }]
       end
 
       private
