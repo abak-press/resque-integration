@@ -1,14 +1,15 @@
 # coding: utf-8
 
-require "rails/engine"
+require 'rails/engine'
+require 'active_support/core_ext/string/inflections'
 
 module Resque::Integration
   # Rails engine
   # @see http://guides.rubyonrails.org/engines.html
   class Engine < Rails::Engine
     rake_tasks do
-      load "resque/integration/tasks/resque.rake"
-      load "resque/integration/tasks/supervisor.rake"
+      load 'resque/integration/tasks/resque.rake'
+      load 'resque/integration/tasks/supervisor.rake'
     end
 
     initializer 'resque-integration.config' do
@@ -23,6 +24,22 @@ module Resque::Integration
 
       Resque.redis = [redis.host, redis.port, redis.db].join(':')
       Resque.redis.namespace = redis.namespace
+    end
+
+    initializer 'resque-integration.failure_notifier' do
+      notifier = Resque.config.failure_notifier
+
+      if notifier.enabled?
+        require 'resque_failed_job_mailer'
+
+        Resque::Failure::Notifier.configure do |config|
+          config.to = notifier.to
+          config.from = notifier.from
+          config.include_payload = notifier.include_payload?
+          config.mail = notifier.mail
+          config.mailer = notifier.mailer.constantize
+        end
+      end
     end
 
     initializer 'resque-multi-job-forks.hook' do

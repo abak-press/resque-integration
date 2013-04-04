@@ -25,8 +25,17 @@ module Resque
         # write pid to file
         File.write(pid_file.to_s, Process.pid)
 
+        $0 = "Resque: supervisor"
+
         loop do
-          Resque.workers.each(&:prune_dead_workers)
+          Resque.workers.each do |worker|
+            begin
+              worker.prune_dead_workers
+            rescue
+              # ignore
+            end
+          end
+
           sleep(INTERVAL)
         end
       rescue
