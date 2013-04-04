@@ -23,6 +23,11 @@ module Resque
           super(data)
         end
 
+        # Returns workers count for given queue
+        def count
+          [super || 1, 1].max
+        end
+
         # Returns hash of ENV variables that should be associated with this worker
         def env
           env = super || {}
@@ -35,12 +40,54 @@ module Resque
         end
       end
 
+      # Failure notifier configuration
+      class Notifier < OpenStruct
+        def initialize(config)
+          super(config || {})
+        end
+
+        # Is notifier enabled
+        def enabled?
+          to.any? && enabled.nil? ? true : enabled
+        end
+
+        # Returns true if payload should be included into reports
+        def include_payload?
+          include_payload.nil? ?
+            true :
+            include_payload
+        end
+
+        # Returns recipients list
+        def to
+          super || []
+        end
+
+        # Returns sender address
+        def from
+          super || 'no_reply@gmail.com'
+        end
+
+        # Returns mailer method
+        def mail
+          (super || :alert).to_sym
+        end
+
+        # Returns mailer class
+        def mailer
+          super || 'ResqueFailedJobMailer::Mailer'
+        end
+      end
+
       # Create configuration from given +paths+
       def initialize(*paths)
         @configuration = {}
         paths.each { |f| load f }
       end
 
+      # Returns Resque redis configuration
+      #
+      # @return [OpenStruct]
       def redis
         @redis ||= OpenStruct.new :host => self['redis.host'] || 'localhost',
                                   :port => self['redis.port'] || 6379,
@@ -49,18 +96,29 @@ module Resque
                                   :namespace => self['redis.namespace']
       end
 
+      # Returns workers configuration
+      #
+      # @return [Array<Worker>]
       def workers
         @workers ||= (self[:workers] || {}).map { |k, v| Worker.new(k, v) }
       end
 
+      # Returns failure notifier config
+      def failure_notifier
+        @notifier ||= Notifier.new(self['failure.notifier'])
+      end
+
+      # Returns Resque polling interval
       def interval
         (self['resque.interval'] || 5).to_i
       end
 
+      # Returns Resque verbosity level
       def verbosity
         (self['resque.verbosity'] || 0).to_i
       end
 
+      # Returns path to resque log file
       def log_file
         self['resque.log_file']
       end
