@@ -1,6 +1,11 @@
 # Resque::Integration
 
-Интеграция Resque в Rails-приложения с поддержкой плагинов [resque-progress](https://github.com/idris/resque-progress), [resque-lock](https://github.com/defunkt/resque-lock) и [resque-multi-job-forks](https://github.com/stulentsev/resque-multi-job-forks).
+Интеграция Resque в Rails-приложения с поддержкой следующих плагинов:
+* [resque-progress](https://github.com/idris/resque-progress)
+* [resque-lock](https://github.com/defunkt/resque-lock)
+* [resque-multi-job-forks](https://github.com/stulentsev/resque-multi-job-forks)
+* [resque-failed-job-mailer](https://github.com/anandagrawal84/resque_failed_job_mailer)
+
 Этот гем существует затем, чтобы избежать повторения чужих ошибок и сократить время, необходимое для включения resque в проект.
 
 ## Установка
@@ -16,13 +21,6 @@ mount Resque::Integration::Application => "/_job_", :as => "job_status"
 ```
 
 Вместо `_job_` можно прописать любой другой адрес. По этому адресу прогресс-бар будет узнавать о состоянии джоба.
-
-Создайте `config/initializers/resque.rb`:
-```ruby
-Resque.redis = $redis
-Resque.inline = Rails.env.test?
-Resque.redis.namespace = "your_project_resque"
-```
 
 Если вы до сих пор не используете sprockets, то сделайте что-то вроде этого:
 ```bash
@@ -119,6 +117,23 @@ workers:
     minutes_per_fork: 30 # альтернатива предыдущей настройке - сколько минут должен работать воркер, прежде чем форкнуться заново
     env: # переменные окружение, специфичные для данного воркера
       RUBY_HEAP_SLOTS_GROWTH_FACTOR: 0.5
+
+# конфигурация failure-бэкэндов
+failure:
+  # конфигурация отправщика отчетов об ошибках
+  notifier:
+    enabled: true
+    # адреса, на которые надо посылать уведомления об ошибках
+    to: [teamlead@apress.ru, pm@apress.ru, programmer@apress.ru]
+    # необязательные настройки
+    # от какого адреса слать
+    from: no-reply@blizko.ru
+    # включать в письмо payload (аргументы, с которыми вызвана задача)
+    include_payload: true
+    # класс отправщика (должен быть наследником ActionMailer::Base, по умолчанию ResqueFailedJobMailer::Mailer
+    mailer: "Blizko::ResqueMailer"
+    # метод, который вызывается у отправщика (по умолчанию alert)
+    mail: alert
 ```
 
 Для разработки можно (и нужно) создать файл `config/resque.local.yml`, в котором можно переопределить любые параметры:
