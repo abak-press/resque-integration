@@ -16,9 +16,18 @@ module Resque
 
       # Stops workers
       def stop
-        Pathname.glob(pid_dir.join('resque_work_*.pid')).each do |file|
-          stop_worker(file)
+        # do it in background
+        Process.daemon(true)
+
+        pid_files = Pathname.glob(pid_dir.join('resque_work_*.pid'))
+        $0 = "Resque: stop processes #{pid_files.map(&:read).join(', ')}"
+
+        waiting = pid_files.map do |file|
+          Thread.new { stop_worker(file) }
         end
+
+        # wait until all workers are dead
+        waiting.each(&:join)
       end
 
       # Starts workers
@@ -60,8 +69,6 @@ module Resque
             :chdir => root.to_s
         )
         Process.detach(pid)
-
-        #puts "Queue #{queue}: Worker ##{worker_id} started (pid=#{pid})"
       end
 
       def stop_worker(pid_file)
@@ -70,10 +77,6 @@ module Resque
         begin
           Process.kill('QUIT', pid.to_i)
 
-          # wait for worker to die
-          Process.daemon
-
-          $0 = "Resque: waiting for process ##{pid} to die"
           sleep 1 while process_alive?(pid)
         rescue Errno::ESRCH
           # ignore
