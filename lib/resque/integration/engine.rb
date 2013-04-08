@@ -24,6 +24,9 @@ module Resque::Integration
 
       Resque.redis = [redis.host, redis.port, redis.db].join(':')
       Resque.redis.namespace = redis.namespace
+
+      # Reconnect on each fork
+      Resque.after_fork { Resque.redis.client.reconnect }
     end
 
     initializer 'resque-integration.failure_notifier' do
