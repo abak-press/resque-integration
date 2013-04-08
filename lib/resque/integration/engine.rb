@@ -1,5 +1,6 @@
 # coding: utf-8
 
+require 'redis/version'
 require 'rails/engine'
 require 'active_support/core_ext/string/inflections'
 
@@ -26,7 +27,9 @@ module Resque::Integration
       Resque.redis.namespace = redis.namespace
 
       # Reconnect on each fork
-      Resque.after_fork { Resque.redis.client.reconnect }
+      if Redis::VERSION < '3.0.0'
+        Resque.after_fork { Resque.redis.client.reconnect }
+      end
     end
 
     initializer 'resque-integration.failure_notifier' do
