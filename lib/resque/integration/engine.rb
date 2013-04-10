@@ -9,10 +9,13 @@ module Resque::Integration
   # @see http://guides.rubyonrails.org/engines.html
   class Engine < Rails::Engine
     rake_tasks do
+      load 'resque/integration/tasks/hooks.rake'
       load 'resque/integration/tasks/resque.rake'
       load 'resque/integration/tasks/supervisor.rake'
     end
 
+    # Читает конфиг-файлы config/resque.yml и config/resque.local.yml,
+    # мерджит результаты и сохраняет в Resque.config
     initializer 'resque-integration.config' do
       paths = Rails.root.join('config', 'resque.yml'),
               Rails.root.join('config', 'resque.local.yml')
@@ -20,18 +23,17 @@ module Resque::Integration
       Resque.config = Resque::Integration::Configuration.new(*paths.map(&:to_s))
     end
 
+    # Устанавливает для Resque соединение с Редисом,
+    # данные берутся из конфига (см. выше)
     initializer 'resque-integration.redis' do
       redis = Resque.config.redis
 
       Resque.redis = [redis.host, redis.port, redis.db].join(':')
       Resque.redis.namespace = redis.namespace
-
-      # Reconnect on each fork
-      if Redis::VERSION < '3.0.0'
-        Resque.after_fork { Resque.redis.client.reconnect }
-      end
     end
 
+    # Конфигурирование плагина resque-failed-job-mailer.
+    # Данные берутся из конфига (см. выше)
     initializer 'resque-integration.failure_notifier' do
       notifier = Resque.config.failure_notifier
 
@@ -47,12 +49,5 @@ module Resque::Integration
         end
       end
     end
-
-    initializer 'resque-multi-job-forks.hook' do
-      # Support for resque-multi-job-forks
-      if ENV['JOBS_PER_FORK'] || ENV['MINUTES_PER_FORK']
-        Resque.after_fork { ActiveRecord::Base.connection.reconnect! }
-      end
-    end
-  end
-end
+  end # class Engine
+end # module Resque::Integration
