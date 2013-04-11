@@ -1,5 +1,6 @@
 # coding: utf-8
 
+require 'redis'
 require 'redis/version'
 require 'rails/engine'
 require 'active_support/core_ext/string/inflections'
@@ -28,8 +29,8 @@ module Resque::Integration
     initializer 'resque-integration.redis' do
       redis = Resque.config.redis
 
-      Resque.redis = [redis.host, redis.port, redis.db].join(':')
-      Resque.redis.namespace = redis.namespace
+      Resque.redis = Redis.new(redis)
+      Resque.redis.namespace = redis[:namespace] if redis[:namespace]
     end
 
     # Конфигурирование плагина resque-failed-job-mailer.

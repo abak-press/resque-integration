@@ -94,7 +94,6 @@ redis:
   host: bz-redis
   port: 6379
   namespace: blizko
-  thread_safe: true
 
 resque:
   interval: 5 # частота, с которой resque берет задачи из очереди в секундах (по умолчанию 5)

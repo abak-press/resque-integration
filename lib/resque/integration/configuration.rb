@@ -89,11 +89,7 @@ module Resque
       #
       # @return [OpenStruct]
       def redis
-        @redis ||= OpenStruct.new :host => self['redis.host'] || 'localhost',
-                                  :port => self['redis.port'] || 6379,
-                                  :db => self['redis.db'] || 0,
-                                  :thread_safe => self['redis.thread_safe'],
-                                  :namespace => self['redis.namespace']
+        @redis ||= (self['redis'] || {}).symbolize_keys.merge(:thread_safe => true)
       end
 
       # Returns workers configuration
