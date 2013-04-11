@@ -3,7 +3,9 @@
 
 # Скрипт для мониторинга состояния resque
 
-require 'bundler/setup'
+require 'rubygems'
+gem 'resque-integration'
+
 require 'resque'
 require 'resque/integration/configuration'
 
