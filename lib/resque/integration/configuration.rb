@@ -9,37 +9,6 @@ require 'active_support/core_ext/hash/deep_merge'
 module Resque
   module Integration
     class Configuration
-      # Worker entity
-      class Worker < OpenStruct
-        def initialize(queue, config)
-          data = {:queue => queue}
-
-          if config.is_a?(Hash)
-            data.merge!(config.symbolize_keys)
-          else
-            data[:count] = config
-          end
-
-          super(data)
-        end
-
-        # Returns workers count for given queue
-        def count
-          [super || 1, 1].max
-        end
-
-        # Returns hash of ENV variables that should be associated with this worker
-        def env
-          env = super || {}
-
-          env[:QUEUE] ||= queue
-          env[:JOBS_PER_FORK] ||= jobs_per_fork if jobs_per_fork
-          env[:MINUTES_PER_FORK] ||= minutes_per_fork if minutes_per_fork
-
-          Hash[env.map { |k, v| [k, v.to_s] }]
-        end
-      end
-
       # Failure notifier configuration
       class Notifier < OpenStruct
         def initialize(config)
@@ -115,8 +84,17 @@ module Resque
       end
 
       # Returns path to resque log file
+      #
+      # @return [Pathname]
       def log_file
-        self['resque.log_file']
+        ::Rails.root.join(self['resque.log_file'] || 'log/resque.log')
+      end
+
+      # Returns pid directory
+      #
+      # @return [Pathname]
+      def pid_dir
+        ::Rails.root.join('tmp', 'pids')
       end
 
       # Returns environment variables that should be associated with this configuration
@@ -126,6 +104,9 @@ module Resque
         env[:INTERVAL] ||= interval
         env[:VERBOSE] = '1' if verbosity == 1
         env[:VVERBOSE] = '1' if verbosity == 2
+        env[:LANG] = 'en_US.UTF-8'
+
+        env[:RAILS_ENV] = ::Rails.env
 
         Hash[env.map { |k, v| [k, v.to_s] }]
       end
