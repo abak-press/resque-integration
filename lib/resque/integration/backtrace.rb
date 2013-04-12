@@ -7,10 +7,22 @@ module Resque
       def around_perform_backtrace(*)
         yield
       rescue => ex
-        message = "%s: %s\n%s" % [ex.class.name, ex.message, ex.backtrace.join("\n")]
-        $stderr.puts(message)
+        $stderr.puts(_format_exception(ex))
 
         raise
+      end
+
+      private
+      def _format_exception(exception)
+        bt = exception.backtrace.dup
+
+        "%s %s: %s (%s)\n%s" % [
+          Time.now.to_s,
+          bt.shift,
+          exception.message,
+          exception.class.to_s,
+          bt.map { |line| ' ' * 4 + line }.join("\n")
+        ]
       end
     end # module Backtrace
   end # module Integration

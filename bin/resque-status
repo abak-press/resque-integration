@@ -7,6 +7,7 @@ require 'rubygems'
 gem 'resque-integration'
 
 require 'resque'
+require 'redis'
 require 'resque/integration/configuration'
 
 paths  = File.join(Dir.pwd, 'config', 'resque.yml'),
@@ -15,8 +16,8 @@ paths  = File.join(Dir.pwd, 'config', 'resque.yml'),
 config = Resque::Integration::Configuration.new(*paths)
 redis = config.redis
 
-Resque.redis = [redis.host, redis.port, redis.db].join(':')
-Resque.redis.namespace = redis.namespace
+Resque.redis = Redis.new(redis)
+Resque.redis.namespace = redis[:namespace]
 
 info = Resque.info
 key = (ARGV.shift || :pending).to_sym
