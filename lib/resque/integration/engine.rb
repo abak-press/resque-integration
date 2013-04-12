@@ -1,5 +1,6 @@
 # coding: utf-8
 
+require 'logger'
 require 'redis'
 require 'redis/version'
 require 'rails/engine'
@@ -22,6 +23,15 @@ module Resque::Integration
               Rails.root.join('config', 'resque.local.yml')
 
       Resque.config = Resque::Integration::Configuration.new(*paths.map(&:to_s))
+    end
+
+    initializer 'resque-integration.logger' do
+      Resque.logger = Logger.new(Resque.config.log_file.to_s)
+      Resque.logger.level = Logger::INFO
+      Resque.logger.datetime_format = '%Y-%m-%d %H:%M:%S'
+      Resque.logger.formatter = proc { |severity, datetime, progname, msg|
+        "#{datetime}: #{msg}\n"
+      }
     end
 
     # Устанавливает для Resque соединение с Редисом,

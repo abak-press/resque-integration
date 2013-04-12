@@ -1,74 +1,97 @@
 # coding: utf-8
 
-require 'forwardable'
+require 'resque'
+require 'resque/integration/process'
 
 module Resque
   module Integration
     class Supervisor
-      INTERVAL = 30
+      # С каким интервалом опрашивать воркеров
+      INTERVAL = 15
 
       class << self
-        extend Forwardable
-
-        def_delegators :new, :start, :stop
+        delegate :start, :stop, :to => :new
       end
 
-      # Start supervisor process
+      def initialize
+        @process = Resque::Integration::Process.new(pid_file)
+      end
+
+      # Start Supervisor main loop in separate process
       def start
-        $stderr.puts 'Supervisor already running...' and return if running?
+        @process.fork do
+          Resque.logger.info("Supervisor started (pid=#{::Process.pid})")
 
-        # daemonize self
-        Process.daemon(true, true)
+          $0 = 'Resque: supervisor'
+          main_loop
 
-        register_signal_handlers
-
-        # write pid to file
-        File.write(pid_file.to_s, Process.pid)
-
-        $0 = "Resque: supervisor"
-
-        loop do
-          Resque.workers.each do |worker|
-            begin
-              worker.prune_dead_workers
-            rescue
-              # ignore
-            end
-          end
-
-          sleep(INTERVAL)
+          Resque.logger.info("Supervisor stopped (pid=#{::Process.pid})")
         end
-      rescue
-        stop
+
+        @process.detach
       end
 
-      # Stop supervisor process
+      # Stop Supervisor main loop
       def stop
-        if running?
-          Process.kill('QUIT', pid)
-        end
-        pid_file.delete if pid_file.exist?
+        Resque.logger.info('Sending SIGQUIT to supervisor process...')
+
+        @process.send('QUIT')
+        @process.wait
       end
 
       private
+      def main_loop
+        catch(:stop) do
+          trap('QUIT') { throw :stop }
+          trap('TERM') { throw :stop }
+
+          loop do
+            reap and sleep INTERVAL
+          end
+        end
+      end
+
+      def reap
+        prune_dead_workers
+        restart_dead_processes
+      end
+
+      def restart_dead_processes
+        Resque.logger.debug('Restarting dead processes...')
+
+        Resque.config.workers.select(&:dead?).each do |worker|
+          Resque.logger.warn("Found dead worker (pid=#{worker.pid}, restarting...")
+
+          worker.start
+
+          Resque.logger.info("New worker spawned (pid=#{worker.pid})")
+        end
+      end # def restart_dead_processes
+
+      def prune_dead_workers
+        Resque.logger.debug('Pruning dead workers from Redis...')
+
+        Resque.workers.each do |worker|
+          begin
+            worker.prune_dead_workers
+          rescue => ex
+            log_exception(ex, 'Cannot prune resque workers')
+          end
+        end
+      end # def prune_dead_workers
+
+      def log_exception(exception, prefix = nil)
+        Resque.logger.fatal { "%s %s (%s)\n%s" % [
+            prefix ? "#{prefix}:" : '',
+            exception.message,
+            exception.class.to_s,
+            exception.backtrace.join("\n")
+        ] }
+      end # def log_exception
+
       def pid_file
-        ::Rails.root.join('tmp', 'pids', 'resque-supervisor.pid')
+        Resque.config.pid_dir.join('resque-watchdog.pid')
       end
-
-      def running?
-        pid_file.exist? && Process.kill(0, pid)
-      rescue Errno::ESRCH
-        false
-      end
-
-      def pid
-        pid_file.read.strip.to_i
-      end
-
-      def register_signal_handlers
-        trap('QUIT') { stop; exit }
-        trap('TERM') { stop; exit }
-      end
-    end # class Supervisor
+    end # class Reaper
   end # module Integration
 end # module Resque

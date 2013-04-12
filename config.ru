@@ -1,9 +1,7 @@
-# coding: utf-8
-require "rubygems"
-require "bundler"
+require 'rubygems'
+require 'bundler'
 
-Bundler.setup
+Bundler.require :default, :development
 
-require "resque/integration/application"
-
-run Resque::Integration::Application
+Combustion.initialize!
+run Combustion::Application

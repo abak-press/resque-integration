@@ -1,6 +1,7 @@
 # coding: utf-8
-require 'resque/integration/version'
+require 'logger'
 
+require 'resque/integration/version'
 require 'resque'
 
 require 'rails/railtie'
@@ -19,6 +20,10 @@ require 'active_support/core_ext/module/attribute_accessors'
 module Resque
   # Resque.config is available now
   mattr_accessor :config
+
+  # Resque.logger is a stdlib Logger instance
+  mattr_accessor :logger
+  self.logger = Logger.new(nil)
 
   # Seamless resque integration with all necessary plugins
   # You should define an +execute+ method (not +perform+)
@@ -40,6 +45,7 @@ module Resque
     autoload :Configuration, 'resque/integration/configuration'
     autoload :Continuous, 'resque/integration/continuous'
     autoload :Supervisor, 'resque/integration/supervisor'
+    autoload :Worker, 'resque/integration/worker'
     autoload :Unique, 'resque/integration/unique'
 
     extend ActiveSupport::Concern

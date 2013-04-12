@@ -4,9 +4,11 @@ require 'rspec'
 require 'resque'
 require 'simplecov'
 require 'mock_redis'
+require 'combustion'
 
-Resque.redis = MockRedis.new
-
-SimpleCov.start
+SimpleCov.start 'test_frameworks'
 
 require 'resque/integration'
+Combustion.initialize!
+
+Resque.redis = MockRedis.new

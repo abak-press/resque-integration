@@ -1,0 +1,4 @@
+workers:
+  default: 1
+  images:
+    count: 2
