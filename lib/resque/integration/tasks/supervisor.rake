@@ -2,17 +2,13 @@
 
 namespace :resque do
   namespace :supervisor do
-    desc 'Starts supervisor process'
-    task :start => :environment do
-      Resque::Integration::Supervisor.start
-    end
+    desc 'Starts supervisor process (no-op)'
+    task :start
 
-    desc 'Stop supervisor process'
-    task :stop => :environment do
-      Resque::Integration::Supervisor.stop
-    end
+    desc 'Stop supervisor process (no-op)'
+    task :stop
 
-    desc 'Restart supervisor process'
-    task :restart => [:stop, :start]
+    desc 'Restart supervisor process (no-op)'
+    task :restart
   end
 end
