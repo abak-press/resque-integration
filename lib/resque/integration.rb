@@ -39,7 +39,6 @@ module Resque
     autoload :CLI, 'resque/integration/cli'
     autoload :Configuration, 'resque/integration/configuration'
     autoload :Continuous, 'resque/integration/continuous'
-    autoload :Supervisor, 'resque/integration/supervisor'
     autoload :Unique, 'resque/integration/unique'
 
     extend ActiveSupport::Concern

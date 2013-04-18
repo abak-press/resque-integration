@@ -12,7 +12,7 @@ module Resque::Integration
     rake_tasks do
       load 'resque/integration/tasks/hooks.rake'
       load 'resque/integration/tasks/resque.rake'
-      load 'resque/integration/tasks/supervisor.rake'
+      load 'resque/integration/tasks/supervisor.rake' # deprecated
     end
 
     # Читает конфиг-файлы config/resque.yml и config/resque.local.yml,

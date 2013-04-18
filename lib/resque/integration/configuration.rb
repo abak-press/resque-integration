@@ -2,6 +2,7 @@
 
 require 'yaml'
 require 'ostruct'
+require 'erb'
 
 require 'active_support/core_ext/hash/keys'
 require 'active_support/core_ext/hash/deep_merge'
@@ -116,7 +117,12 @@ module Resque
 
       # Returns path to resque log file
       def log_file
-        self['resque.log_file']
+        self['resque.log_file'] || 'log/resque.log'
+      end
+
+      # Returns maximum terminate timeout
+      def terminate_timeout
+        workers.map(&:stop_timeout).compact.max.to_i + 10
       end
 
       # Returns environment variables that should be associated with this configuration
@@ -128,6 +134,12 @@ module Resque
         env[:VVERBOSE] = '1' if verbosity == 2
 
         Hash[env.map { |k, v| [k, v.to_s] }]
+      end
+
+      # Generate GOD configuration file
+      def to_god
+        template = ERB.new(File.read(File.join(File.dirname(__FILE__), 'god.erb')))
+        template.result(binding)
       end
 
       private
