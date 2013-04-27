@@ -12,11 +12,15 @@ require 'resque-ensure-connected'
 
 require 'active_support/concern'
 
+require 'resque/integration/hooks'
 require 'resque/integration/engine'
 
 require 'active_support/core_ext/module/attribute_accessors'
 
 module Resque
+  include Integration::Hooks
+  extend Integration::Hooks
+
   # Resque.config is available now
   mattr_accessor :config
 
