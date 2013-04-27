@@ -19,10 +19,10 @@ namespace :resque do
     #   Resque.after_fork { ActiveRecord::Base.connection_handler.verify_active_connections! }
     #
     # Это работает
-    Resque.before_fork { ActiveRecord::Base.connection_handler.clear_all_connections! }
+    Resque.before_first_fork { ActiveRecord::Base.connection_handler.clear_all_connections! }
 
     # Нужно также закрыть соединение к memcache
-    Resque.before_fork { Rails.cache.reset if Rails.cache.respond_to?(:reset) }
+    Resque.before_first_fork { Rails.cache.reset if Rails.cache.respond_to?(:reset) }
 
     # Support for resque-multi-job-forks
     if ENV['JOBS_PER_FORK'] || ENV['MINUTES_PER_FORK']
