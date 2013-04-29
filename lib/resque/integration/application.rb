@@ -1,8 +1,8 @@
 # coding: utf-8
-require "resque/integration"
-require "resque/plugins/meta"
-require "sinatra/base"
-require "multi_json"
+require 'resque/integration'
+require 'resque/plugins/meta'
+require 'sinatra/base'
+require 'multi_json'
 
 module Resque::Integration
   # Rack-приложение (построенное на Sinatra)
@@ -17,10 +17,6 @@ module Resque::Integration
 
     before do
       content_type :json
-    end
-
-    configure :production, :development do
-      enable :logging
     end
 
     # main handler
