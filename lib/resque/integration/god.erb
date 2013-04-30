@@ -1,8 +1,8 @@
 # THIS FILE IS AUTO-GENERATED. PLEASE DO NOT CHANGE IT!
 
 bundle = '<%= `which bundle`.strip %>'
-rails_root = '<%= ::Rails.root %>'
-God.pid_file_directory = '<%= ::Rails.root.join('tmp/pids') %>'
+rails_root = Dir.pwd
+God.pid_file_directory = File.join(rails_root, 'tmp/pids')
 God.terminate_timeout = <%= terminate_timeout.to_i %>
 
 <% workers.each do |worker| %>
