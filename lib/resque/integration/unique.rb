@@ -1,5 +1,7 @@
 # coding: utf-8
 
+require 'digest/sha1'
+
 require 'active_support/core_ext/module/aliasing'
 
 require 'resque/plugins/lock'
@@ -52,7 +54,7 @@ module Resque
         # LockID should be independent from MetaID
         # @api private
         def lock(meta_id, *args)
-          "lock:#{name}-#{lock_on[*args].to_s}"
+          "lock:#{name}-#{Digest::SHA1.hexdigest(lock_on[*args].to_s)}"
         end
 
         # Overriding +meta_id+ here so now it generates the same MetaID for Jobs with same args
