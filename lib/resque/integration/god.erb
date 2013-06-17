@@ -1,7 +1,7 @@
 # THIS FILE IS AUTO-GENERATED. PLEASE DO NOT CHANGE IT!
 
 bundle = '<%= `which bundle`.strip %>'
-rails_root = Dir.pwd
+rails_root = <%= root.inspect %>
 God.pid_file_directory = File.join(rails_root, 'tmp/pids')
 God.terminate_timeout = <%= terminate_timeout.to_i %>
 
