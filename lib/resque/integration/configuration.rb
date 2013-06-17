@@ -120,6 +120,10 @@ module Resque
         self['resque.log_file'] || 'log/resque.log'
       end
 
+      def root
+        self['resque.root'] || ::Rails.root.to_s
+      end
+
       # Returns maximum terminate timeout
       def terminate_timeout
         workers.map(&:stop_timeout).compact.max.to_i + 10
