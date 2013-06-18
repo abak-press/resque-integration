@@ -54,7 +54,7 @@ module Resque
         # LockID should be independent from MetaID
         # @api private
         def lock(meta_id, *args)
-          "lock:#{name}-#{Digest::SHA1.hexdigest(lock_on[*args].to_s)}"
+          "lock:#{name}-#{Digest::SHA1.hexdigest(obj_to_string(lock_on[*args]))}"
         end
 
         # Overriding +meta_id+ here so now it generates the same MetaID for Jobs with same args
@@ -143,7 +143,25 @@ module Resque
           ::Rails.application &&
           ::Rails.application.config.secret_token
         end
-      end
+
+        def obj_to_string(obj)
+          case obj
+            when Hash
+              s = []
+              obj.keys.sort.each do |k|
+                s << obj_to_string(k)
+                s << obj_to_string(obj[k])
+              end
+              s.to_s
+            when Array
+              s = []
+              obj.each { |a| s << obj_to_string(a) }
+              s.to_s
+            else
+              obj.to_s
+          end
+        end
+      end # module ClassMethods
     end # module Unique
   end # module Integration
 end # module Resque
