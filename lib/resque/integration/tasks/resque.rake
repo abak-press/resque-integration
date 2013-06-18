@@ -12,7 +12,9 @@ namespace :resque do
 
   desc 'Start God server and watch for Resque workers'
   task :start => :conf do
-    unless god_running?
+    if god_running?
+      puts `#{god} start resque`
+    else
       puts `#{god} -c #{config_file} -P #{pid_file} -l #{log_file}`
       save_md5
     end
@@ -31,7 +33,7 @@ namespace :resque do
       Process.daemon(true, false)
 
       # Stop everything
-      Rake::Task['resque:stop'].invoke
+      Rake::Task['resque:terminate'].invoke
 
       # Start again
       Rake::Task['resque:start'].invoke
@@ -44,8 +46,13 @@ namespace :resque do
     end
   end
 
-  desc 'Stop Resque workers and quit God'
+  desc 'Stop Resque workers'
   task :stop do
+    puts `#{god} stop resque`
+  end
+
+  desc 'Stop Resque workers and quit God'
+  task :terminate do
     puts `#{god} terminate`
   end
 
@@ -70,7 +77,11 @@ namespace :resque do
   end
 
   def god_running?
-    File.exists?(pid_file)
+    File.exists?(pid_file) && Process.kill(0, File.read(pid_file).to_i)
+  rescue Errno::ESRCH
+    false
+  rescue Errno::EPERM
+    true
   end
 
   def god_stopped?
