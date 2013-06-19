@@ -50,7 +50,8 @@ module Resque
         if continued?
           args = if @continued.any?
             if unique?
-              [meta_id(*args)] + @continued
+              meta_id = args.first # we should keep meta_id as first argument
+              [meta_id] + @continued
             else
               @continued
             end
