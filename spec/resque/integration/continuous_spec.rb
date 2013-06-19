@@ -80,6 +80,20 @@ describe Resque::Integration::Continuous do
       # clean the queue
       Resque.dequeue(ContinuousUniqueJobTest)
     end
+
+    it 'should enqueue job with the same meta_id' do
+      ContinuousUniqueJobTest.enqueue(3, 1)
+
+      job1 = Resque.reserve(ContinuousUniqueJobTest.queue)
+      meta1 = job1.payload['args'].first
+
+      job1.perform
+
+      job2 = Resque.reserve(ContinuousUniqueJobTest.queue)
+      meta2 = job2.payload['args'].first
+
+      meta1.should eq meta2
+    end
   end
 
   context 'when called without arguments' do
