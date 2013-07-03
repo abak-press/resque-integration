@@ -4,7 +4,14 @@
 # Скрипт для мониторинга состояния resque
 
 require 'rubygems'
-gem 'resque-integration'
+
+%w(oj yajl-ruby json gson).each do |library|
+  begin
+    gem(library) and break
+  rescue Gem::LoadError
+    # ignore, go to next adapter
+  end
+end
 
 require 'resque'
 require 'redis'
