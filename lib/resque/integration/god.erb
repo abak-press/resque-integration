@@ -12,7 +12,7 @@ God.terminate_timeout = <%= terminate_timeout.to_i %>
       w.name = 'resque-<%= worker.queue %>-<%= i %>'
       w.group = 'resque'
       w.interval = 30.seconds
-      w.env = <%= Resque.config.env.merge(worker.env).merge(:RAILS_ENV => ::Rails.env).stringify_keys! %>
+      w.env = <%= Resque.config.env.merge(worker.env).merge(:RAILS_ENV => ::Rails.env, :BUNDLE_GEMFILE => "#{root}/Gemfile").stringify_keys! %>
       w.start = "#{bundle} exec rake -f #{rails_root}/Rakefile resque:work"
       w.log = "#{rails_root}/<%= log_file %>"
       w.stop_signal = 'QUIT'
