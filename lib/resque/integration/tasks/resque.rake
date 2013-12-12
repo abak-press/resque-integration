@@ -1,7 +1,5 @@
 # coding: utf-8
 
-require 'digest/md5'
-
 namespace :resque do
   desc 'Generate God configuration file'
   task :conf => :environment do
@@ -16,7 +14,6 @@ namespace :resque do
       puts `#{god} start resque`
     else
       puts `#{god} -c #{config_file} -P #{pid_file} -l #{log_file}`
-      save_md5
     end
   end
 
@@ -24,25 +21,8 @@ namespace :resque do
   task :restart => :conf do
     if god_stopped?
       Rake::Task['resque:start'].invoke
-    elsif config_changed?
-      puts 'Resque config changed, God should be stopped and started again.'
-
-      # it can take long, we'll run it in background
-      puts 'Stopping god. It can take a while...'
-
-      Process.daemon(true, false)
-
-      # Stop everything
-      Rake::Task['resque:terminate'].invoke
-
-      # Start again
-      Rake::Task['resque:start'].invoke
     else
-      puts 'Restarting god. Executing in background. It can take a while...'
-
-      Process.daemon(true, false)
-
-      `#{god} restart resque`
+      puts `#{god} load #{config_file} stop && #{god} restart resque`
     end
   end
 
@@ -98,22 +78,5 @@ namespace :resque do
 
   def config_file
     Rails.root.join('config/resque.god').to_s
-  end
-
-  # Returns true if config file was changed since last deploy
-  def config_changed?
-    config_md5 != current_md5
-  end
-
-  def current_md5
-    Resque.redis.get('config:md5')
-  end
-
-  def save_md5
-    Resque.redis.set('config:md5', config_md5)
-  end
-
-  def config_md5
-    Digest::MD5.hexdigest(File.read(config_file))
   end
 end
