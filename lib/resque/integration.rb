@@ -44,6 +44,7 @@ module Resque
     autoload :Configuration, 'resque/integration/configuration'
     autoload :Continuous, 'resque/integration/continuous'
     autoload :Unique, 'resque/integration/unique'
+    autoload :LogsRotator, 'resque/integration/logs_rotator'
 
     extend ActiveSupport::Concern
 

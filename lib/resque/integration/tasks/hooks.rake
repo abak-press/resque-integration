@@ -5,6 +5,11 @@ namespace :resque do
   #
   # @see https://github.com/resque/resque/tree/1-x-stable#workers
   task :setup => :environment do
+    # перенаправление вывода в файл
+    Resque::Integration::LogsRotator.redirect_std
+    # слушать HUP сигнал для ротации логов
+    Resque::Integration::LogsRotator.register_hup_signal
+
     # Reestablish Redis connection for each fork
     # Tested on both redis-2.2.x and redis-3.0.x
     #
