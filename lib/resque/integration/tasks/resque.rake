@@ -51,6 +51,17 @@ namespace :resque do
     puts `#{god} status resque`
   end
 
+  namespace :logs do
+    desc 'Rotate resque logs'
+    task :rotate do
+      return unless god_running?
+
+      Process.kill('USR1', File.read(pid_file).to_i)
+      sleep 3
+      puts `#{god} signal resque HUP`
+    end
+  end
+
   private
   def god
     `which god`.strip
