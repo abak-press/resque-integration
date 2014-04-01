@@ -6,7 +6,7 @@ module Resque
 
         # Перенаправить стандартный вывод в файл
         def redirect_std
-          log_path = File.join(::Resque.config.root, ::Resque.config.log_file)
+          log_path = ::Resque.config.log_file
           STDOUT.reopen File.open(log_path, 'a')
           STDERR.reopen File.open(log_path, 'a')
           STDOUT.sync = STDERR.sync = true

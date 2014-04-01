@@ -98,8 +98,10 @@ redis:
 resque:
   interval: 5 # частота, с которой resque берет задачи из очереди в секундах (по умолчанию 5)
   verbosity: 1 # "шумность" логера (0 - ничего не пишет, 1 - пишет о начале/конце задачи, 2 - пишет все)
-  log_file: "log/resque.log" # путь до log-файла от корня проекта
-  root: "/home/blizko/current" # (опционально) путь до корня проекта. нужно для корректных деплоев, так что настраивается только в production
+  root: "/home/pc/current" # (production) абсолютный путь до корня проекта
+  log_file: "/home/pc/static/pulscen/local/log/resque.log" # (production) абсолютный путь до лога
+  config_file: "/home/pc/static/pulscen/local/log/resque.god" # (production) абсолютный путь до кофига god
+  pids: "/home/pc/static/pulscen/local/pids" # (production) абсолютный путь до папки с пид файлами
 
 # переменные окружения, которые надобно передавать в resque
 env:
@@ -118,6 +120,7 @@ workers:
     stop_timeout: 5 # максимальное время, отпущенное воркеру для остановки/рестарта
     env: # переменные окружение, специфичные для данного воркера
       RUBY_HEAP_SLOTS_GROWTH_FACTOR: 0.5
+  'companies,images: 2 # совмещённая очередь, приоритет будет у companies
 
 # конфигурация failure-бэкэндов
 failure:

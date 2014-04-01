@@ -117,7 +117,19 @@ module Resque
 
       # Returns path to resque log file
       def log_file
-        self['resque.log_file'] || 'log/resque.log'
+        self['resque.log_file'] || Rails.root.join('log/resque.log').to_s
+      end
+
+      def config_file
+        self['resque.config_file'] || Rails.root.join('config/resque.god').to_s
+      end
+
+      def pid_file
+        "#{pids}/resque-god.pid"
+      end
+
+      def pids
+        self['resque.pids'] || Rails.root.join('tmp/pids').to_s
       end
 
       def root

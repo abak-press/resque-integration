@@ -3,9 +3,9 @@
 namespace :resque do
   desc 'Generate God configuration file'
   task :conf => :environment do
-    File.write(config_file, Resque.config.to_god)
+    File.write(Resque.config.config_file, Resque.config.to_god)
 
-    puts "God configuration file generated to #{config_file}"
+    puts "God configuration file generated to #{Resque.config.config_file}"
   end
 
   desc 'Start God server and watch for Resque workers'
@@ -13,7 +13,7 @@ namespace :resque do
     if god_running?
       puts `#{god} start resque`
     else
-      puts `#{god} -c #{config_file} -P #{pid_file} -l #{log_file}`
+      puts `#{god} -c #{Resque.config.config_file} -P #{Resque.config.pid_file} -l #{Resque.config.log_file}`
     end
   end
 
@@ -22,7 +22,7 @@ namespace :resque do
     if god_stopped?
       Rake::Task['resque:start'].invoke
     else
-      puts `#{god} load #{config_file} stop && #{god} restart resque`
+      puts `#{god} load #{Resque.config.config_file} stop && #{god} restart resque`
     end
   end
 
@@ -54,21 +54,24 @@ namespace :resque do
   namespace :logs do
     desc 'Rotate resque logs'
     task :rotate do
-      return unless god_running?
-
-      Process.kill('USR1', File.read(pid_file).to_i)
-      sleep 3
-      puts `#{god} signal resque HUP`
+      if god_running?
+        Process.kill('USR1', File.read(Resque.config.pid_file).to_i)
+        sleep 3
+        puts `#{god} signal resque HUP`
+      else
+        puts 'god is not running'
+      end
     end
   end
 
   private
+
   def god
     `which god`.strip
   end
 
   def god_running?
-    File.exists?(pid_file) && Process.kill(0, File.read(pid_file).to_i)
+    File.exists?(Resque.config.pid_file) && Process.kill(0, File.read(Resque.config.pid_file).to_i)
   rescue Errno::ESRCH
     false
   rescue Errno::EPERM
@@ -77,17 +80,5 @@ namespace :resque do
 
   def god_stopped?
     !god_running?
-  end
-
-  def pid_file
-    Rails.root.join('tmp/pids/resque-god.pid').to_s
-  end
-
-  def log_file
-    Rails.root.join(Resque.config.log_file).to_s
-  end
-
-  def config_file
-    Rails.root.join('config/resque.god').to_s
   end
 end
