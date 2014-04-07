@@ -53,7 +53,7 @@ namespace :resque do
 
   namespace :logs do
     desc 'Rotate resque logs'
-    task :rotate do
+    task :rotate => :environment do
       if god_running?
         Process.kill('USR1', File.read(Resque.config.pid_file).to_i)
         sleep 3
