@@ -90,6 +90,7 @@ end
 Создайте файл `config/resque.yml` с несколькими секциями:
 ```yaml
 # конфигурация redis
+# секция не обязательная, вы сами можете настроить подключение через Resque.redis = Redis.new
 redis:
   host: bz-redis
   port: 6379

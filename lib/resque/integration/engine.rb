@@ -29,8 +29,10 @@ module Resque::Integration
     initializer 'resque-integration.redis' do
       redis = Resque.config.redis
 
-      Resque.redis = Redis.new(redis)
-      Resque.redis.namespace = redis[:namespace] if redis[:namespace]
+      if redis.any?
+        Resque.redis = Redis.new(redis)
+        Resque.redis.namespace = redis[:namespace] if redis[:namespace]
+      end
     end
 
     # Конфигурирование плагина resque-failed-job-mailer.
