@@ -90,7 +90,7 @@ module Resque
       #
       # @return [OpenStruct]
       def redis
-        @redis ||= (self['redis'] || {}).symbolize_keys.merge(:thread_safe => true)
+        @redis ||= (self['redis'] || {}).symbolize_keys
       end
 
       # Returns workers configuration
