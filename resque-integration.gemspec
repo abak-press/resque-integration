@@ -23,7 +23,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'resque-lock', '~> 1.1.0'
   gem.add_runtime_dependency 'resque-meta', '>= 2.0.0'
   gem.add_runtime_dependency 'resque-progress', '~> 1.0.1'
-  #gem.add_runtime_dependency 'resque-multi-job-forks', '~> 0.3.4'
+  gem.add_runtime_dependency 'resque-multi-job-forks', '~> 0.4.2'
   gem.add_runtime_dependency 'resque-failed-job-mailer', '~> 0.0.3'
   gem.add_runtime_dependency 'god', '~> 0.13.4'
 

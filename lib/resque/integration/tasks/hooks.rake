@@ -34,7 +34,7 @@ namespace :resque do
 
     # Support for resque-multi-job-forks
     if ENV['JOBS_PER_FORK'] || ENV['MINUTES_PER_FORK']
-      #require 'resque-multi-job-forks'
+      require 'resque-multi-job-forks'
     end
   end
 end
