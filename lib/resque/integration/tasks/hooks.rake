@@ -30,11 +30,15 @@ namespace :resque do
     Resque.before_first_fork { Rails.cache.reset if Rails.cache.respond_to?(:reset) }
     
     # Красиво нарисуем название процесса
-    Resque.after_fork { |job| $0 = "resque-#{Resque::Version}: Processing #{job.queue}/#{job.payload['class']} since #{Time.now.to_s(:db)}" }
+    Resque.after_fork do |job|
+      $0 = "resque-#{Resque::Version}: Processing #{job.queue}/#{job.payload['class']} since #{Time.now.to_s(:db)}"
+    end
 
     # Support for resque-multi-job-forks
-    if ENV['JOBS_PER_FORK'] || ENV['MINUTES_PER_FORK']
-      #require 'resque-multi-job-forks'
+    require 'resque-multi-job-forks' if ENV['JOBS_PER_FORK'] || ENV['MINUTES_PER_FORK']
+
+    if Resque.config.resque_scheduler? && Resque.config.schedule_exists?
+      Resque.schedule = YAML.load_file(Resque.config.schedule_file)
     end
   end
 end

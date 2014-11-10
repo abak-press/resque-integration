@@ -15,6 +15,11 @@ require 'active_support/concern'
 require 'resque/integration/hooks'
 require 'resque/integration/engine'
 
+require 'resque/scheduler'
+require 'resque/scheduler/tasks'
+
+require 'resque-retry'
+
 require 'active_support/core_ext/module/attribute_accessors'
 
 module Resque
@@ -78,6 +83,24 @@ module Resque
 
       def unique?
         false
+      end
+
+      # extend resque-retry
+      #
+      # options - Hash
+      #           :limit - Integer (default: 2)
+      #           :delay - Integer (default: 60)
+      #
+      # Returns nothing
+      def retrys(options = {})
+        if unique?
+          raise '`retrys` should be declared higher in code than `unique`'
+        end
+
+        extend Resque::Plugins::Retry
+
+        @retry_limit = options.fetch(:limit, 2)
+        @retry_delay = options.fetch(:delay, 60)
       end
     end
   end # module Integration

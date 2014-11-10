@@ -16,24 +16,26 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = %w(lib)
 
-  gem.add_runtime_dependency 'resque', '= 1.23.0'
+  gem.add_runtime_dependency 'resque', '= 1.25.2'
   gem.add_runtime_dependency 'railties', '>= 3.0.0'
   gem.add_runtime_dependency 'resque-rails', '>= 1.0.1'
   gem.add_runtime_dependency 'resque-ensure-connected', '>= 0.2.0' # reconnect after fork
   gem.add_runtime_dependency 'resque-lock', '~> 1.1.0'
   gem.add_runtime_dependency 'resque-meta', '>= 2.0.0'
   gem.add_runtime_dependency 'resque-progress', '~> 1.0.1'
-  #gem.add_runtime_dependency 'resque-multi-job-forks', '~> 0.3.4'
+  gem.add_runtime_dependency 'resque-multi-job-forks', '~> 0.4.2'
   gem.add_runtime_dependency 'resque-failed-job-mailer', '~> 0.0.3'
+  gem.add_runtime_dependency 'resque-scheduler', '~> 3.0'
+  gem.add_runtime_dependency 'resque-retry', '~> 1.3'
   gem.add_runtime_dependency 'god', '~> 0.13.4'
 
   gem.add_runtime_dependency 'multi_json'
   gem.add_runtime_dependency 'rake'
   gem.add_runtime_dependency 'sinatra'
 
-  gem.add_development_dependency 'rake'
   gem.add_development_dependency 'bundler'
-  gem.add_development_dependency 'rspec'
+  gem.add_development_dependency 'rspec', '~> 2.14'
   gem.add_development_dependency 'simplecov'
   gem.add_development_dependency 'mock_redis'
+  gem.add_development_dependency 'apress-gems', '>= 0.0.4'
 end
