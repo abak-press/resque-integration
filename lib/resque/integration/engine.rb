@@ -12,7 +12,6 @@ module Resque::Integration
     rake_tasks do
       load 'resque/integration/tasks/hooks.rake'
       load 'resque/integration/tasks/resque.rake'
-      load 'resque/integration/tasks/supervisor.rake' # deprecated
     end
 
     # Читает конфиг-файлы config/resque.yml и config/resque.local.yml,
@@ -32,6 +31,19 @@ module Resque::Integration
       if redis.any?
         Resque.redis = Redis.new(redis)
         Resque.redis.namespace = redis[:namespace] if redis[:namespace]
+      end
+    end
+
+    initializer 'resque-integration.logger' do
+      Resque.logger.level = Resque.config.log_level
+
+      case Resque.config.verbosity
+      when 1
+        Resque.logger.formatter = Resque::VerboseFormatter.new
+      when 2
+        Resque.logger.formatter = Resque::VeryVerboseFormatter.new
+      else
+        Resque.logger.formatter = Resque::QuietFormatter.new
       end
     end
 

@@ -115,6 +115,11 @@ module Resque
         (self['resque.verbosity'] || 0).to_i
       end
 
+      # Returns Resque log level
+      def log_level
+        (self['resque.log_level'] || 1).to_i
+      end
+
       # Returns path to resque log file
       def log_file
         self['resque.log_file'] || ::Rails.root.join('log/resque.log').to_s
@@ -136,6 +141,34 @@ module Resque
         self['resque.root'] || ::Rails.root.to_s
       end
 
+      # Путь до файла с расписание resque schedule
+      #
+      # Returns String
+      def schedule_file
+        self['resque.schedule_file'] || ::Rails.root.join('config', 'resque_schedule.yml')
+      end
+
+      # Есть ли расписание у приложения?
+      #
+      # Returns boolean
+      def schedule_exists?
+        return @schedule_exists if defined?(@schedule_exists)
+        @schedule_exists = File.exist?(schedule_file)
+      end
+
+      # Используется ли resque scheduler
+      #
+      # Returns boolean
+      def resque_scheduler?
+        value = self['resque.scheduler'] || true
+
+        if value.is_a?(String) && %w(n no false off disabled).include?(value)
+          value = false
+        end
+
+        value
+      end
+
       # Returns maximum terminate timeout
       def terminate_timeout
         workers.map(&:stop_timeout).compact.max.to_i + 10
@@ -146,8 +179,6 @@ module Resque
         env = self['env'] || {}
 
         env[:INTERVAL] ||= interval
-        env[:VERBOSE] = '1' if verbosity == 1
-        env[:VVERBOSE] = '1' if verbosity == 2
 
         Hash[env.map { |k, v| [k, v.to_s] }]
       end

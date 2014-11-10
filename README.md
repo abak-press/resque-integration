@@ -1,10 +1,14 @@
 # Resque::Integration
 
+<a href="http://dolly.railsc.ru/projects/47/builds/latest/?ref=master"><img src="http://dolly.railsc.ru/badges/abak-press/resque-integration/master" height=18 /></a>
+
 Интеграция Resque в Rails-приложения с поддержкой следующих плагинов:
 * [resque-progress](https://github.com/idris/resque-progress)
 * [resque-lock](https://github.com/defunkt/resque-lock)
 * [resque-multi-job-forks](https://github.com/stulentsev/resque-multi-job-forks)
 * [resque-failed-job-mailer](https://github.com/anandagrawal84/resque_failed_job_mailer)
+* [resque-scheduler](https://github.com/resque/resque-scheduler)
+* [resque-retry](https://github.com/lantins/resque-retry)
 
 Этот гем существует затем, чтобы избежать повторения чужих ошибок и сократить время, необходимое для включения resque в проект.
 
@@ -208,3 +212,46 @@ meta = ResqueJobTest.enqueue(id=2)
 ```ruby
 Resque.enqueue(ImageProcessingJob, id=2)
 ```
+
+## Resque Scheduler
+
+Расписание для cron-like заданий должно храниться здесь `config/resque_schedule.yml`
+
+## Resque Retry
+
+В силу несовместимостей почти всех плагинов с resque-meta (unique основан на нём) - объявить задание перезапускаемым
+в случае ошибки нужно ДО `unique`
+
+```ruby
+class ResqueJobTest
+  include Resque::Integration
+  
+  retrys delay: 10, limit: 2
+  unique
+end
+```
+
+## Resque Multi Job Forks
+
+```yaml
+workers:
+  'high':
+    count: 1
+    jobs_per_fork: 10
+```
+
+## Gem Releasing
+
+1. должен быть настроен git remote upstream и должны быть права на push
+1. git checkout master
+2. git pull upstream master
+3. правим версию гема в файле VERSION в корне гема. (читаем правила версионирования http://semver.org/)
+4. bundle exec rake release
+
+## Contributing
+
+1. Fork it ( https://github.com/abak-press/resque-integration/fork )
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create a new Pull Request

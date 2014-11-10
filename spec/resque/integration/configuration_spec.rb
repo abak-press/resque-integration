@@ -2,6 +2,47 @@
 
 require 'spec_helper'
 
+describe Resque::Integration::Configuration do
+  let(:config) do
+    File.stub(:exists? => true)
+    File.stub(:read)
+    YAML.stub(:load => config_yaml)
+    described_class.new('path/to/config.yml')
+  end
+
+  let(:config_yaml) { {} }
+
+  describe '#schedule_file' do
+    let(:config_yaml) { {'resque' => {'schedule_file' => 'schedule.yml'}} }
+
+    it { expect(config.schedule_file).to eq 'schedule.yml' }
+  end
+
+  describe '#log_level' do
+    context 'when default' do
+      it { expect(config.log_level).to eq 1 }
+    end
+
+    context 'when defined' do
+      let(:config_yaml) { {'resque' => {'log_level' => 2}} }
+
+      it { expect(config.log_level).to eq 2 }
+    end
+  end
+
+  describe '#resque_scheduler?' do
+    context 'when default' do
+      it { expect(config.resque_scheduler?).to be_true }
+    end
+
+    context 'when defined' do
+      let(:config_yaml) { {'resque' => {'scheduler' => 'no'}} }
+
+      it { expect(config.resque_scheduler?).to be_false }
+    end
+  end
+end
+
 describe Resque::Integration::Configuration::Notifier do
   context 'when NilClass given as config' do
     subject(:config) { described_class::new(nil) }

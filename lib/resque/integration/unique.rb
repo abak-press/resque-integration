@@ -5,7 +5,7 @@ require 'digest/sha1'
 require 'active_support/core_ext/module/aliasing'
 
 require 'resque/plugins/lock'
-require 'resque/plugins/progress'
+silence_warnings { require 'resque/plugins/progress' } # suppress Resque::Helpers warn
 
 module Resque
   module Integration
@@ -40,6 +40,18 @@ module Resque
         # Returns true because job is unique now
         def unique?
           true
+        end
+
+        # Метод вызывает resque-scheduler чтобы поставить задание в текущую очередь
+        def scheduled(queue, klass, *args)
+          klass.constantize.enqueue(*args)
+        end
+
+        # Метод вызывает resque-retry когда ставить отложенное задание
+        # здесь мы убираем meta_id из аргументов
+        def retry_args(*args)
+          args.shift
+          args
         end
 
         # Get or set proc returning unique arguments
