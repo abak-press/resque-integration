@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'resque/integration/version'
@@ -18,8 +18,8 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency 'resque', '= 1.25.2'
   gem.add_runtime_dependency 'railties', '>= 3.0.0'
+  gem.add_runtime_dependency 'activerecord', '>= 3.0.0'
   gem.add_runtime_dependency 'resque-rails', '>= 1.0.1'
-  gem.add_runtime_dependency 'resque-ensure-connected', '>= 0.2.0' # reconnect after fork
   gem.add_runtime_dependency 'resque-lock', '~> 1.1.0'
   gem.add_runtime_dependency 'resque-meta', '>= 2.0.0'
   gem.add_runtime_dependency 'resque-progress', '~> 1.0.1'

@@ -8,7 +8,6 @@ require 'rake'
 require 'resque-rails'
 
 require 'active_record'
-require 'resque-ensure-connected'
 
 require 'active_support/concern'
 

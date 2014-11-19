@@ -10,28 +10,27 @@ namespace :resque do
     # слушать HUP сигнал для ротации логов
     Resque::Integration::LogsRotator.register_hup_signal
 
-    # Reestablish Redis connection for each fork
-    # Tested on both redis-2.2.x and redis-3.0.x
-    #
-    # @see https://groups.google.com/forum/#!msg/ror2ru/CV96h5OGDxY/IqZbRsl-BcIJ
-    Resque.before_fork { Resque.redis.client.disconnect }
-    Resque.after_fork { Resque.redis.client.connect }
-
     # Нужно закрыть все соединения в **родительском** процессе,
-    # все остальное делает гем `resque-ensure-connected`.
-    #
-    # Вообще, он делает буквально следующее:
-    #   Resque.after_fork { ActiveRecord::Base.connection_handler.verify_active_connections! }
-    #
-    # Это работает
-    Resque.before_first_fork { ActiveRecord::Base.connection_handler.clear_all_connections! }
-
     # Нужно также закрыть соединение к memcache
-    Resque.before_first_fork { Rails.cache.reset if Rails.cache.respond_to?(:reset) }
-    
-    # Красиво нарисуем название процесса
+    Resque.before_first_fork do
+      ActiveRecord::Base.connection_handler.clear_all_connections!
+      Rails.cache.reset if Rails.cache.respond_to?(:reset)
+    end
+
+    Resque.before_fork do
+      Resque.redis.client.disconnect
+    end
+
     Resque.after_fork do |job|
       $0 = "resque-#{Resque::Version}: Processing #{job.queue}/#{job.payload['class']} since #{Time.now.to_s(:db)}"
+
+      if ActiveRecord::VERSION::MAJOR >= 4
+         ActiveRecord::Base.clear_active_connections!
+      else
+         ActiveRecord::Base.verify_active_connections!
+      end
+
+      Resque.redis.client.connect
     end
 
     # Support for resque-multi-job-forks
