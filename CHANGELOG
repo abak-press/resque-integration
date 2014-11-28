@@ -1,3 +1,7 @@
+  - 2014/11/19: fix(hooks): verify connections for rails 4x (bibendi)
+
+v1.0.0
+  - 2014/11/13: Release 1.0.0 (bibendi)
   - 2014/11/10: add scheduler, retry, multy-job-forks (bibendi)
   - 2014/10/23: bump version to 0.4.4 (bibendi)
   - 2014/10/23: connect to redis if has credentials in config file (bibendi)
@@ -60,8 +64,8 @@ v0.2.1
   - 2013/04/27: Backport hooks behaviour from 1.24.1 (Alexei Mikhailov)
 
 v0.2.0
-  - 2013/04/18: Fixed #15; Fixed #16; God integration (Alexei Mikhailov)
   - 2013/04/18: Version bump to 0.2.0 (Alexei Mikhailov)
+  - 2013/04/18: Fixed #15; Fixed #16; God integration (Alexei Mikhailov)
   - 2013/04/12: Fixed #14: log errors date/time (Alexei Mikhailov)
   - 2013/04/12: Fixed broken resque-status (Alexei Mikhailov)
 
