@@ -5,7 +5,6 @@ require 'resque'
 
 require 'rails/railtie'
 require 'rake'
-require 'resque-rails'
 
 require 'active_record'
 
