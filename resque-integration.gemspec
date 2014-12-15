@@ -36,5 +36,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec', '~> 2.14'
   gem.add_development_dependency 'simplecov'
   gem.add_development_dependency 'mock_redis'
-  gem.add_development_dependency 'apress-gems', '>= 0.0.4'
+  gem.add_development_dependency 'apress-gems', '>= 0.2.0'
 end
