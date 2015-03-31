@@ -1,33 +1,49 @@
 #!/usr/bin/env ruby
-# coding: utf-8
 
-# Скрипт для мониторинга состояния resque
+require 'optparse'
+require 'redis'
+require 'resque'
+require 'active_support/core_ext/hash/slice'
 
-require 'rubygems'
+options = {}
 
-%w(oj yajl-ruby json gson).each do |library|
-  begin
-    gem(library) and break
-  rescue Gem::LoadError
-    # ignore, go to next adapter
+opt_parser = OptionParser.new do |opt|
+  opt.banner = 'Usage: resque-status [OPTIONS]'
+  opt.separator ''
+  opt.separator 'Resque Status Tool'
+  opt.separator ''
+
+  opt.separator 'Options:'
+
+  opt.on('-k', '--key [KEY]', 'resque info key, default pending') do |value|
+    options[:key] = value
+  end
+
+  opt.on('-h', '--host HOST', 'redis host') do |value|
+    options[:host] = value
+  end
+
+  opt.on('-p', '--port PORT', 'redis port') do |value|
+    options[:port] = value
+  end
+
+  opt.on('-n', '--namespace NAMESPACE', 'redis namespace') do |value|
+    options[:namespace] = value
+  end
+
+  opt.on('--help', 'help') do
+    puts opt_parser
+    exit
   end
 end
 
-require 'resque'
-require 'redis'
-require 'resque/integration/configuration'
+opt_parser.parse!
 
-paths  = File.join(Dir.pwd, 'config', 'resque.yml'),
-         File.join(Dir.pwd, 'config', 'resque.local.yml')
-
-config = Resque::Integration::Configuration.new(*paths)
-redis = config.redis
-
-Resque.redis = Redis.new(redis)
-Resque.redis.namespace = redis[:namespace]
+Resque.redis = Redis.new(options.slice(:host, :port))
+Resque.redis.namespace = options.fetch(:namespace)
 
 info = Resque.info
-key = (ARGV.shift || :pending).to_sym
+key = options.fetch(:key, :pending).to_sym
 
 if info.key?(key)
   puts info[key]
