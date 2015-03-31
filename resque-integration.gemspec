@@ -6,8 +6,8 @@ require 'resque/integration/version'
 Gem::Specification.new do |gem|
   gem.name          = 'resque-integration'
   gem.version       = Resque::Integration::VERSION
-  gem.authors       = ['Alexei Mikhailov']
-  gem.email         = %w(amikhailov83@gmail.com)
+  gem.authors       = ['Alexei Mikhailov', 'Michail Merkushin']
+  gem.email         = %w(amikhailov83@gmail.com merkushin.m.s@gmail.com)
   gem.summary       = %q{Seamless integration of resque with resque-progress and resque-lock}
   gem.homepage      = 'https://github.com/abak-press/resque-integration'
 
@@ -15,6 +15,8 @@ Gem::Specification.new do |gem|
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = %w(lib)
+
+  gem.metadata['allowed_push_host'] = 'https://gems.railsc.ru'
 
   gem.add_runtime_dependency 'resque', '= 1.25.2'
   gem.add_runtime_dependency 'railties', '>= 3.0.0'
@@ -36,5 +38,4 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec', '~> 2.14'
   gem.add_development_dependency 'simplecov'
   gem.add_development_dependency 'mock_redis'
-  gem.add_development_dependency 'apress-gems', '>= 0.2.0'
 end
