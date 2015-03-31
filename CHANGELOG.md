@@ -1,5 +1,10 @@
 
 #### [Current]
+ * 2015-03-31 [d7b17da](../../commit/d7b17da) - __(bibendi)__ Remove gem apress-gems
+ * 2015-03-31 [618418c](../../commit/618418c) - __(bibendi)__ Run resque-status with CLI arguments
+
+#### v1.1.0
+ * 2014-12-15 [10906d6](../../commit/10906d6) - __(bibendi)__ Release 1.1.0
  * 2014-12-15 [0bdc244](../../commit/0bdc244) - __(bibendi)__ update apress-gems to 0.2.0
  * 2014-12-15 [afa473a](../../commit/afa473a) - __(bibendi)__ remove resque-rails
 
