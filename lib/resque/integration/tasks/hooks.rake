@@ -5,6 +5,10 @@ namespace :resque do
   #
   # @see https://github.com/resque/resque/tree/1-x-stable#workers
   task :setup => :environment do
+    # принудительно инициализируем приложение
+    # (rails 3 не делают этого при запуске из rake-задачи)
+    Rails.application.eager_load! if Rails::VERSION::MAJOR < 4
+
     # перенаправление вывода в файл
     Resque::Integration::LogsRotator.redirect_std
     # слушать HUP сигнал для ротации логов
