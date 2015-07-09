@@ -1,5 +1,9 @@
 
 #### [Current]
+ * 2015-07-08 [608be5c](../../commit/608be5c) - __(Simeon Movchan)__ fix: eager_load! application in worker setup
+
+#### v1.1.1
+ * 2015-03-31 [f28a754](../../commit/f28a754) - __(bibendi)__ Release 1.1.1
  * 2015-03-31 [d7b17da](../../commit/d7b17da) - __(bibendi)__ Remove gem apress-gems
  * 2015-03-31 [618418c](../../commit/618418c) - __(bibendi)__ Run resque-status with CLI arguments
 
