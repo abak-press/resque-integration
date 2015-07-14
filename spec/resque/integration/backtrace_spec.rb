@@ -28,15 +28,13 @@ describe Resque::Integration::Backtrace do
       Resque.logger = @origin_logger
     end
 
-    context 'should reraise error and produce output' do
-      it do
-        worker = Resque::Worker.new(:jobs)
-        job = Resque::Job.new(:jobs, 'class' => TestJob, 'args' => '')
-        worker.perform(job)
-        expect(Resque::Failure.all['exception']).to eq 'TestError'
-        expect(Resque::Failure.all['error']).to eq 'FooBar'
-        expect(log.string).to match(/TestError.*FooBar/)
-      end
+    it 'should reraise error and produce output' do
+      worker = Resque::Worker.new(:jobs)
+      job = Resque::Job.new(:jobs, 'class' => TestJob, 'args' => '')
+      worker.perform(job)
+      expect(Resque::Failure.all['exception']).to eq 'TestError'
+      expect(Resque::Failure.all['error']).to eq 'FooBar'
+      expect(log.string).to match(/TestError.*FooBar/)
     end
   end
 end

@@ -35,16 +35,8 @@ module Resque::Integration
     end
 
     initializer 'resque-integration.logger' do
+      Resque.logger = MonoLogger.new(STDOUT)
       Resque.logger.level = Resque.config.log_level
-
-      case Resque.config.verbosity
-      when 1
-        Resque.logger.formatter = Resque::VerboseFormatter.new
-      when 2
-        Resque.logger.formatter = Resque::VeryVerboseFormatter.new
-      else
-        Resque.logger.formatter = Resque::QuietFormatter.new
-      end
     end
 
     # Конфигурирование плагина resque-failed-job-mailer.
