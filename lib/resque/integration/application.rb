@@ -1,6 +1,5 @@
 # coding: utf-8
 require 'resque/integration'
-require 'resque/plugins/meta'
 require 'sinatra/base'
 require 'multi_json'
 
