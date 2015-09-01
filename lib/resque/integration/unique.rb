@@ -5,7 +5,7 @@ require 'digest/sha1'
 require 'active_support/core_ext/module/aliasing'
 
 require 'resque/plugins/lock'
-silence_warnings { require 'resque/plugins/progress' } # suppress Resque::Helpers warn
+require 'resque/plugins/progress'
 
 module Resque
   module Integration
