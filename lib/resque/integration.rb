@@ -3,6 +3,10 @@ require 'resque/integration/version'
 
 require 'resque'
 
+require 'active_support/core_ext/kernel/reporting'
+
+silence_warnings { require 'resque/plugins/meta' }
+
 require 'rails/railtie'
 require 'rake'
 
