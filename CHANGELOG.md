@@ -1,5 +1,10 @@
 
 #### [Current]
+ * 2015-09-01 [ab56d96](../../commit/ab56d96) - __(Igor)__ chore(resque helpers): overriding resque helpers to delete deprecated warning messages
+ * 2015-08-21 [e07a446](../../commit/e07a446) - __(Semyon Pupkov)__ fix: undefined method `silence_warnings'` for main:Object
+
+#### v1.1.2
+ * 2015-07-09 [555f1f8](../../commit/555f1f8) - __(bibendi)__ Release 1.1.2
  * 2015-07-08 [608be5c](../../commit/608be5c) - __(Simeon Movchan)__ fix: eager_load! application in worker setup
 
 #### v1.1.1
