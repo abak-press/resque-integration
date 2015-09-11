@@ -1,5 +1,9 @@
 
 #### [Current]
+ * 2015-09-10 [1daa167](../../commit/1daa167) - __(Michail Merkushin)__ feature: add ordered jobs
+
+#### v1.1.3
+ * 2015-09-01 [29e3085](../../commit/29e3085) - __(Semyon Pupkov)__ Release 1.1.3
  * 2015-09-01 [ab56d96](../../commit/ab56d96) - __(Igor)__ chore(resque helpers): overriding resque helpers to delete deprecated warning messages
  * 2015-08-21 [e07a446](../../commit/e07a446) - __(Semyon Pupkov)__ fix: undefined method `silence_warnings'` for main:Object
 
