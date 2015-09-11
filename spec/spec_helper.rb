@@ -10,3 +10,9 @@ Resque.redis = MockRedis.new
 SimpleCov.start
 
 require 'resque/integration'
+
+RSpec.configure do |config|
+  config.before do
+    Resque.redis.flushdb
+  end
+end

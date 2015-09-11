@@ -51,6 +51,7 @@ module Resque
     autoload :Configuration, 'resque/integration/configuration'
     autoload :Continuous, 'resque/integration/continuous'
     autoload :Unique, 'resque/integration/unique'
+    autoload :Ordered, 'resque/integration/ordered'
     autoload :LogsRotator, 'resque/integration/logs_rotator'
 
     extend ActiveSupport::Concern
@@ -72,7 +73,7 @@ module Resque
       end
 
       # Mark Job as unique and set given +callback+ or +block+ as Unique Arguments procedure
-      def unique(callback=nil, &block)
+      def unique(callback = nil, &block)
         extend Unique
 
         lock_on(&(callback || block))
@@ -103,6 +104,15 @@ module Resque
 
         @retry_limit = options.fetch(:limit, 2)
         @retry_delay = options.fetch(:delay, 60)
+      end
+
+      # Mark Job as ordered
+      def ordered(options = {})
+        unique unless unique?
+        continuous
+        extend Ordered
+
+        self.max_iterations = options.fetch(:max_iterations, 20)
       end
     end
   end # module Integration
