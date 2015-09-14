@@ -11,7 +11,7 @@
 #     unique { |company_id, param1| [company_id] }
 #     ordered max_iterations: 10
 #
-#     def self.execute(company_id, param1)
+#     def self.execute(meta, company_id, param1)
 #       heavy_lifting_work
 #     end
 #   end
@@ -35,19 +35,35 @@ module Resque
         def enqueue_with_ordered(*args)
           meta = enqueue_without_ordered(*args)
 
+          ordered_meta = Resque::Plugins::Meta::Metadata.new('meta_id' => ordered_meta_id(args), 'job_class' => self)
+          ordered_meta.save
+
+          args.unshift(ordered_meta.meta_id)
           encoded_args = Resque.encode(args)
           args_key = ordered_queue_key(meta.meta_id)
+
           Resque.redis.rpush(args_key, encoded_args)
           Resque.redis.expire(args_key, ARGS_EXPIRATION)
 
-          meta
+          ordered_meta
         end
 
         def perform(meta_id, *)
           args_key = ordered_queue_key(meta_id)
           i = 1
           while job_args = Resque.redis.lpop(args_key)
-            execute(*Resque.decode(job_args))
+            job_args = Resque.decode(job_args)
+            ordered_meta = get_meta(job_args.shift)
+            ordered_meta.start!
+
+            begin
+              execute(ordered_meta, *job_args)
+            rescue Exception
+              ordered_meta.fail!
+              raise
+            end
+
+            ordered_meta.finish!
 
             i += 1
             return continue if max_iterations && i > max_iterations
@@ -60,6 +76,10 @@ module Resque
 
         def ordered_queue_key(meta_id)
           "ordered:#{meta_id}"
+        end
+
+        def ordered_meta_id(args)
+          Digest::SHA1.hexdigest([Time.now.to_f, rand, self, args].join)
         end
       end
     end

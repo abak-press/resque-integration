@@ -9,33 +9,43 @@ describe Resque::Integration::Ordered do
   end
 
   it "push args to separate queue" do
-    meta = TestJob.enqueue(1, 10)
-    TestJob.enqueue(1, 20)
+    ordered_meta1 = TestJob.enqueue(1, 10)
+    ordered_meta2 = TestJob.enqueue(1, 20)
 
-    args_key = TestJob.ordered_queue_key(meta.meta_id)
+    meta_id = TestJob.meta_id(1, 10)
+    args_key = TestJob.ordered_queue_key(meta_id)
+
     expect(TestJob).to be_enqueued(1)
-    expect(TestJob.ordered_queue_size(meta.meta_id)).to eq 2
+    expect(TestJob.ordered_queue_size(meta_id)).to eq 2
+
+    job_args = Resque.decode(Resque.redis.lpop(args_key))
+    expect(job_args[0]).to eq ordered_meta1.meta_id
+
+    job_args = Resque.decode(Resque.redis.lpop(args_key))
+    expect(job_args[0]).to eq ordered_meta2.meta_id
   end
 
   it "execute jobs by each args" do
-    meta = TestJob.enqueue(1, 10)
+    TestJob.enqueue(1, 10)
     TestJob.enqueue(1, 20)
 
-    expect(TestJob).to receive(:execute).with(1, 10).ordered
-    expect(TestJob).to receive(:execute).with(1, 20).ordered
+    expect(TestJob).to receive(:execute).with(kind_of(Resque::Plugins::Meta::Metadata), 1, 10).ordered
+    expect(TestJob).to receive(:execute).with(kind_of(Resque::Plugins::Meta::Metadata), 1, 20).ordered
 
-    TestJob.perform(meta.meta_id)
+    meta_id = TestJob.meta_id(1, 10)
+    TestJob.perform(meta_id)
   end
 
   it "reenqueue job after max iterations reached" do
-    meta = TestJob.enqueue(1, 10)
+    TestJob.enqueue(1, 10)
     TestJob.enqueue(1, 20)
     TestJob.enqueue(1, 30)
 
-    expect(TestJob).to receive(:execute).with(1, 10).ordered
-    expect(TestJob).to receive(:execute).with(1, 20).ordered
-    expect(TestJob).to_not receive(:execute).with(1, 30).ordered
+    expect(TestJob).to receive(:execute).with(kind_of(Resque::Plugins::Meta::Metadata), 1, 10).ordered
+    expect(TestJob).to receive(:execute).with(kind_of(Resque::Plugins::Meta::Metadata), 1, 20).ordered
+    expect(TestJob).to_not receive(:execute).with(kind_of(Resque::Plugins::Meta::Metadata), 1, 30).ordered
 
-    TestJob.perform(meta.meta_id)
+    meta_id = TestJob.meta_id(1, 10)
+    TestJob.perform(meta_id)
   end
 end
