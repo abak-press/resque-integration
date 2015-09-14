@@ -1,5 +1,9 @@
 
 #### [Current]
+ * 2015-09-14 [333cf82](../../commit/333cf82) - __(Michail Merkushin)__ feature: independent meta for ordered jobs
+
+#### v1.2.0
+ * 2015-09-11 [bc27294](../../commit/bc27294) - __(Michail Merkushin)__ Release 1.2.0
  * 2015-09-10 [1daa167](../../commit/1daa167) - __(Michail Merkushin)__ feature: add ordered jobs
 
 #### v1.1.3
