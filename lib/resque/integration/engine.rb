@@ -64,5 +64,9 @@ module Resque::Integration
         end
       end
     end
+
+    initializer "resque-integration.extensions" do
+      ::Resque::Worker.send :include, ::Resque::Integration::Extensions::Worker
+    end
   end # class Engine
 end # module Resque::Integration

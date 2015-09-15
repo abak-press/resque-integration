@@ -15,7 +15,6 @@ require 'active_record'
 require 'active_support/concern'
 
 require 'resque/integration/hooks'
-require 'resque/integration/engine'
 
 require 'resque/scheduler'
 require 'resque/scheduler/tasks'
@@ -53,6 +52,7 @@ module Resque
     autoload :Unique, 'resque/integration/unique'
     autoload :Ordered, 'resque/integration/ordered'
     autoload :LogsRotator, 'resque/integration/logs_rotator'
+    autoload :Extensions, 'resque/integration/extensions'
 
     extend ActiveSupport::Concern
 
@@ -117,3 +117,5 @@ module Resque
     end
   end # module Integration
 end # module Resque
+
+require 'resque/integration/engine'

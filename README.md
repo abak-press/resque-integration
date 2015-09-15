@@ -39,7 +39,7 @@ $ rails generate resque:integration:install
 class ResqueJobTest
   include Resque::Integration
 
-  # это название очереди, в которой будет выполняться джою
+  # это название очереди, в которой будет выполняться джоб
   queue :my_queue
 
   # с помощью unique можно указать, что задача является уникальной, и какие аргументы определяют уникальность задачи.
@@ -125,7 +125,9 @@ workers:
     stop_timeout: 5 # максимальное время, отпущенное воркеру для остановки/рестарта
     env: # переменные окружение, специфичные для данного воркера
       RUBY_HEAP_SLOTS_GROWTH_FACTOR: 0.5
-  'companies,images: 2 # совмещённая очередь, приоритет будет у companies
+  'companies,images': 2 # совмещённая очередь, приоритет будет у companies
+  'xls,yml':
+    shuffle: true # совмещённая очередь, приоритета не будет
 
 # конфигурация failure-бэкэндов
 failure:
@@ -225,7 +227,7 @@ Resque.enqueue(ImageProcessingJob, id=2)
 ```ruby
 class ResqueJobTest
   include Resque::Integration
-  
+
   retrys delay: 10, limit: 2
   unique
 end
@@ -240,13 +242,23 @@ workers:
     jobs_per_fork: 10
 ```
 
-## Gem Releasing
+## Resque Ordered
 
-1. должен быть настроен git remote upstream и должны быть права на push
-1. git checkout master
-2. git pull upstream master
-3. правим версию гема в файле VERSION в корне гема. (читаем правила версионирования http://semver.org/)
-4. bundle exec rake release
+Уникальный по каким-то параметрам джоб может выполняться в одно и тоже время только на одном из воркеров
+
+```ruby
+class ResqueJobTest
+  include Resque::Integration
+
+  unique { |company_id, param1| [company_id] }
+  ordered max_iterations: 20 # max_iterations - сколько раз запустится метод `execute` с аргументами в очереди,
+                             # прежде чем джоб перепоставится
+
+  def self.execute(ordered_meta, company_id, param1)
+    heavy_lifting_work
+  end
+end
+```
 
 ## Contributing
 
