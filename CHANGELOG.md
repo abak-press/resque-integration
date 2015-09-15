@@ -1,5 +1,9 @@
 
 #### [Current]
+ * 2015-09-15 [3ca76ed](../../commit/3ca76ed) - __(Michail Merkushin)__ feature: add shuffled queues on worker
+
+#### v1.3.0
+ * 2015-09-14 [f3ac05d](../../commit/f3ac05d) - __(Michail Merkushin)__ Release 1.3.0
  * 2015-09-14 [333cf82](../../commit/333cf82) - __(Michail Merkushin)__ feature: independent meta for ordered jobs
 
 #### v1.2.0
