@@ -110,17 +110,25 @@ describe Resque::Integration::Configuration::Worker do
 
   describe '#env' do
     let :config do
-      described_class::new(:default,
+      described_class.new(:default,
                            :count => 2,
                            :jobs_per_fork => 10,
                            :minutes_per_fork => 5,
+                           :shuffle => true,
                            :env => {:VAR => 2})
     end
+
     subject { config.env }
 
     its([:QUEUE]) { should eq 'default' }
     its([:JOBS_PER_FORK]) { should eq '10' }
     its([:MINUTES_PER_FORK]) { should eq '5' }
+    its([:SHUFFLE]) { should eq '1' }
     its([:VAR]) { should eq '2' }
+
+    context "when shuffle is disabled" do
+      let(:config) { described_class.new(:default, shuffle: false) }
+      its([:SHUFFLE]) { should be_nil }
+    end
   end
 end

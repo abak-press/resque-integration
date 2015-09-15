@@ -36,6 +36,7 @@ module Resque
           env[:QUEUE] ||= queue
           env[:JOBS_PER_FORK] ||= jobs_per_fork if jobs_per_fork
           env[:MINUTES_PER_FORK] ||= minutes_per_fork if minutes_per_fork
+          env[:SHUFFLE] ||= 1 if shuffle
 
           Hash[env.map { |k, v| [k, v.to_s] }]
         end
