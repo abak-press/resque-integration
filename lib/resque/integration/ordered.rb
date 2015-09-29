@@ -66,7 +66,7 @@ module Resque
             ordered_meta.finish!
 
             i += 1
-            return continue if max_iterations && i > max_iterations
+            return continue if max_iterations && i > max_iterations && ordered_queue_size(meta_id) > 0
           end
         end
 
