@@ -1,5 +1,9 @@
 
 #### [Current]
+ * 2015-09-30 [e47aff0](../../commit/e47aff0) - __(Semyon Pupkov)__ feature(progress): add progress bar
+
+#### v1.4.0
+ * 2015-09-15 [58ad5f4](../../commit/58ad5f4) - __(Michail Merkushin)__ Release 1.4.0
  * 2015-09-15 [3ca76ed](../../commit/3ca76ed) - __(Michail Merkushin)__ feature: add shuffled queues on worker
 
 #### v1.3.0
