@@ -12,6 +12,6 @@
   app.config.progressBar = {
     url: #{job_status_path(domain: :current).to_json},
     pid: #{@job_id.to_json},
-    documentLocation: #{@success_url_js || @success_url.to_json},
+    documentLocation: #{@success_url_js.to_json || @success_url.to_json},
     documentLocationError: #{@error_url ? @error_url.to_json : nil.to_json}
   };
