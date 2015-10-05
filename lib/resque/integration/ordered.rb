@@ -16,6 +16,14 @@
 #     end
 #   end
 #
+#   class UniqueTestJob
+#     include Resque::Integration
+#
+#     unique { |company_id, param1| [company_id] }
+#     ordered max_iterations: 10, unique: ->(_company_id, param1) { [param1] }
+#     ...
+#   end
+#
 module Resque
   module Integration
     module Ordered
@@ -25,9 +33,43 @@ module Resque
         base.extend ClassMethods
 
         base.singleton_class.class_eval do
-          attr_accessor :max_iterations
+          attr_accessor :max_iterations, :uniqueness
 
           alias_method_chain :enqueue, :ordered
+        end
+      end
+
+      class Uniqueness
+        def initialize(&block)
+          @unique_block = block
+        end
+
+        def key(meta_id)
+          "ordered:unique:#{meta_id}"
+        end
+
+        def remove(meta_id, args)
+          Resque.redis.hdel(key(meta_id), encoded_unique_args(args))
+        end
+
+        def size(meta_id)
+          Resque.redis.hlen(key(meta_id)).to_i
+        end
+
+        def encoded_unique_args(args)
+          Resque.encode(@unique_block.call(*args))
+        end
+
+        def ordered_meta_id(meta_id, args)
+          Resque.redis.hget(key(meta_id), encoded_unique_args(args))
+        end
+
+        def set(meta_id, args, ordered_meta_id)
+          unique_key = key(meta_id)
+
+          if Resque.redis.hset(unique_key, encoded_unique_args(args), ordered_meta_id)
+            Resque.redis.expire(unique_key, ARGS_EXPIRATION)
+          end
         end
       end
 
@@ -35,9 +77,14 @@ module Resque
         def enqueue_with_ordered(*args)
           meta = enqueue_without_ordered(*args)
 
+          if uniqueness && ordered_meta_id = uniqueness.ordered_meta_id(meta.meta_id, args)
+            return get_meta(ordered_meta_id)
+          end
+
           ordered_meta = Resque::Plugins::Meta::Metadata.new('meta_id' => ordered_meta_id(args), 'job_class' => self)
           ordered_meta.save
 
+          uniqueness.set(meta.meta_id, args, ordered_meta.meta_id) if uniqueness
           args.unshift(ordered_meta.meta_id)
           encoded_args = Resque.encode(args)
           args_key = ordered_queue_key(meta.meta_id)
@@ -61,6 +108,8 @@ module Resque
             rescue Exception
               ordered_meta.fail!
               raise
+            ensure
+              uniqueness.remove(meta_id, job_args) if uniqueness
             end
 
             ordered_meta.finish!
