@@ -1,5 +1,9 @@
 
 #### [Current]
+ * 2015-10-01 [959e494](../../commit/959e494) - __(Denis Korobitcin)__ chore(progress bar view): removed unused variable
+
+#### v1.5.1
+ * 2015-10-05 [5f80ff4](../../commit/5f80ff4) - __(Michail Merkushin)__ Release 1.5.1
  * 2015-09-29 [d26ed6e](../../commit/d26ed6e) - __(Korotaev Danil)__ fix(ordered): remove extra re-enqueues
 
 #### v1.5.0
