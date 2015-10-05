@@ -1,5 +1,9 @@
 
 #### [Current]
+ * 2015-09-29 [d26ed6e](../../commit/d26ed6e) - __(Korotaev Danil)__ fix(ordered): remove extra re-enqueues
+
+#### v1.5.0
+ * 2015-09-30 [effbbe1](../../commit/effbbe1) - __(Semyon Pupkov)__ Release 1.5.0
  * 2015-09-30 [e47aff0](../../commit/e47aff0) - __(Semyon Pupkov)__ feature(progress): add progress bar
 
 #### v1.4.0
