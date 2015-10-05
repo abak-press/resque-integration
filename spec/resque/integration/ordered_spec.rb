@@ -31,21 +31,27 @@ describe Resque::Integration::Ordered do
 
     expect(TestJob).to receive(:execute).with(kind_of(Resque::Plugins::Meta::Metadata), 1, 10).ordered
     expect(TestJob).to receive(:execute).with(kind_of(Resque::Plugins::Meta::Metadata), 1, 20).ordered
+    expect(TestJob).to_not receive(:continue)
 
     meta_id = TestJob.meta_id(1, 10)
     TestJob.perform(meta_id)
+    expect(TestJob.ordered_queue_size(meta_id)).to eq 0
   end
 
   it "reenqueue job after max iterations reached" do
     TestJob.enqueue(1, 10)
     TestJob.enqueue(1, 20)
     TestJob.enqueue(1, 30)
+    TestJob.enqueue(1, 40)
 
     expect(TestJob).to receive(:execute).with(kind_of(Resque::Plugins::Meta::Metadata), 1, 10).ordered
     expect(TestJob).to receive(:execute).with(kind_of(Resque::Plugins::Meta::Metadata), 1, 20).ordered
     expect(TestJob).to_not receive(:execute).with(kind_of(Resque::Plugins::Meta::Metadata), 1, 30).ordered
+    expect(TestJob).to_not receive(:execute).with(kind_of(Resque::Plugins::Meta::Metadata), 1, 40).ordered
+    expect(TestJob).to receive(:continue)
 
     meta_id = TestJob.meta_id(1, 10)
     TestJob.perform(meta_id)
+    expect(TestJob.ordered_queue_size(meta_id)).to eq 2
   end
 end
