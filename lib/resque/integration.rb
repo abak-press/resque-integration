@@ -113,6 +113,7 @@ module Resque
         extend Ordered
 
         self.max_iterations = options.fetch(:max_iterations, 20)
+        self.uniqueness = Ordered::Uniqueness.new(&options[:unique]) if options.key?(:unique)
       end
     end
   end # module Integration

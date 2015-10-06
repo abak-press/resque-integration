@@ -8,6 +8,13 @@ describe Resque::Integration::Ordered do
     ordered max_iterations: 2
   end
 
+  class UniqueTestJob
+    include Resque::Integration
+
+    unique { |company_id, param1| [company_id] }
+    ordered max_iterations: 2, unique: ->(_company_id, param1) { [param1] }
+  end
+
   it "push args to separate queue" do
     ordered_meta1 = TestJob.enqueue(1, 10)
     ordered_meta2 = TestJob.enqueue(1, 20)
@@ -53,5 +60,28 @@ describe Resque::Integration::Ordered do
     meta_id = TestJob.meta_id(1, 10)
     TestJob.perform(meta_id)
     expect(TestJob.ordered_queue_size(meta_id)).to eq 2
+  end
+
+  context 'uniqueness' do
+    it 'perform with unique args only once' do
+      UniqueTestJob.enqueue(1, 10)
+      UniqueTestJob.enqueue(1, 20)
+      UniqueTestJob.enqueue(1, 10)
+
+      expect(UniqueTestJob).to receive(:execute).once.with(kind_of(Resque::Plugins::Meta::Metadata), 1, 10).ordered
+      expect(UniqueTestJob).to receive(:execute).once.with(kind_of(Resque::Plugins::Meta::Metadata), 1, 20).ordered
+      expect(UniqueTestJob).to_not receive(:continue)
+
+      meta_id = UniqueTestJob.meta_id(1, 10)
+      UniqueTestJob.perform(meta_id)
+      expect(UniqueTestJob.ordered_queue_size(meta_id)).to eq 0
+      expect(UniqueTestJob.uniqueness.size(meta_id)).to eq 0
+    end
+
+    it 'enqueue unique jobs with equal meta' do
+      meta = UniqueTestJob.enqueue(1, 10)
+      expect(meta.meta_id).to eq UniqueTestJob.enqueue(1, 10).meta_id
+      expect(meta.meta_id).to_not eq UniqueTestJob.enqueue(1, 20).meta_id
+    end
   end
 end

@@ -260,6 +260,18 @@ class ResqueJobTest
 end
 ```
 
+При необходимости, можно добиться уникальности упорядоченных джобов, указав параметры в опции `unique`
+
+```ruby
+class UniqueOrderedJob
+  include Resque::Integration
+
+  unique { |company_id, param1| [company_id] }
+  ordered max_iterations: 10, unique: ->(_company_id, param1) { [param1] }
+  ...
+end
+```
+
 ## Contributing
 
 1. Fork it ( https://github.com/abak-press/resque-integration/fork )
