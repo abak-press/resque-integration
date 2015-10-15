@@ -26,7 +26,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'resque-progress', '~> 1.0.1'
   gem.add_runtime_dependency 'resque-multi-job-forks', '~> 0.4.2'
   gem.add_runtime_dependency 'resque-failed-job-mailer', '~> 0.0.3'
-  gem.add_runtime_dependency 'resque-scheduler', '~> 3.0'
+  gem.add_runtime_dependency 'resque-scheduler', '~> 4.0'
   gem.add_runtime_dependency 'resque-retry', '~> 1.3'
   gem.add_runtime_dependency 'god', '~> 0.13.4'
 
