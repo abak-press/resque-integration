@@ -9,7 +9,7 @@ God.terminate_timeout = <%= terminate_timeout.to_i %>
   <% worker.count.times do |i| %>
     God.watch do |w|
       w.dir = rails_root
-      w.name = 'resque-<%= worker.queue %>-<%= i %>'
+      w.name = 'resque-<%= worker.name || worker.queue %>-<%= i %>'
       w.group = 'resque'
       w.interval = 30.seconds
       w.env = <%= Resque.config.env.merge(worker.env).merge(:RAILS_ENV => ::Rails.env, :BUNDLE_GEMFILE => "#{root}/Gemfile").stringify_keys! %>
