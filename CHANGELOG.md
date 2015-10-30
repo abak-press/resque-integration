@@ -1,5 +1,11 @@
 
 #### [Current]
+ * 2015-10-26 [cf350d2](../../commit/cf350d2) - __(Denis Korobitcin)__ fix: allow change name for worker in god
+ * 2015-10-15 [6877d7a](../../commit/6877d7a) - __(Korotaev Danil)__ chore: use resque-scheduler 4.0
+ * 2015-10-05 [272ede7](../../commit/272ede7) - __(Korotaev Danil)__ feat: unique args in ordered jobs
+
+#### v1.5.2
+ * 2015-10-05 [cd1b41d](../../commit/cd1b41d) - __(Michail Merkushin)__ Release 1.5.2
  * 2015-10-01 [959e494](../../commit/959e494) - __(Denis Korobitcin)__ chore(progress bar view): removed unused variable
 
 #### v1.5.1
