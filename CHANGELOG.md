@@ -1,5 +1,9 @@
 
 #### [Current]
+ * 2016-02-15 [966f9e8](../../commit/966f9e8) - __(Artem Napolskih)__ feat: resque-status: oldest job work time
+
+#### v1.5.3
+ * 2015-10-30 [1cca357](../../commit/1cca357) - __(Michail Merkushin)__ Release 1.5.3
  * 2015-10-26 [cf350d2](../../commit/cf350d2) - __(Denis Korobitcin)__ fix: allow change name for worker in god
  * 2015-10-15 [6877d7a](../../commit/6877d7a) - __(Korotaev Danil)__ chore: use resque-scheduler 4.0
  * 2015-10-05 [272ede7](../../commit/272ede7) - __(Korotaev Danil)__ feat: unique args in ordered jobs
