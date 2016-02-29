@@ -53,7 +53,7 @@ elsif key == :oldest
   workers = Resque.workers
   jobs = workers.map(&:job)
   worker_jobs = workers.zip(jobs).reject { |w, j| w.idle? || j['queue'].nil? }
-  puts worker_jobs.map { |_, job| (Time.now.utc - DateTime.strptime(job['run_at'] ,'%Y-%m-%dT%H:%M:%S').utc).to_i }.max
+  puts worker_jobs.map { |_, job| (Time.now.utc - DateTime.strptime(job['run_at'] ,'%Y-%m-%dT%H:%M:%S').utc).to_i }.max || 'null'
 else
   $stderr.puts "Unknown key. Should be one of the [#{info.keys.join(', ')}]"
 end
