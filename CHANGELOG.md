@@ -1,5 +1,9 @@
 
 #### [Current]
+ * 2016-02-29 [990f62e](../../commit/990f62e) - __(Artem Napolskih)__ feat: resque-status now return null when no active jobs
+
+#### v1.6.0
+ * 2016-02-16 [d3928bf](../../commit/d3928bf) - __(Artem Napolskih)__ Release 1.6.0
  * 2016-02-15 [966f9e8](../../commit/966f9e8) - __(Artem Napolskih)__ feat: resque-status: oldest job work time
 
 #### v1.5.3
