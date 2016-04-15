@@ -65,6 +65,12 @@ module Resque::Integration
       end
     end
 
+    # Глушим ошибки, по которым происходит автоматический перезапуск
+    initializer 'resque-integration.retrys' do
+      Resque::Failure::MultipleWithRetrySuppression.classes = [Resque::Failure::Redis, Resque::Failure::Notifier]
+      Resque::Failure.backend = Resque::Failure::MultipleWithRetrySuppression
+    end
+
     initializer "resque-integration.extensions" do
       ::Resque::Worker.send :include, ::Resque::Integration::Extensions::Worker
     end
