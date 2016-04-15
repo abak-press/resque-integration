@@ -21,6 +21,9 @@ require 'resque/scheduler/tasks'
 
 require 'resque-retry'
 
+require 'resque/failure'
+require 'resque/failure/redis'
+
 require 'active_support/core_ext/module/attribute_accessors'
 
 module Resque
@@ -104,6 +107,9 @@ module Resque
 
         @retry_limit = options.fetch(:limit, 2)
         @retry_delay = options.fetch(:delay, 60)
+
+        Resque::Failure::MultipleWithRetrySuppression.classes = [Resque::Failure::Redis, Resque::Failure::Notifier]
+        Resque::Failure.backend = Resque::Failure::MultipleWithRetrySuppression
       end
 
       # Mark Job as ordered
