@@ -21,9 +21,6 @@ require 'resque/scheduler/tasks'
 
 require 'resque-retry'
 
-require 'resque/failure'
-require 'resque/failure/redis'
-
 require 'active_support/core_ext/module/attribute_accessors'
 
 module Resque
