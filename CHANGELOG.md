@@ -1,5 +1,10 @@
 
 #### [Current]
+ * 2016-04-26 [0f598e2](../../commit/0f598e2) - __(Mikhail Nelaev)__ fix: установит правильный бэкэнд, если notifier не включен
+ * 2016-04-15 [e254f48](../../commit/e254f48) - __(Mikhail Nelaev)__ feature: подавление ошибок resque-retry
+
+#### v1.6.1
+ * 2016-03-03 [745a3a7](../../commit/745a3a7) - __(Artem Napolskih)__ Release 1.6.1
  * 2016-02-29 [990f62e](../../commit/990f62e) - __(Artem Napolskih)__ feat: resque-status now return null when no active jobs
 
 #### v1.6.0
