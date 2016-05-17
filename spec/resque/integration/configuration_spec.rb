@@ -41,6 +41,18 @@ describe Resque::Integration::Configuration do
       it { expect(config.resque_scheduler?).to be_false }
     end
   end
+
+  describe '#run_at_exit_hooks?' do
+    context 'when default' do
+      it { expect(config.resque_scheduler?).to be_true }
+    end
+
+    context 'when defined' do
+      let(:config_yaml) { {'resque' => {'run_at_exit_hooks' => 'no'}} }
+
+      it { expect(config.run_at_exit_hooks?).to be_false }
+    end
+  end
 end
 
 describe Resque::Integration::Configuration::Notifier do

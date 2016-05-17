@@ -106,6 +106,17 @@ module Resque
         @notifier ||= Notifier.new(self['failure.notifier'])
       end
 
+      # Returns flag for cleaning on shutdown see https://github.com/resque/resque/issues/1167
+      def run_at_exit_hooks?
+        value = self['resque.run_at_exit_hooks']
+
+        if value.is_a?(String) && %w(n no false off disabled).include?(value)
+          value = false
+        end
+
+        value.nil? ? true : value
+      end
+
       # Returns Resque polling interval
       def interval
         (self['resque.interval'] || 5).to_i

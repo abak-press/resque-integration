@@ -43,5 +43,9 @@ namespace :resque do
     if Resque.config.resque_scheduler? && Resque.config.schedule_exists?
       Resque.schedule = YAML.load_file(Resque.config.schedule_file)
     end
+
+    if Resque.config.run_at_exit_hooks? && ENV['RUN_AT_EXIT_HOOKS'].nil?
+      ENV['RUN_AT_EXIT_HOOKS'] = '1'
+    end
   end
 end
