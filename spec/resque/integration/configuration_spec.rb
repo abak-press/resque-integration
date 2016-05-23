@@ -6,6 +6,7 @@ describe Resque::Integration::Configuration do
   let(:config) do
     File.stub(:exists? => true)
     File.stub(:read)
+    ERB.stub_chain(:new, :result)
     YAML.stub(:load => config_yaml)
     described_class.new('path/to/config.yml')
   end

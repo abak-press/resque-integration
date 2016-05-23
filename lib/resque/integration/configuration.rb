@@ -204,7 +204,9 @@ module Resque
       private
       def load(path)
         if File.exists?(path)
-          config = YAML.load(File.read(path))
+          input = File.read(path)
+          input = ERB.new(input).result if defined?(ERB)
+          config = YAML.load(input)
 
           @configuration.merge!(config)
         end
