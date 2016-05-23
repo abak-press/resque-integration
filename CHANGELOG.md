@@ -1,5 +1,9 @@
 
 #### [Current]
+ * 2016-05-17 [d262d6e](../../commit/d262d6e) - __(Dmitry Bochkarev)__ fix: запуск GC при завершении работы воркеров
+
+#### v1.7.0
+ * 2016-05-06 [0a3bd6a](../../commit/0a3bd6a) - __(Michail Merkushin)__ Release 1.7.0
  * 2016-04-26 [0f598e2](../../commit/0f598e2) - __(Mikhail Nelaev)__ fix: установит правильный бэкэнд, если notifier не включен
  * 2016-04-15 [e254f48](../../commit/e254f48) - __(Mikhail Nelaev)__ feature: подавление ошибок resque-retry
 
