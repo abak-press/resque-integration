@@ -23,16 +23,14 @@ namespace :resque do
 
     Resque.before_fork do
       Resque.redis.client.disconnect
+
+      ActiveRecord::Base.connection_handler.clear_all_connections!
     end
 
     Resque.after_fork do |job|
       $0 = "resque-#{Resque::Version}: Processing #{job.queue}/#{job.payload['class']} since #{Time.now.to_s(:db)}"
 
-      if ActiveRecord::VERSION::MAJOR >= 4
-         ActiveRecord::Base.clear_active_connections!
-      else
-         ActiveRecord::Base.verify_active_connections!
-      end
+      ActiveRecord::Base.establish_connection
 
       Resque.redis.client.connect
     end
