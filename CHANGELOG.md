@@ -1,5 +1,10 @@
 
 #### [Current]
+ * 2016-06-07 [2bc67b8](../../commit/2bc67b8) - __(Mikhail Nelaev)__ fix: disconnect before forking
+ * 2016-05-20 [faa3bed](../../commit/faa3bed) - __(Evgeny Esaulkov)__ feat: allow erb syntax in conf file
+
+#### v1.8.0
+ * 2016-05-23 [410dee3](../../commit/410dee3) - __(Simeon Movchan)__ Release 1.8.0
  * 2016-05-17 [d262d6e](../../commit/d262d6e) - __(Dmitry Bochkarev)__ fix: запуск GC при завершении работы воркеров
 
 #### v1.7.0
