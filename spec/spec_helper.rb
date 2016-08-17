@@ -5,6 +5,7 @@ require 'rspec'
 require 'resque'
 require 'simplecov'
 require 'mock_redis'
+require 'timecop'
 
 Resque.redis = MockRedis.new
 
