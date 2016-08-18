@@ -1,0 +1,8 @@
+defaults:
+  max_age: 10
+  max_size: 10
+
+queues:
+  first:
+    max_age: 20
+    max_size: 100

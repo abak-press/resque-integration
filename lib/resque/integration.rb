@@ -11,6 +11,7 @@ require 'rails/railtie'
 require 'rake'
 
 require 'active_record'
+require 'action_pack'
 
 require 'active_support/concern'
 
@@ -29,6 +30,14 @@ module Resque
 
   # Resque.config is available now
   mattr_accessor :config
+
+  def queues_info
+    return @queues_info if defined?(@queues_info)
+
+    queues_info_config = Rails.root.join('config', 'resque_queues.yml')
+
+    @queues_info = Resque::Integration::QueuesInfo.new(config: queues_info_config)
+  end
 
   # Seamless resque integration with all necessary plugins
   # You should define an +execute+ method (not +perform+)
@@ -52,6 +61,7 @@ module Resque
     autoload :Unique, 'resque/integration/unique'
     autoload :Ordered, 'resque/integration/ordered'
     autoload :LogsRotator, 'resque/integration/logs_rotator'
+    autoload :QueuesInfo, 'resque/integration/queues_info'
     autoload :Extensions, 'resque/integration/extensions'
 
     extend ActiveSupport::Concern
