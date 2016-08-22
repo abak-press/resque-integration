@@ -183,4 +183,40 @@ describe Resque::Integration::QueuesInfo do
       end
     end
   end
+
+  describe '#age_threshold' do
+    context 'when queue defined in config' do
+      let(:queue_name) { 'first' }
+
+      it 'returns threshold for age' do
+        expect(queue_info.age_threshold(queue_name)).to eq 20
+      end
+    end
+
+    context 'when queue not defined in config' do
+      let(:queue_name) { 'second' }
+
+      it 'returns default threshold' do
+        expect(queue_info.age_threshold(queue_name)).to eq 10
+      end
+    end
+  end
+
+  describe '#size_threshold' do
+    context 'when queue defined in config' do
+      let(:queue_name) { 'first' }
+
+      it 'returns threshold for size' do
+        expect(queue_info.size_threshold(queue_name)).to eq 100
+      end
+    end
+
+    context 'when queue not defined in config' do
+      let(:queue_name) { 'second' }
+
+      it 'returns default threshold' do
+        expect(queue_info.size_threshold(queue_name)).to eq 10
+      end
+    end
+  end
 end
