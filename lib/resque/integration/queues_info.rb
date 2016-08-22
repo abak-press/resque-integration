@@ -20,9 +20,7 @@ module Resque
 
         return 0 if job.nil? || max_time.nil?
 
-        threshold = (@queues[job['queue']] || @defaults)['max_age']
-
-        max_time >= threshold ? max_time : 0
+        max_time >= age_threshold(job['queue']) ? max_time : 0
       end
 
       def size_for_queue(queue = nil)
@@ -34,17 +32,21 @@ module Resque
           [queue, Resque.size(queue).to_i]
         end.max_by(&:last)
 
-        thresholds = (@queues[queue] || @defaults)['max_size']
+        size >= size_threshold(queue) ? size : 0
+      end
 
-        size >= thresholds ? size : 0
+      def size_threshold(queue)
+        (@queues[queue] || @defaults)['max_size']
+      end
+
+      def age_threshold(queue)
+        (@queues[queue] || @defaults)['max_age']
       end
 
       def data
         @data ||= @queues.map do |k, v|
           {
-            "{#QUEUE}" => k,
-            "{#THRESHOLD_AGE}" => v.fetch('max_age'),
-            "{#THRESHOLD_SIZE}" => v.fetch('max_size')
+            "{#QUEUE}" => k
           }
         end
       end
@@ -81,6 +83,8 @@ module Resque
           v = config.delete(key)
 
           key.split(',').each do |queue|
+            queue.chomp!
+            queue.strip!
             config[queue] = v
           end
         end

@@ -9,6 +9,10 @@ module Resque
             age(params['queue'])
           when 'size'
             size(params['queue'])
+          when 'size_threshold'
+            Resque.queues_info.size_threshold(params.fetch('queue'))
+          when 'age_threshold'
+            Resque.queues_info.age_threshold(params.fetch('queue'))
           else
             0
           end.to_s
