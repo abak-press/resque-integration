@@ -189,7 +189,7 @@ describe Resque::Integration::QueuesInfo do
       let(:queue_name) { 'first' }
 
       it 'returns threshold for age' do
-        expect(queue_info.age_threshold(queue_name)).to eq 20
+        expect(queue_info.threshold_age(queue_name)).to eq 20
       end
     end
 
@@ -197,7 +197,7 @@ describe Resque::Integration::QueuesInfo do
       let(:queue_name) { 'second' }
 
       it 'returns default threshold' do
-        expect(queue_info.age_threshold(queue_name)).to eq 10
+        expect(queue_info.threshold_age(queue_name)).to eq 10
       end
     end
   end
@@ -207,7 +207,7 @@ describe Resque::Integration::QueuesInfo do
       let(:queue_name) { 'first' }
 
       it 'returns threshold for size' do
-        expect(queue_info.size_threshold(queue_name)).to eq 100
+        expect(queue_info.threshold_size(queue_name)).to eq 100
       end
     end
 
@@ -215,7 +215,7 @@ describe Resque::Integration::QueuesInfo do
       let(:queue_name) { 'second' }
 
       it 'returns default threshold' do
-        expect(queue_info.size_threshold(queue_name)).to eq 10
+        expect(queue_info.threshold_size(queue_name)).to eq 10
       end
     end
   end

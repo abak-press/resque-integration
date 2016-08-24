@@ -20,7 +20,7 @@ module Resque
 
         return 0 if job.nil? || max_time.nil?
 
-        max_time >= age_threshold(job['queue']) ? max_time : 0
+        max_time >= threshold_age(job['queue']) ? max_time : 0
       end
 
       def size_for_queue(queue = nil)
@@ -32,14 +32,14 @@ module Resque
           [queue, Resque.size(queue).to_i]
         end.max_by(&:last)
 
-        size >= size_threshold(queue) ? size : 0
+        size >= threshold_size(queue) ? size : 0
       end
 
-      def size_threshold(queue)
+      def threshold_size(queue)
         (@queues[queue] || @defaults)['max_size']
       end
 
-      def age_threshold(queue)
+      def threshold_age(queue)
         (@queues[queue] || @defaults)['max_age']
       end
 
