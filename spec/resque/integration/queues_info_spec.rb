@@ -74,7 +74,7 @@ describe Resque::Integration::QueuesInfo do
         let(:workers) do
           [
             double(job: {'run_at' => 100.seconds.ago.utc.iso8601, 'queue' => 'first'}, 'idle?' => false),
-            double(job: {'run_at' => 20.seconds.ago.utc.iso8601, 'queue' => 'first'}, 'idle?' => false)
+            double(job: {'run_at' => 20.seconds.ago.utc.iso8601, 'queue' => 'second'}, 'idle?' => false)
           ]
         end
 
@@ -87,7 +87,7 @@ describe Resque::Integration::QueuesInfo do
         let(:workers) do
           [
             double(job: {'run_at' => 4.seconds.ago.utc.iso8601, 'queue' => 'first'}, 'idle?' => false),
-            double(job: {'run_at' => 2.seconds.ago.utc.iso8601, 'queue' => 'first'}, 'idle?' => false)
+            double(job: {'run_at' => 2.seconds.ago.utc.iso8601, 'queue' => 'second'}, 'idle?' => false)
           ]
         end
 
@@ -103,6 +103,31 @@ describe Resque::Integration::QueuesInfo do
 
         it 'checks time of job with defaults thresholds' do
           expect(queue_info.age_overall).to eq 11
+        end
+      end
+
+      context "when one job have problem and other with older age doesn't" do
+        let(:workers) do
+          [
+            double(job: {'run_at' => 16.seconds.ago.utc.iso8601, 'queue' => 'first'}, 'idle?' => false),
+            double(job: {'run_at' => 14.seconds.ago.utc.iso8601, 'queue' => 'second'}, 'idle?' => false)
+          ]
+        end
+
+        it 'returns size for queue with problem' do
+          expect(queue_info.age_overall).to eq 14
+        end
+      end
+
+      context 'when there is no job running' do
+        let(:workers) do
+          [
+            double(job: nil, 'idle?' => true)
+          ]
+        end
+
+        it 'returns 0' do
+          expect(queue_info.age_overall).to eq 0
         end
       end
     end
@@ -150,16 +175,16 @@ describe Resque::Integration::QueuesInfo do
         let(:size_first) { 100 }
         let(:size_second) { nil }
 
-        it 'returns time for job ' do
+        it 'returns size for queue with problem' do
           expect(queue_info.size_overall).to eq 100
         end
       end
 
-      context 'when there is a several old jobs' do
+      context 'when there is a several problem queues' do
         let(:size_first) { 1000 }
         let(:size_second) { 200 }
 
-        it 'returns time for the lagrest queue ' do
+        it 'returns size for the lagrest queue ' do
           expect(queue_info.size_overall).to eq 1000
         end
       end
@@ -177,8 +202,17 @@ describe Resque::Integration::QueuesInfo do
         let(:size_first) { nil }
         let(:size_second) { 11 }
 
-        it 'checks time of job with defaults thresholds' do
+        it 'checks size of queue with defaults thresholds' do
           expect(queue_info.size_overall).to eq 11
+        end
+      end
+
+      context "when one queue have problem and other with bigger size doesn't" do
+        let(:size_first) { 30 }
+        let(:size_second) { 20 }
+
+        it 'returns size for queue with problem' do
+          expect(queue_info.size_overall).to eq 20
         end
       end
     end
