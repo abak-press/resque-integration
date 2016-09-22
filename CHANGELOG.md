@@ -1,5 +1,12 @@
 
 #### [Current]
+ * 2016-09-22 [eb438e4](../../commit/eb438e4) - __(Denis Korobicyn)__ fix: false overall metric + refactoring
+ * 2016-08-24 [dfaf158](../../commit/dfaf158) - __(Denis Korobicyn)__ fix: rename threshold methods
+ * 2016-08-22 [e740ba0](../../commit/e740ba0) - __(Denis Korobicyn)__ fix: return threshold in status for zabbix
+ * 2016-08-17 [029459f](../../commit/029459f) - __(Denis Korobicyn)__ feature: status for each queue for zabbtix
+
+#### v1.9.0
+ * 2016-06-14 [4d46356](../../commit/4d46356) - __(Simeon Movchan)__ Release 1.9.0
  * 2016-06-07 [2bc67b8](../../commit/2bc67b8) - __(Mikhail Nelaev)__ fix: disconnect before forking
  * 2016-05-20 [faa3bed](../../commit/faa3bed) - __(Evgeny Esaulkov)__ feat: allow erb syntax in conf file
 
