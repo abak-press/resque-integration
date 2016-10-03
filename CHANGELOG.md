@@ -1,5 +1,9 @@
 
 #### [Current]
+ * 2016-10-02 [bc14ed7](../../commit/bc14ed7) - __(Denis Erofeev)__ feature: allow erb syntax in schedule file
+
+#### v1.10.0
+ * 2016-09-22 [d178ecf](../../commit/d178ecf) - __(Denis Korobicyn)__ Release 1.10.0
  * 2016-09-22 [eb438e4](../../commit/eb438e4) - __(Denis Korobicyn)__ fix: false overall metric + refactoring
  * 2016-08-24 [dfaf158](../../commit/dfaf158) - __(Denis Korobicyn)__ fix: rename threshold methods
  * 2016-08-22 [e740ba0](../../commit/e740ba0) - __(Denis Korobicyn)__ fix: return threshold in status for zabbix
