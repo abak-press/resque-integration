@@ -1,4 +1,5 @@
 # coding: utf-8
+require 'erb'
 
 namespace :resque do
   # Здесь мы добавляем некоторые необходимые для корректной работы "хуки".
@@ -39,7 +40,8 @@ namespace :resque do
     require 'resque-multi-job-forks' if ENV['JOBS_PER_FORK'] || ENV['MINUTES_PER_FORK']
 
     if Resque.config.resque_scheduler? && Resque.config.schedule_exists?
-      Resque.schedule = YAML.load_file(Resque.config.schedule_file)
+      config = ERB.new(File.read(Resque.config.schedule_file)).result
+      Resque.schedule = YAML.load(config)
     end
 
     if Resque.config.run_at_exit_hooks? && ENV['RUN_AT_EXIT_HOOKS'].nil?
