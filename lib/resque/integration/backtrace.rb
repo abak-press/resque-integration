@@ -7,7 +7,7 @@ module Resque
       def around_perform_backtrace(*)
         yield
       rescue => ex
-        $stderr.puts(_format_exception(ex))
+        Resque::Logging.error _format_exception(ex)
 
         raise
       end
@@ -16,8 +16,7 @@ module Resque
       def _format_exception(exception)
         bt = exception.backtrace.dup
 
-        "%s %s: %s (%s)\n%s" % [
-          Time.now.to_s,
+        "%s: %s (%s)\n%s" % [
           bt.shift,
           exception.message,
           exception.class.to_s,
