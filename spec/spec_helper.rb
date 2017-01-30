@@ -1,6 +1,5 @@
 # coding: utf-8
 require 'bundler/setup'
-require 'pry-debugger'
 require 'rspec'
 require 'resque'
 require 'simplecov'
