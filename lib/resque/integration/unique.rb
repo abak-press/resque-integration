@@ -4,6 +4,7 @@ require 'digest/sha1'
 
 require 'active_support/core_ext/module/aliasing'
 
+require 'resque/plugins/lock'
 require 'resque/plugins/progress'
 
 module Resque
@@ -28,6 +29,7 @@ module Resque
 
       def self.extended(base)
         base.extend(Resque::Plugins::Progress)
+        base.extend(Resque::Plugins::Lock)
         base.extend(ClassMethods)
         base.singleton_class.class_eval do
           alias_method_chain :enqueue, :check
@@ -121,35 +123,8 @@ module Resque
           end
         end
 
-        def lock_timeout(*args)
+        def lock_timeout
           3.days
-        end
-
-        def before_enqueue_lock(*args)
-          now = Time.now.to_i
-          lock_key = lock(*args)
-          lock_until = now + lock_timeout(*args[1, args.size])
-
-          # return true if we successfully acquired the lock
-          return true if Resque.redis.setnx(lock_key, lock_until)
-
-          # see if the existing timeout is still valid and return false if it is
-          # (we cannot acquire the lock during the timeout period)
-          return false if now <= Resque.redis.get(lock_key).to_i
-
-          # otherwise set the timeout and ensure that no other worker has
-          # acquired the lock
-          now > Resque.redis.getset(lock_key, lock_until).to_i
-        end
-
-        def around_perform_lock(*args)
-          begin
-            yield
-          ensure
-            # Always clear the lock when we're done, even if there is an
-            # error.
-            Resque.redis.del(lock(*args))
-          end
         end
 
         # Returns true if resque job is in locked state

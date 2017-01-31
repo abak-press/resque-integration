@@ -22,6 +22,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'railties', '>= 3.0.0'
   gem.add_runtime_dependency 'activerecord', '>= 3.0.0'
   gem.add_runtime_dependency 'actionpack', '>= 3.0.0'
+  gem.add_runtime_dependency 'resque-lock', '~> 1.1.0'
   gem.add_runtime_dependency 'resque-meta', '>= 2.0.0'
   gem.add_runtime_dependency 'resque-progress', '~> 1.0.1'
   gem.add_runtime_dependency 'resque-multi-job-forks', '~> 0.4.2'

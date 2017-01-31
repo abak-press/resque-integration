@@ -47,38 +47,14 @@ RSpec.describe Resque::Integration do
           expect(Resque.peek(:test, 0, 100).size).to eq(2)
         end
       end
-    end
 
-    context 'when job set lock_timeout' do
-      class UniqueWithLockTimeoutJob
-        include Resque::Integration
+      it 'enqueues two jobs after expire lock timeout' do
+        UniqueJob.enqueue(param: 'one')
 
-        queue :test_with_lock
-        unique
+        Timecop.travel(4.days.since) do
+          UniqueJob.enqueue(param: 'one')
 
-        def self.lock_timeout(_id, params)
-          if params[:param] == 'one'
-            super
-          else
-            1.hour
-          end
-        end
-      end
-
-      it 'enqueues only one job' do
-        UniqueWithLockTimeoutJob.enqueue(1, param: 'one')
-        UniqueWithLockTimeoutJob.enqueue(1, param: 'two')
-
-        expect(Resque.peek(:test_with_lock, 0, 100).size).to eq(2)
-
-        Timecop.travel(1.hour.since + 1) do
-          UniqueWithLockTimeoutJob.enqueue(1, param: 'one')
-
-          expect(Resque.peek(:test_with_lock, 0, 100).size).to eq(2)
-
-          UniqueWithLockTimeoutJob.enqueue(1, param: 'two')
-
-          expect(Resque.peek(:test_with_lock, 0, 100).size).to eq(3)
+          expect(Resque.peek(:test, 0, 100).size).to eq(2)
         end
       end
     end
