@@ -135,12 +135,10 @@ module Resque
 
           # see if the existing timeout is still valid and return false if it is
           # (we cannot acquire the lock during the timeout period)
-
           return false if now <= Resque.redis.get(lock_key).to_i
 
           # otherwise set the timeout and ensure that no other worker has
           # acquired the lock
-
           now > Resque.redis.getset(lock_key, lock_until).to_i
         end
 
