@@ -123,6 +123,10 @@ module Resque
           end
         end
 
+        def lock_timeout
+          3.days
+        end
+
         # Returns true if resque job is in locked state
         def locked?(*args)
           key = lock(nil, *args)
