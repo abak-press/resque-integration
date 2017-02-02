@@ -3,6 +3,7 @@
 require 'digest/sha1'
 
 require 'active_support/core_ext/module/aliasing'
+require 'active_support/core_ext/hash'
 
 require 'resque/plugins/lock'
 require 'resque/plugins/progress'
@@ -66,6 +67,8 @@ module Resque
         # LockID should be independent from MetaID
         # @api private
         def lock(meta_id, *args)
+          args = [*args[0..-2], args.last.with_indifferent_access] if args.last.is_a?(Hash)
+
           "lock:#{name}-#{Digest::SHA1.hexdigest(obj_to_string(lock_on[*args]))}"
         end
 
