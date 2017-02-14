@@ -9,10 +9,14 @@ module Resque
             age(params['queue'])
           when 'size'
             size(params['queue'])
+          when 'failures_count'
+            Resque.queues_info.failures_count_for_queue(params['queue'])
           when 'threshold_size'
             Resque.queues_info.threshold_size(params.fetch('queue'))
           when 'threshold_age'
             Resque.queues_info.threshold_age(params.fetch('queue'))
+          when /^threshold_failures_per_(?<period>\w+)$/
+            Resque.queues_info.threshold_failures_count(params.fetch('queue'), $LAST_MATCH_INFO['period'])
           else
             0
           end.to_s

@@ -218,7 +218,7 @@ describe Resque::Integration::QueuesInfo do
     end
   end
 
-  describe '#age_threshold' do
+  describe '#threshold_age' do
     context 'when queue defined in config' do
       let(:queue_name) { 'first' }
 
@@ -236,7 +236,7 @@ describe Resque::Integration::QueuesInfo do
     end
   end
 
-  describe '#size_threshold' do
+  describe '#threshold_size' do
     context 'when queue defined in config' do
       let(:queue_name) { 'first' }
 
@@ -251,6 +251,53 @@ describe Resque::Integration::QueuesInfo do
       it 'returns default threshold' do
         expect(queue_info.threshold_size(queue_name)).to eq 10
       end
+    end
+  end
+
+  describe '#threshold_failures_count' do
+    context 'when queue is defined in config' do
+      let(:queue_name) { 'first' }
+
+      it 'returns failures count threshold for specified queue and time period' do
+        expect(queue_info.threshold_failures_count(queue_name, '5m')).to eq 15
+        expect(queue_info.threshold_failures_count(queue_name, '1h')).to eq 90
+      end
+    end
+
+    context 'when queue is not defined in config' do
+      let(:queue_name) { 'second' }
+
+      it 'returns default failures count threshold for specified time period' do
+        expect(queue_info.threshold_failures_count(queue_name, '5m')).to eq 5
+        expect(queue_info.threshold_failures_count(queue_name, '1h')).to eq 60
+      end
+    end
+  end
+
+  describe '#failures_count_for_queue' do
+    before do
+      allow(Resque::Integration::FailureBackends::QueuesTotals).to receive(:count).with('first').and_return(14)
+    end
+
+    it 'returns total failures count for specified queue' do
+      expect(queue_info.failures_count_for_queue('first')).to eq 14
+    end
+  end
+
+  describe 'configuration merging' do
+    let(:first_queue_name) { 'first' }
+    let(:third_queue_name) { 'third' }
+
+    it 'merges configs for queue in order of appearance' do
+      expect(queue_info.threshold_age(first_queue_name)).to eq 20
+      expect(queue_info.threshold_size(first_queue_name)).to eq 100
+      expect(queue_info.threshold_failures_count(first_queue_name, '5m')).to eq 15
+      expect(queue_info.threshold_failures_count(first_queue_name, '1h')).to eq 90
+
+      expect(queue_info.threshold_age(third_queue_name)).to eq 30
+      expect(queue_info.threshold_size(third_queue_name)).to eq 100
+      expect(queue_info.threshold_failures_count(third_queue_name, '5m')).to eq 15
+      expect(queue_info.threshold_failures_count(third_queue_name, '1h')).to eq 70
     end
   end
 end
