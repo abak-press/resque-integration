@@ -16,6 +16,10 @@ module Resque
           threshold(queue, 'max_size')
         end
 
+        def channel(queue)
+          Array.wrap((@queues[queue] || @defaults)['channel']).join(' ')
+        end
+
         def data
           @data ||= @queues.map do |k, v|
             {

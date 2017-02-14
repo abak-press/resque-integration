@@ -1,8 +1,13 @@
 defaults:
   max_age: 10
   max_size: 10
+  channel: default
 
 queues:
   first:
     max_age: 20
     max_size: 100
+    channel: first
+
+  second_queue:
+    channel: [first, second]

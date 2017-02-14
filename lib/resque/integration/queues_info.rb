@@ -35,6 +35,10 @@ module Resque
         @config.max_age(queue)
       end
 
+      def channel(queue)
+        @config.channel(queue)
+      end
+
       def data
         @config.data
       end
