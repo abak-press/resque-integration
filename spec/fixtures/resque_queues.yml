@@ -1,8 +1,20 @@
 defaults:
   max_age: 10
   max_size: 10
+  max_failures_count_per_5m: 5
+  max_failures_count_per_1h: 60
 
 queues:
-  first:
+  ?
+  >
+    first,
+    third
+  :
     max_age: 20
     max_size: 100
+    max_failures_count_per_5m: 15
+    max_failures_count_per_1h: 90
+
+  third:
+    max_age: 30
+    max_failures_count_per_1h: 70

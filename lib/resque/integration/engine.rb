@@ -70,7 +70,10 @@ module Resque::Integration
       require 'resque/failure'
       require 'resque/failure/redis'
 
-      Resque::Failure::MultipleWithRetrySuppression.classes = [Resque::Failure::Redis]
+      Resque::Failure::MultipleWithRetrySuppression.classes = [
+        Resque::Failure::Redis,
+        Resque::Integration::FailureBackends::QueuesTotals
+      ]
 
       if Resque.config.failure_notifier.enabled?
         require 'resque_failed_job_mailer'
