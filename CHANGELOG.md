@@ -1,5 +1,12 @@
 
 #### [Current]
+ * 2017-02-15 [bbe54c4](../../commit/bbe54c4) - __(Semyon Pupkov)__ Release 1.12.0
+ * 2017-02-01 [f01356c](../../commit/f01356c) - __(Semyon Pupkov)__ fix: job not unlock if unique definded with block and hash
+ * 2017-02-01 [a87da05](../../commit/a87da05) - __(Semyon Pupkov)__ feature: increase lock timeout for unique jobs (#92)
+ * 2017-01-30 [c4961e0](../../commit/c4961e0) - __(Semyon Pupkov)__ chore: add docker
+
+#### v1.11.0
+ * 2016-10-03 [18aad28](../../commit/18aad28) - __(Dmitry Bochkarev)__ Release 1.11.0
  * 2016-10-02 [bc14ed7](../../commit/bc14ed7) - __(Denis Erofeev)__ feature: allow erb syntax in schedule file
 
 #### v1.10.0
