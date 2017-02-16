@@ -13,6 +13,8 @@ module Resque
             Resque.queues_info.threshold_size(params.fetch('queue'))
           when 'threshold_age'
             Resque.queues_info.threshold_age(params.fetch('queue'))
+          when 'channel'
+            Resque.queues_info.channel(params.fetch('queue'))
           else
             0
           end.to_s
