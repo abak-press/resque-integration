@@ -50,9 +50,25 @@ module Resque
 
         # Метод вызывает resque-retry когда ставить отложенное задание
         # здесь мы убираем meta_id из аргументов
-        def retry_args(*args)
-          args.shift
+        def retry_args(meta_id, *args)
           args
+        end
+
+        # Метод вызывает resque-retry, когда записывает/читает число перезапусков
+        #  - во время работы воркера первым аргументом передается meta_id;
+        #  - во время чтения из вебинтерфейса, meta_id не передается, т.к. она выкидывается во время перепостановки
+        #  джоба(см retry_args);
+        #  - если метод вызывается в пользовательском коде(и @meta_id отсутствует), то meta_id нельзя передавать.
+        def retry_identifier(*args)
+          if args.size > 0 && @meta_id.is_a?(String) && @meta_id.length > 0 && @meta_id == args.first
+            args.shift
+          end
+
+          return if args.empty?
+
+          args = [*args[0..-2], args.last.with_indifferent_access] if args.last.is_a?(Hash)
+
+          Digest::SHA1.hexdigest(obj_to_string(lock_on[*args]))
         end
 
         # Get or set proc returning unique arguments
