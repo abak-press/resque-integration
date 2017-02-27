@@ -17,6 +17,8 @@ module Resque
             Resque.queues_info.threshold_age(params.fetch('queue'))
           when /^threshold_failures_per_(?<period>\w+)$/
             Resque.queues_info.threshold_failures_count(params.fetch('queue'), $LAST_MATCH_INFO['period'])
+          when 'channel'
+            Resque.queues_info.channel(params.fetch('queue'))
           else
             0
           end.to_s

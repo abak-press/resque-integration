@@ -43,6 +43,10 @@ module Resque
         @config.max_failures_count(queue, period)
       end
 
+      def channel(queue)
+        @config.channel(queue)
+      end
+
       def data
         @config.data
       end

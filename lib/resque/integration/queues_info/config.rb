@@ -22,6 +22,10 @@ module Resque
           threshold(queue, "max_failures_count_per_#{period}")
         end
 
+        def channel(queue)
+          Array.wrap((@queues[queue] || @defaults)['channel']).join(' ')
+        end
+
         def data
           @data ||= @queues.map do |k, v|
             {
