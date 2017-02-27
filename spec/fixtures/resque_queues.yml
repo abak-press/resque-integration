@@ -3,6 +3,7 @@ defaults:
   max_size: 10
   max_failures_count_per_5m: 5
   max_failures_count_per_1h: 60
+  channel: default
 
 queues:
   ?
@@ -14,7 +15,11 @@ queues:
     max_size: 100
     max_failures_count_per_5m: 15
     max_failures_count_per_1h: 90
+    channel: first
 
   third:
     max_age: 30
     max_failures_count_per_1h: 70
+
+  second_queue:
+    channel: [first, second]

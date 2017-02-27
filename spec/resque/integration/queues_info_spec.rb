@@ -254,6 +254,32 @@ describe Resque::Integration::QueuesInfo do
     end
   end
 
+  describe '#channel' do
+    context 'when queue defined in config' do
+      context 'when returns the one channel' do
+        let(:queue_name) { 'first' }
+
+        it { expect(queue_info.channel(queue_name)).to eq 'first' }
+      end
+
+      context 'when returns several channels' do
+        let(:queue_name) { 'second_queue' }
+
+        it do
+          expect(queue_info.channel(queue_name)).to eq 'first second'
+        end
+      end
+    end
+
+    context 'when queue not defined in config' do
+      let(:queue_name) { 'other_queue' }
+
+      it 'returns channel' do
+        expect(queue_info.channel(queue_name)).to eq 'default'
+      end
+    end
+  end
+
   describe '#threshold_failures_count' do
     context 'when queue is defined in config' do
       let(:queue_name) { 'first' }

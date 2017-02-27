@@ -1,5 +1,11 @@
 
 #### [Current]
+ * 2017-02-17 [5fc857f](../../commit/5fc857f) - __(Simeon Movchan)__ Release 1.13.0
+ * 2017-02-17 [1d07743](../../commit/1d07743) - __(Dmitry Bochkarev)__ fix: интеграция unique и resque-retry(сохраненние числа перезапусков)
+ * 2017-02-14 [459f33b](../../commit/459f33b) - __(rolex08)__ feature: add channel for each queue for zabbix
+
+#### v1.12.0
+ * 2017-02-15 [9518bfc](../../commit/9518bfc) - __(Semyon Pupkov)__ Update CHANGELOG.md
  * 2017-02-15 [bbe54c4](../../commit/bbe54c4) - __(Semyon Pupkov)__ Release 1.12.0
  * 2017-02-01 [f01356c](../../commit/f01356c) - __(Semyon Pupkov)__ fix: job not unlock if unique definded with block and hash
  * 2017-02-01 [a87da05](../../commit/a87da05) - __(Semyon Pupkov)__ feature: increase lock timeout for unique jobs (#92)
