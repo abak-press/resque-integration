@@ -27,9 +27,14 @@ module Resque
         end
 
         def data
-          @data ||= @queues.map do |k, v|
+          @data ||= @queues.map do |queue_name, _queue_params|
             {
-              "{#QUEUE}" => k
+              '{#QUEUE}' => queue_name,
+              '{#THRESHOLD_AGE}' => max_age(queue_name),
+              '{#THRESHOLD_SIZE}' => max_size(queue_name),
+              '{#THRESHOLD_FAILURES_PER_5M}' => max_failures_count(queue_name, '5m'),
+              '{#THRESHOLD_FAILURES_PER_1H}' => max_failures_count(queue_name, '1h'),
+              '{#CHANNEL}' => channel(queue_name)
             }
           end
         end
