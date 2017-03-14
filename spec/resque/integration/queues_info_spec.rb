@@ -326,4 +326,35 @@ describe Resque::Integration::QueuesInfo do
       expect(queue_info.threshold_failures_count(third_queue_name, '1h')).to eq 70
     end
   end
+
+  describe '#data' do
+    it do
+      expect(queue_info.data).to eq [
+        {
+          '{#QUEUE}' => 'first',
+          '{#THRESHOLD_AGE}' => 20,
+          '{#THRESHOLD_SIZE}' => 100,
+          '{#THRESHOLD_FAILURES_PER_5M}' => 15,
+          '{#THRESHOLD_FAILURES_PER_1H}' => 90,
+          '{#CHANNEL}' => 'first'
+        },
+        {
+          '{#QUEUE}' => 'third',
+          '{#THRESHOLD_AGE}' => 30,
+          '{#THRESHOLD_SIZE}' => 100,
+          '{#THRESHOLD_FAILURES_PER_5M}' => 15,
+          '{#THRESHOLD_FAILURES_PER_1H}' => 70,
+          '{#CHANNEL}' => 'first'
+        },
+        {
+          '{#QUEUE}' => 'second_queue',
+          '{#THRESHOLD_AGE}' => nil,
+          '{#THRESHOLD_SIZE}' => nil,
+          '{#THRESHOLD_FAILURES_PER_5M}' => nil,
+          '{#THRESHOLD_FAILURES_PER_1H}' => nil,
+          '{#CHANNEL}' => 'first second'
+        }
+      ]
+    end
+  end
 end
