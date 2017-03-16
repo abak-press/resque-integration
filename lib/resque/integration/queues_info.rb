@@ -27,12 +27,20 @@ module Resque
         @size.overall
       end
 
+      def failures_count_for_queue(queue)
+        Resque::Integration::FailureBackends::QueuesTotals.count(queue)
+      end
+
       def threshold_size(queue)
         @config.max_size(queue)
       end
 
       def threshold_age(queue)
         @config.max_age(queue)
+      end
+
+      def threshold_failures_count(queue, period)
+        @config.max_failures_count(queue, period)
       end
 
       def channel(queue)

@@ -1,3 +1,5 @@
+require 'yaml'
+
 module Resque
   module Integration
     class QueuesInfo
@@ -16,14 +18,23 @@ module Resque
           threshold(queue, 'max_size')
         end
 
+        def max_failures_count(queue, period)
+          threshold(queue, "max_failures_count_per_#{period}")
+        end
+
         def channel(queue)
           Array.wrap((@queues[queue] || @defaults)['channel']).join(' ')
         end
 
         def data
-          @data ||= @queues.map do |k, v|
+          @data ||= @queues.map do |queue_name, _queue_params|
             {
-              "{#QUEUE}" => k
+              '{#QUEUE}' => queue_name,
+              '{#THRESHOLD_AGE}' => max_age(queue_name),
+              '{#THRESHOLD_SIZE}' => max_size(queue_name),
+              '{#THRESHOLD_FAILURES_PER_5M}' => max_failures_count(queue_name, '5m'),
+              '{#THRESHOLD_FAILURES_PER_1H}' => max_failures_count(queue_name, '1h'),
+              '{#CHANNEL}' => channel(queue_name)
             }
           end
         end
@@ -41,19 +52,18 @@ module Resque
         end
 
         def expand_config(config)
-          keys = config.keys.dup
+          expanded_config = {}
 
-          keys.each do |key|
-            v = config.delete(key)
-
+          config.keys.each do |key|
             key.split(',').each do |queue|
               queue.chomp!
               queue.strip!
-              config[queue] = v
+
+              (expanded_config[queue] ||= {}).merge!(config[key])
             end
           end
 
-          config
+          expanded_config
         end
       end
     end
