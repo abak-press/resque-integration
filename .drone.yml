@@ -1,30 +1,43 @@
 matrix:
   include:
-    - DOCKER_RUBY_VERSION: "2.2"
-      RUBY_IMAGE_TAG: "2.2-4"
+    - DOCKER_RUBY_VERSION: 2.2
+      RUBY_IMAGE_TAG: 2.2-latest
 
-    - DOCKER_RUBY_VERSION: "1.9.3"
-      RUBY_IMAGE_TAG: "1.9.3-4"
+    - DOCKER_RUBY_VERSION: 1.9.3
+      RUBY_IMAGE_TAG: 1.9-latest
 
 build:
-  image: abakpress/dind:2
-  privileged: true
-  volumes:
-    - /home/data/drone/images:/images
-    - /home/data/drone/gems:/bundle
-    - /home/data/drone/key_cache:/ssh_keys
-  environment:
-    - COMPOSE_FILE_EXT=drone
-    - RAILS_ENV=test
-  commands:
-    - wrapdocker docker -v
+  test:
+    image: abakpress/dind-testing
+    pull: true
+    privileged: true
+    volumes:
+      - /home/data/drone/images:/images
+      - /home/data/drone/gems:/bundle
+      - /home/data/drone/key_cache:/ssh_keys
+    environment:
+      - COMPOSE_FILE_EXT=drone
+    commands:
+      - wrapdocker docker -v
 
-    - if [ ! -e /images/ssh-agent.tar ]; then docker pull whilp/ssh-agent; docker save whilp/ssh-agent > /images/ssh-agent.tar; fi
-    - if [ ! -e /images/ruby_$RUBY_IMAGE_TAG.tar ]; then docker pull abakpress/ruby:$RUBY_IMAGE_TAG; docker save abakpress/ruby:$RUBY_IMAGE_TAG > /images/ruby_$RUBY_IMAGE_TAG.tar; fi
+      - fetch-images
+        --image whilp/ssh-agent
+        --image abakpress/ruby-app:$RUBY_IMAGE_TAG
 
-    - docker load -i /images/ssh-agent.tar
-    - docker load -i /images/ruby_$RUBY_IMAGE_TAG.tar
+      - dip ssh add -T -v /ssh_keys -k /ssh_keys/id_rsa
+      - dip provision
+      - dip rspec
 
-    - dip ssh add -T -v /ssh_keys -k /ssh_keys/id_rsa
-    - dip provision
-    - dip rspec
+  release:
+    image: abakpress/ruby-app:2.3-latest
+    pull: true
+    when:
+      event: push
+      branch: release
+      matrix:
+        DOCKER_RUBY_VERSION: 2.2
+    commands:
+      - git config user.name "Automated Release"
+      - git config user.email support@railsc.ru
+      - gem install apress-gems --source https://gems.railsc.ru
+      - apress-gem release --no-bump --no-pull --remote origin
