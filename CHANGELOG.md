@@ -1,5 +1,10 @@
 
 #### [Current]
+ * 2017-03-13 [073c77d](../../commit/073c77d) - __(Stanislav Gordanov)__ feat: добавит пороговые значения в информацию об очередях
+ * 2017-02-14 [64b383d](../../commit/64b383d) - __(Zhidkov Denis)__ feat: add failed resque jobs data for zabbix
+
+#### v1.13.0
+ * 2017-02-17 [741d20e](../../commit/741d20e) - __(Simeon Movchan)__ Update CHANGELOG.md
  * 2017-02-17 [5fc857f](../../commit/5fc857f) - __(Simeon Movchan)__ Release 1.13.0
  * 2017-02-17 [1d07743](../../commit/1d07743) - __(Dmitry Bochkarev)__ fix: интеграция unique и resque-retry(сохраненние числа перезапусков)
  * 2017-02-14 [459f33b](../../commit/459f33b) - __(rolex08)__ feature: add channel for each queue for zabbix

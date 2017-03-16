@@ -63,6 +63,7 @@ module Resque
     autoload :LogsRotator, 'resque/integration/logs_rotator'
     autoload :QueuesInfo, 'resque/integration/queues_info'
     autoload :Extensions, 'resque/integration/extensions'
+    autoload :FailureBackends, 'resque/integration/failure_backends'
 
     extend ActiveSupport::Concern
 
