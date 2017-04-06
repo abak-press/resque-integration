@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
 
   gem.metadata['allowed_push_host'] = 'https://gems.railsc.ru'
 
-  gem.add_runtime_dependency 'resque', '= 1.25.2'
+  gem.add_runtime_dependency 'resque', '>= 1.25.2'
   gem.add_runtime_dependency 'railties', '>= 3.0.0'
   gem.add_runtime_dependency 'activerecord', '>= 3.0.0'
   gem.add_runtime_dependency 'actionpack', '>= 3.0.0'
