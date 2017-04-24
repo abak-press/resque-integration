@@ -5,13 +5,8 @@ services:
     volumes:
       - ../:/localgems
       - bundler-data:/bundle
-      - ssh-data:/ssh:ro
 
 volumes:
   bundler-data:
     external:
       name: bundler_data
-
-  ssh-data:
-    external:
-      name: ssh_data

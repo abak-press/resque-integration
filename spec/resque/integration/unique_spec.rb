@@ -57,6 +57,22 @@ describe Resque::Integration::Unique, '#enqueue, #enqueued?' do
     JobEnqueueTest.should be_enqueued(1)
   end
 
+  it 'returns new meta when job is enqueued to specific queue' do
+    meta = JobEnqueueTest.enqueue_to(:fast, 1)
+    meta.should be_a Resque::Plugins::Meta::Metadata
+
+    expect(JobEnqueueTest.enqueued?(1)).to_not be_nil
+    expect(Resque.size(:fast)).to eq 1
+  end
+
+  it 'returns new meta when job is scheduled' do
+    meta = JobEnqueueTest.scheduled(:fast, 'JobEnqueueTest', 1)
+    meta.should be_a Resque::Plugins::Meta::Metadata
+
+    expect(JobEnqueueTest.enqueued?(1)).to_not be_nil
+    expect(Resque.size(:fast)).to eq 1
+  end
+
   it 'returns the same meta if job already in queue' do
     meta1 = JobEnqueueTest.enqueue(2)
     meta2 = JobEnqueueTest.enqueue(2)

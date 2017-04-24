@@ -45,7 +45,7 @@ module Resque
 
         # Метод вызывает resque-scheduler чтобы поставить задание в текущую очередь
         def scheduled(queue, klass, *args)
-          klass.constantize.enqueue(*args)
+          klass.constantize.enqueue_to(queue, *args)
         end
 
         # Метод вызывает resque-retry когда ставить отложенное задание
@@ -165,6 +165,17 @@ module Resque
 
           # enqueue job and retrieve its meta
           enqueue_without_check(*args)
+        end
+
+        def enqueue_to(queue, *args)
+          meta = enqueued?(*args)
+          return meta if meta.present?
+
+          meta = ::Resque::Plugins::Meta::Metadata.new('meta_id' => meta_id(args), 'job_class' => to_s)
+          meta.save
+
+          Resque.enqueue_to(queue, self, meta.meta_id, *args)
+          meta
         end
 
         private
