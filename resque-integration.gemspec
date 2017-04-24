@@ -41,4 +41,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'simplecov'
   gem.add_development_dependency 'mock_redis'
   gem.add_development_dependency 'timecop'
+  gem.add_development_dependency 'pry-byebug'
 end

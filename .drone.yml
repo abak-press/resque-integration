@@ -1,11 +1,3 @@
-matrix:
-  include:
-    - DOCKER_RUBY_VERSION: 2.2
-      RUBY_IMAGE_TAG: 2.2-latest
-
-    - DOCKER_RUBY_VERSION: 1.9.3
-      RUBY_IMAGE_TAG: 1.9-latest
-
 build:
   test:
     image: abakpress/dind-testing
@@ -14,30 +6,20 @@ build:
     volumes:
       - /home/data/drone/images:/images
       - /home/data/drone/gems:/bundle
-      - /home/data/drone/key_cache:/ssh_keys
     environment:
       - COMPOSE_FILE_EXT=drone
+      - RUBY_IMAGE_TAG=2.2-latest
     commands:
       - wrapdocker docker -v
 
-      - fetch-images
-        --image whilp/ssh-agent
-        --image abakpress/ruby-app:$RUBY_IMAGE_TAG
-
-      - dip ssh add -T -v /ssh_keys -k /ssh_keys/id_rsa
+      - fetch-images --image abakpress/ruby-app:$RUBY_IMAGE_TAG
       - dip provision
       - dip rspec
 
   release:
-    image: abakpress/ruby-app:2.3-latest
+    image: abakpress/gem-publication
     pull: true
     when:
       event: push
-      branch: release
-      matrix:
-        DOCKER_RUBY_VERSION: 2.2
     commands:
-      - git config user.name "Automated Release"
-      - git config user.email support@railsc.ru
-      - gem install apress-gems --source https://gems.railsc.ru
-      - apress-gem release --no-bump --no-pull --remote origin
+      - release-gem
