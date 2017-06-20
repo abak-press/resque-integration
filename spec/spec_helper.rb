@@ -12,6 +12,8 @@ SimpleCov.start
 
 require 'resque/integration'
 
+Dir["./spec/shared/**/*.rb"].each(&method(:require))
+
 RSpec.configure do |config|
   config.before do
     Resque.redis.flushdb

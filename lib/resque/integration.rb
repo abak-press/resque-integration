@@ -64,6 +64,7 @@ module Resque
     autoload :QueuesInfo, 'resque/integration/queues_info'
     autoload :Extensions, 'resque/integration/extensions'
     autoload :FailureBackends, 'resque/integration/failure_backends'
+    autoload :Priority, 'resque/integration/priority'
 
     extend ActiveSupport::Concern
 
