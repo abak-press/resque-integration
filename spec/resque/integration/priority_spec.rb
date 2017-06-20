@@ -29,7 +29,7 @@ RSpec.describe Resque::Integration::Priority do
       expect(meta.meta_id).to be
 
       expect(Resque.size(:foo)).to eq(0)
-      expect(Resque.size(:foo_low,)).to eq(0)
+      expect(Resque.size(:foo_low)).to eq(0)
       expect(Resque.size(:foo_high)).to eq(1)
     end
 
@@ -37,7 +37,7 @@ RSpec.describe Resque::Integration::Priority do
       JobWithPriority.enqueue(1, param: 'one')
 
       expect(Resque.size(:foo)).to eq(1)
-      expect(Resque.size(:foo_low,)).to eq(0)
+      expect(Resque.size(:foo_low)).to eq(0)
       expect(Resque.size(:foo_high)).to eq(0)
     end
 
@@ -53,7 +53,7 @@ RSpec.describe Resque::Integration::Priority do
       expect(meta1.meta_id).to eq(meta2.meta_id)
 
       expect(Resque.size(:foo)).to eq(0)
-      expect(Resque.size(:foo_low,)).to eq(0)
+      expect(Resque.size(:foo_low)).to eq(0)
       expect(Resque.size(:foo_high)).to eq(1)
     end
   end

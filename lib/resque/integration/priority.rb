@@ -46,17 +46,14 @@ module Resque
 
           priority_queue = priority == :normal ? queue : "#{queue}_#{priority}".to_sym
 
-          meta = if unique?
+          if unique?
             enqueue_to(priority_queue, *args)
           else
-            meta = Resque::Plugins::Meta::Metadata.new('meta_id' => meta_id(args), 'job_class' => to_s)
-            meta.save
-
-            Resque.enqueue_to(priority_queue, self, meta.meta_id, *args)
-            meta
+            Resque::Plugins::Meta::Metadata.new('meta_id' => meta_id(args), 'job_class' => to_s).tap do |meta|
+              meta.save
+              Resque.enqueue_to(priority_queue, self, meta.meta_id, *args)
+            end
           end
-
-          meta
         end
 
         def perform(meta_id, *args)
