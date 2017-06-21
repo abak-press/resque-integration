@@ -18,8 +18,8 @@ module Resque
     #     end
     #   end
     #
-    #   MyJob.enqueue(1, another_param: 2, priority: high) # enqueue job to :for_high queue
-    #   MyJob.enqueue(1, another_param: 2, priority: low) # enqueue job to :for_low queue
+    #   MyJob.enqueue(1, another_param: 2, queue_priority: high) # enqueue job to :foo_high queue
+    #   MyJob.enqueue(1, another_param: 2, queue_priority: low) # enqueue job to :foo_low queue
     #
     #   class MyUniqueJob
     #     include Resque::Integration
@@ -35,14 +35,8 @@ module Resque
       end
 
       module Enqueue
-        AVALIABLE_PRIORITIES = %i(high low normal).freeze
-
         def enqueue(*args)
-          priority = args.last.delete(:priority) { :normal }.to_sym
-
-          unless AVALIABLE_PRIORITIES.include?(priority)
-            raise ArgumentError.new("Avaliable priorities #{AVALIABLE_PRIORITIES}, :#{priority} priority given")
-          end
+          priority = args.last.delete(:queue_priority) { :normal }.to_sym
 
           priority_queue = priority == :normal ? queue : "#{queue}_#{priority}".to_sym
 

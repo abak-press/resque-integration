@@ -24,7 +24,7 @@ RSpec.describe Resque::Integration::Priority do
 
   describe '#enqueue' do
     it 'enqueue to priority queue' do
-      meta = JobWithPriority.enqueue(1, param: 'one', priority: :high)
+      meta = JobWithPriority.enqueue(1, param: 'one', queue_priority: :high)
 
       expect(meta.meta_id).to be
 
@@ -41,14 +41,9 @@ RSpec.describe Resque::Integration::Priority do
       expect(Resque.size(:foo_high)).to eq(0)
     end
 
-    it 'raises error' do
-      expect { JobWithPriority.enqueue(1, param: 'one', priority: :unknown) }
-        .to raise_error(ArgumentError)
-    end
-
     it 'enqueue only one job' do
-      meta1 = UniqueJobWithPriority.enqueue(1, param: 'one', priority: :high)
-      meta2 = UniqueJobWithPriority.enqueue(1, param: 'one', priority: :high)
+      meta1 = UniqueJobWithPriority.enqueue(1, param: 'one', queue_priority: :high)
+      meta2 = UniqueJobWithPriority.enqueue(1, param: 'one', queue_priority: :high)
 
       expect(meta1.meta_id).to eq(meta2.meta_id)
 
@@ -65,15 +60,15 @@ RSpec.describe Resque::Integration::Priority do
       expect(JobWithPriority).to receive(:execute).with(1, 'param' => 'one').once.and_call_original
       expect(JobWithPriority).to receive(:execute).with(2, 'param' => 'two').once.and_call_original
 
-      JobWithPriority.enqueue(1, param: 'one', priority: :high)
-      JobWithPriority.enqueue(2, param: 'two', priority: :low)
+      JobWithPriority.enqueue(1, param: 'one', queue_priority: :high)
+      JobWithPriority.enqueue(2, param: 'two', queue_priority: :low)
     end
 
     it 'executes job' do
       expect(UniqueJobWithPriority).to receive(:execute).with(1, 'param' => 'one').twice.and_call_original
 
-      UniqueJobWithPriority.enqueue(1, param: 'one', priority: :high)
-      UniqueJobWithPriority.enqueue(1, param: 'one', priority: :high)
+      UniqueJobWithPriority.enqueue(1, param: 'one', queue_priority: :high)
+      UniqueJobWithPriority.enqueue(1, param: 'one', queue_priority: :high)
     end
   end
 end
