@@ -10,8 +10,8 @@ module Resque
     #     queue :foo
     #   end
     #
-    #   MyJob.enqueue(1, another_param: 2, queue_priority: high) # enqueue job to :foo_high queue
-    #   MyJob.enqueue(1, another_param: 2, queue_priority: low) # enqueue job to :foo_low queue
+    #   MyJob.enqueue_with_priority(:high, 1, another_param: 2) # enqueue job to :foo_high queue
+    #   MyJob.enqueue_with_priority(:low, 1, another_param: 2) # enqueue job to :foo_low queue
     #
     #   class MyUniqueJob
     #     include Resque::Integration
