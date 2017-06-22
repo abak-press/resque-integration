@@ -100,6 +100,11 @@ module Resque
         false
       end
 
+      # Public: job used priority queues
+      def priority?
+        false
+      end
+
       # extend resque-retry
       #
       # options - Hash

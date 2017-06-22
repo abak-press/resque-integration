@@ -86,6 +86,7 @@ module Resque::Integration
 
     initializer "resque-integration.extensions" do
       ::Resque::Worker.send :include, ::Resque::Integration::Extensions::Worker
+      ::Resque::Job.singleton_class.prepend(::Resque::Integration::Extensions::Job)
     end
   end # class Engine
 end # module Resque::Integration
