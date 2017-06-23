@@ -8,6 +8,17 @@ module Resque
     #     include Resque::Integration::Priority
     #
     #     queue :foo
+    #   end
+    #
+    #   MyJob.enqueue_with_priority(:high, 1, another_param: 2) # enqueue job to :foo_high queue
+    #   MyJob.enqueue_with_priority(:low, 1, another_param: 2) # enqueue job to :foo_low queue
+    #
+    #   class MyUniqueJob
+    #     include Resque::Integration
+    #     include Resque::Integration::Priority
+    #
+    #     queue :foo
+    #     unique
     #
     #     def self.execute(*args)
     #       meta = get_meta
@@ -17,47 +28,63 @@ module Resque
     #       end
     #     end
     #   end
-    #
-    #   MyJob.enqueue(1, another_param: 2, queue_priority: high) # enqueue job to :foo_high queue
-    #   MyJob.enqueue(1, another_param: 2, queue_priority: low) # enqueue job to :foo_low queue
-    #
-    #   class MyUniqueJob
-    #     include Resque::Integration
-    #     include Resque::Integration::Priority
-    #
-    #     queue :foo
-    #     unique
-    #   end
     module Priority
       def self.included(base)
-        base.extend(Resque::Plugins::Meta)
+        base.extend(ClassMethods)
         base.singleton_class.prepend(Enqueue)
       end
 
+      module ClassMethods
+        def priority?
+          true
+        end
+      end
+
       module Enqueue
+        # Public: enqueue job with normal priority
+        #
+        # Example:
+        #   MyJob.enqueue(1)
         def enqueue(*args)
-          priority = args.last.delete(:queue_priority) { :normal }.to_sym
+          enqueue_with_priority(:normal, *args)
+        end
 
-          priority_queue = priority == :normal ? queue : "#{queue}_#{priority}".to_sym
-
+        # Public: dequeue job with priority
+        #
+        # Example:
+        #   MyJob.dequeue(:high, 1)
+        def dequeue(priority, *args)
           if unique?
-            enqueue_to(priority_queue, *args)
+            super(*args, priority)
           else
-            Resque::Plugins::Meta::Metadata.new('meta_id' => meta_id(args), 'job_class' => to_s).tap do |meta|
-              meta.save
-              Resque.enqueue_to(priority_queue, self, meta.meta_id, *args)
-            end
+            Resque.dequeue(self, *args, priority)
           end
         end
 
-        def perform(meta_id, *args)
-          @meta_id = meta_id
+        # Public: enqueue job to priority queue
+        #
+        # Example:
+        #   MyJob.enqueue_with_priority(:high, 1)
+        def enqueue_with_priority(priority, *args)
+          queue = priority_queue(priority)
 
-          execute(*args)
+          if unique?
+            enqueue_to(queue, *args, priority)
+          else
+            Resque.enqueue_to(queue, self, *args, priority)
+          end
         end
 
-        def meta
-          get_meta(@meta_id)
+        def priority_queue(priority)
+          priority.to_sym == :normal ? queue : "#{queue}_#{priority}".to_sym
+        end
+
+        def perform(*args, _priority)
+          if unique?
+            super(*args)
+          else
+            execute(*args)
+          end
         end
       end
     end

@@ -83,7 +83,7 @@ module Resque
         # LockID should be independent from MetaID
         # @api private
         def lock(meta_id, *args)
-          args = [*args[0..-2], args.last.with_indifferent_access] if args.last.is_a?(Hash)
+          args = args.map { |i| i.is_a?(Hash) ? i.with_indifferent_access : i }
 
           "lock:#{name}-#{Digest::SHA1.hexdigest(obj_to_string(lock_on[*args]))}"
         end

@@ -5,12 +5,16 @@ require 'resque'
 require 'simplecov'
 require 'mock_redis'
 require 'timecop'
+require 'pry-byebug'
+require 'combustion'
 
 Resque.redis = MockRedis.new
 
 SimpleCov.start
 
 require 'resque/integration'
+
+Combustion.initialize!
 
 Dir["./spec/shared/**/*.rb"].each(&method(:require))
 
