@@ -12,7 +12,20 @@ SimpleCov.start
 
 require 'resque/integration'
 
+require 'combustion'
+Combustion.initialize! :action_controller
+
+module ApiHelper
+  include Rack::Test::Methods
+
+  def app
+    Rails.application
+  end
+end
+
 RSpec.configure do |config|
+  config.include ApiHelper, api: true
+
   config.before do
     Resque.redis.flushdb
   end
