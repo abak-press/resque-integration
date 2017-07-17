@@ -28,7 +28,7 @@ module Resque
     private
 
     def meta
-      Resque::Plugins::Meta.get_meta(meta_id) if meta_id
+      @meta ||= Resque::Plugins::Meta.get_meta(meta_id) if meta_id
     end
 
     def meta_id
