@@ -3,10 +3,7 @@ require 'resque/integration/version'
 
 require 'resque'
 
-require 'active_support/core_ext/kernel/reporting'
-require 'active_support/core_ext/module/aliasing'
-require 'active_support/core_ext/module/attribute_accessors'
-require 'active_support/core_ext/module/concerning'
+require 'active_support/all'
 
 require 'multi_json'
 
