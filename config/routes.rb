@@ -5,4 +5,6 @@ Rails.application.routes.draw do
       resource :status, only: :show, controller: :status
     end
   end
+
+  get '/_job_(/:id)', to: 'resque/jobs#show', as: 'job_status'
 end

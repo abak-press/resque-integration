@@ -4,6 +4,11 @@ require 'resque/integration/version'
 require 'resque'
 
 require 'active_support/core_ext/kernel/reporting'
+require 'active_support/core_ext/module/aliasing'
+require 'active_support/core_ext/module/attribute_accessors'
+require 'active_support/core_ext/module/concerning'
+
+require 'multi_json'
 
 silence_warnings { require 'resque/plugins/meta' }
 
@@ -22,7 +27,6 @@ require 'resque/scheduler/tasks'
 
 require 'resque-retry'
 
-require 'active_support/core_ext/module/attribute_accessors'
 
 module Resque
   include Integration::Hooks
@@ -53,7 +57,6 @@ module Resque
   #     end
   #   end
   module Integration
-    autoload :Application, 'resque/integration/application'
     autoload :Backtrace, 'resque/integration/backtrace'
     autoload :CLI, 'resque/integration/cli'
     autoload :Configuration, 'resque/integration/configuration'
