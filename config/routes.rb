@@ -6,5 +6,5 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/_job_(/:id)', to: 'resque/jobs#show', as: 'job_status'
+  get '/_job_(/:id)', to: 'resque/jobs#show', as: 'job_status', constraints: {domain: :current}
 end
