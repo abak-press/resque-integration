@@ -1,6 +1,8 @@
 require 'spec_helper'
 
-describe Resque::JobsController, type: :controller, api: true do
+describe Resque::JobsController do
+  include Rack::Test::Methods
+
   class MetaJob
     extend Resque::Plugins::Meta
 
@@ -10,9 +12,11 @@ describe Resque::JobsController, type: :controller, api: true do
   end
 
   describe '#show' do
+    let(:app) { described_class.action(:show) }
+
     context 'when id is missing' do
       before do
-        get '/_job_'
+        get '/'
       end
 
       it do
@@ -23,7 +27,7 @@ describe Resque::JobsController, type: :controller, api: true do
 
     context 'when id is invalid' do
       before do
-        get '/_job_/xx'
+        get '/', id: 'xx'
       end
 
       it do
@@ -48,7 +52,7 @@ describe Resque::JobsController, type: :controller, api: true do
       end
 
       before do
-        get "/_job_/#{meta_id}"
+        get '/', id: meta_id
       end
 
       it do

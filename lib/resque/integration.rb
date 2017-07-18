@@ -1,29 +1,21 @@
-# coding: utf-8
 require 'resque/integration/version'
 
-require 'resque'
-
 require 'active_support/all'
-
-require 'multi_json'
-
-silence_warnings { require 'resque/plugins/meta' }
-
 require 'rails/railtie'
-require 'rake'
-
 require 'active_record'
 require 'action_pack'
 
-require 'active_support/concern'
+require 'rake'
+require 'multi_json'
+
+require 'resque'
+silence_warnings { require 'resque/plugins/meta' }
 
 require 'resque/integration/hooks'
 
 require 'resque/scheduler'
 require 'resque/scheduler/tasks'
-
 require 'resque-retry'
-
 
 module Resque
   include Integration::Hooks
