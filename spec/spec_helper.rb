@@ -12,8 +12,14 @@ SimpleCov.start
 
 require 'resque/integration'
 
+require 'combustion'
+Combustion.initialize! :action_controller
+
+module ApiHelper
+end
+
 RSpec.configure do |config|
   config.before do
-    Resque.redis.flushdb
+    Resque.redis.redis.flushdb
   end
 end

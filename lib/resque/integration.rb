@@ -1,28 +1,21 @@
-# coding: utf-8
 require 'resque/integration/version'
 
-require 'resque'
-
-require 'active_support/core_ext/kernel/reporting'
-
-silence_warnings { require 'resque/plugins/meta' }
-
+require 'active_support/all'
 require 'rails/railtie'
-require 'rake'
-
 require 'active_record'
 require 'action_pack'
 
-require 'active_support/concern'
+require 'rake'
+require 'multi_json'
+
+require 'resque'
+silence_warnings { require 'resque/plugins/meta' }
 
 require 'resque/integration/hooks'
 
 require 'resque/scheduler'
 require 'resque/scheduler/tasks'
-
 require 'resque-retry'
-
-require 'active_support/core_ext/module/attribute_accessors'
 
 module Resque
   include Integration::Hooks
@@ -53,7 +46,6 @@ module Resque
   #     end
   #   end
   module Integration
-    autoload :Application, 'resque/integration/application'
     autoload :Backtrace, 'resque/integration/backtrace'
     autoload :CLI, 'resque/integration/cli'
     autoload :Configuration, 'resque/integration/configuration'
