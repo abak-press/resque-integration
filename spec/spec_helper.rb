@@ -1,6 +1,6 @@
-# coding: utf-8
 require 'bundler/setup'
 require 'rspec'
+require 'rspec/its'
 require 'resque'
 require 'simplecov'
 require 'mock_redis'
