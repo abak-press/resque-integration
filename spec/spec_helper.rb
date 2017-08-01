@@ -14,12 +14,12 @@ SimpleCov.start
 
 require 'resque/integration'
 
-Combustion.initialize!
-
+require 'combustion'
+Combustion.initialize! :action_controller
 Dir["./spec/shared/**/*.rb"].each(&method(:require))
 
 RSpec.configure do |config|
   config.before do
-    Resque.redis.flushdb
+    Resque.redis.redis.flushdb
   end
 end

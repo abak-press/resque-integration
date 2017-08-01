@@ -24,15 +24,21 @@ interaction:
     service: app
     command: bundle
 
+  appraisal:
+    service: app
+    command: bundle exec appraisal
+
   rspec:
     service: app
-    command: bundle exec rspec
+    command: bundle exec appraisal bundle exec rspec
 
   clean:
     service: app
-    command: rm -f Gemfile.lock
+    command: rm -f Gemfile.lock gemfiles/*.gemfile.*
 
 provision:
   - docker volume create --name bundler_data
+  - dip bundle config --local https://gems.railsc.ru/ ${APRESS_GEMS_CREDENTIALS}
   - dip clean
   - dip bundle install
+  - dip appraisal install
