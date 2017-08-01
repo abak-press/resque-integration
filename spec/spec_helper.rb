@@ -14,7 +14,6 @@ SimpleCov.start
 
 require 'resque/integration'
 
-require 'combustion'
 Combustion.initialize! :action_controller
 Dir["./spec/shared/**/*.rb"].each(&method(:require))
 
