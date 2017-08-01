@@ -1,4 +1,3 @@
-# coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'resque/integration/version'
@@ -19,9 +18,9 @@ Gem::Specification.new do |gem|
   gem.metadata['allowed_push_host'] = 'https://gems.railsc.ru'
 
   gem.add_runtime_dependency 'resque', '= 1.25.2'
-  gem.add_runtime_dependency 'railties', '>= 3.0.0'
-  gem.add_runtime_dependency 'activerecord', '>= 3.0.0'
-  gem.add_runtime_dependency 'actionpack', '>= 3.0.0'
+  gem.add_runtime_dependency 'railties', '>= 3.0.0', '< 5'
+  gem.add_runtime_dependency 'activerecord', '>= 3.0.0', '< 5'
+  gem.add_runtime_dependency 'actionpack', '>= 3.0.0', '< 5'
   gem.add_runtime_dependency 'activesupport', '>= 3.0.0', '< 5'
   gem.add_runtime_dependency 'resque-lock', '~> 1.1.0'
   gem.add_runtime_dependency 'resque-meta', '>= 2.0.0'
@@ -34,13 +33,14 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency 'multi_json'
   gem.add_runtime_dependency 'rake'
-  gem.add_runtime_dependency 'sinatra'
 
   gem.add_development_dependency 'bundler'
   gem.add_development_dependency 'rspec', '~> 2.14'
+  gem.add_development_dependency 'rspec-its'
   gem.add_development_dependency 'simplecov'
+  gem.add_development_dependency 'appraisal', '>= 1.0.2'
+  gem.add_development_dependency 'combustion', '>= 0.5.5'
   gem.add_development_dependency 'mock_redis'
   gem.add_development_dependency 'timecop'
-  gem.add_development_dependency 'combustion'
   gem.add_development_dependency 'pry-byebug'
 end
