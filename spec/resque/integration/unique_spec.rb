@@ -127,3 +127,47 @@ describe Resque::Integration::Unique, '#dequeue' do
     worker.join
   end
 end
+
+describe Resque::Integration::Unique, '#enqueue' do
+  context 'when passed hash argument' do
+    class JobUniqueWithHashArgs
+      include Resque::Integration
+
+      unique do |params|
+        params[:foo]
+      end
+
+      queue :default
+
+      def self.execute(params)
+        sleep 0.2
+        Resque.logger.info 'Hello, world'
+      end
+    end
+
+    it do
+      expect { JobUniqueWithHashArgs.enqueue(foo: :bar) }.not_to raise_error
+    end
+  end
+
+  context 'when passed few arguments' do
+    class SomeJobUniqueWithFewArgs
+      include Resque::Integration
+
+      unique do |some_id, params|
+        params[:foo]
+      end
+
+      queue :default
+
+      def self.execute(some_id, params)
+        sleep 0.2
+        Resque.logger.info 'Hello, world'
+      end
+    end
+
+    it do
+      expect { SomeJobUniqueWithFewArgs.enqueue(1, foo: :bar) }.not_to raise_error
+    end
+  end
+end
