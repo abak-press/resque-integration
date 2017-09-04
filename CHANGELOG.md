@@ -1,5 +1,8 @@
-# v1.16.0
+# v1.16.1
 
+* 2017-09-04 [c47c07d](../../commit/c47c07d) - __(Dmitry Bochkarev)__ Release 1.16.1 
+* 2017-09-04 [949023c](../../commit/949023c) - __(Dmitry Bochkarev)__ fix: использоание параметров по умолчанию 
+* 2017-09-04 [6ae1c1f](../../commit/6ae1c1f) - __(Dmitry Bochkarev)__ fix: использование канала по умолчанию 
 * 2017-08-31 [07c8f53](../../commit/07c8f53) - __(Andrew N. Shalaev)__ Release v1.16.0 
 * 2017-08-31 [1ff2f4e](../../commit/1ff2f4e) - __(Andrew N. Shalaev)__ fix: keep meta_id on_failure_retry callback if Resque::DirtyExit occurred 
 https://jira.railsc.ru/browse/BPC-10431
