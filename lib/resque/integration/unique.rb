@@ -35,6 +35,12 @@ module Resque
         base.singleton_class.class_eval do
           alias_method_chain :enqueue, :check
         end
+
+        if base.respond_to?(:on_failure_retry)
+          base.singleton_class.class_eval do
+            alias_method_chain(:on_failure_retry, :keep_meta_id)
+          end
+        end
       end
 
       module ClassMethods
@@ -111,6 +117,12 @@ module Resque
         # When job is failed we should remove lock
         def on_failure_lock(e, *args)
           unlock(*args)
+        end
+
+        def on_failure_retry_with_keep_meta_id(e, *args)
+          @meta_id = args.first if e.is_a?(Resque::DirtyExit)
+
+          on_failure_retry_without_keep_meta_id(e, *args)
         end
 
         # Before dequeue check if job is running

@@ -23,3 +23,6 @@ queues:
 
   second_queue:
     channel: [first, second]
+
+  without_channel: {}
+

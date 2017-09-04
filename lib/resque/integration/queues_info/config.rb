@@ -23,7 +23,8 @@ module Resque
         end
 
         def channel(queue)
-          Array.wrap((@queues[queue] || @defaults)['channel']).join(' ')
+          channel = @queues[queue].try(:[], 'channel') || @defaults['channel']
+          Array.wrap(channel).join(' ')
         end
 
         def data
@@ -42,7 +43,7 @@ module Resque
         private
 
         def threshold(queue, param)
-          (@queues[queue] || @defaults)[param]
+          @queues[queue].try(:[], param) || @defaults[param]
         end
 
         def load_config(path)

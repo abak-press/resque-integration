@@ -1,4 +1,5 @@
 require 'bundler/setup'
+require 'pry-byebug'
 require 'rspec'
 require 'rspec/its'
 require 'resque'
@@ -21,4 +22,7 @@ RSpec.configure do |config|
   config.before do
     Resque.redis.redis.flushdb
   end
+
+  config.filter_run_including focus: true
+  config.run_all_when_everything_filtered = true
 end

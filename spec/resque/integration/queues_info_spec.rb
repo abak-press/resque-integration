@@ -269,6 +269,12 @@ describe Resque::Integration::QueuesInfo do
           expect(queue_info.channel(queue_name)).to eq 'first second'
         end
       end
+
+      context 'when channel not specified' do
+        let(:queue_name) { 'without_channel' }
+
+        it { expect(queue_info.channel(queue_name)).to eq 'default' }
+      end
     end
 
     context 'when queue not defined in config' do
@@ -348,11 +354,19 @@ describe Resque::Integration::QueuesInfo do
         },
         {
           '{#QUEUE}' => 'second_queue',
-          '{#THRESHOLD_AGE}' => nil,
-          '{#THRESHOLD_SIZE}' => nil,
-          '{#THRESHOLD_FAILURES_PER_5M}' => nil,
-          '{#THRESHOLD_FAILURES_PER_1H}' => nil,
+          '{#THRESHOLD_AGE}' => 10,
+          '{#THRESHOLD_SIZE}' => 10,
+          '{#THRESHOLD_FAILURES_PER_5M}' => 5,
+          '{#THRESHOLD_FAILURES_PER_1H}' => 60,
           '{#CHANNEL}' => 'first second'
+        },
+        {
+          '{#QUEUE}' => 'without_channel',
+          '{#THRESHOLD_AGE}' => 10,
+          '{#THRESHOLD_SIZE}' => 10,
+          '{#THRESHOLD_FAILURES_PER_5M}' => 5,
+          '{#THRESHOLD_FAILURES_PER_1H}' => 60,
+          '{#CHANNEL}' => 'default'
         }
       ]
     end
