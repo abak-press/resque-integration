@@ -23,7 +23,8 @@ module Resque
         end
 
         def channel(queue)
-          Array.wrap((@queues[queue] || @defaults)['channel']).join(' ')
+          channel = @queues[queue].try(:[], 'channel') || @defaults['channel']
+          Array.wrap(channel).join(' ')
         end
 
         def data
