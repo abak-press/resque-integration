@@ -43,7 +43,7 @@ module Resque
         private
 
         def threshold(queue, param)
-          (@queues[queue] || @defaults)[param]
+          @queues[queue].try(:[], param) || @defaults[param]
         end
 
         def load_config(path)

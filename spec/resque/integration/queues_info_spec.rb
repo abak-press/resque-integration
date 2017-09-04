@@ -354,18 +354,18 @@ describe Resque::Integration::QueuesInfo do
         },
         {
           '{#QUEUE}' => 'second_queue',
-          '{#THRESHOLD_AGE}' => nil,
-          '{#THRESHOLD_SIZE}' => nil,
-          '{#THRESHOLD_FAILURES_PER_5M}' => nil,
-          '{#THRESHOLD_FAILURES_PER_1H}' => nil,
+          '{#THRESHOLD_AGE}' => 10,
+          '{#THRESHOLD_SIZE}' => 10,
+          '{#THRESHOLD_FAILURES_PER_5M}' => 5,
+          '{#THRESHOLD_FAILURES_PER_1H}' => 60,
           '{#CHANNEL}' => 'first second'
         },
         {
           '{#QUEUE}' => 'without_channel',
-          '{#THRESHOLD_AGE}' => nil,
-          '{#THRESHOLD_SIZE}' => nil,
-          '{#THRESHOLD_FAILURES_PER_5M}' => nil,
-          '{#THRESHOLD_FAILURES_PER_1H}' => nil,
+          '{#THRESHOLD_AGE}' => 10,
+          '{#THRESHOLD_SIZE}' => 10,
+          '{#THRESHOLD_FAILURES_PER_5M}' => 5,
+          '{#THRESHOLD_FAILURES_PER_1H}' => 60,
           '{#CHANNEL}' => 'default'
         }
       ]
