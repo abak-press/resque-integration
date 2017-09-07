@@ -58,6 +58,7 @@ describe Resque::JobsController do
       it do
         expect(last_response.status).to eq 200
         expect(last_response.body).to eq body
+        expect(last_response['Cache-Control']).to eq 'no-cache'
       end
     end
   end
