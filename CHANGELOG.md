@@ -1,4 +1,8 @@
-# v1.16.1
+# v1.16.2
+
+* 2017-09-07 [ddfaf30](../../commit/ddfaf30) - __(korotaev)__ Release 1.16.2 
+* 2017-09-06 [92531ff](../../commit/92531ff) - __(korotaev)__ fix(controller): disable browser cache 
+https://jira.railsc.ru/browse/GOODS-819
 
 * 2017-09-04 [c47c07d](../../commit/c47c07d) - __(Dmitry Bochkarev)__ Release 1.16.1 
 * 2017-09-04 [949023c](../../commit/949023c) - __(Dmitry Bochkarev)__ fix: использоание параметров по умолчанию 
