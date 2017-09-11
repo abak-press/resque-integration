@@ -127,39 +127,3 @@ describe Resque::Integration::Unique, '#dequeue' do
     worker.join
   end
 end
-
-describe Resque::Integration::Unique, '#on_failure_retry_with_keep_meta_id' do
-  class JobUniqueWithRetry
-    include Resque::Integration
-    extend Resque::Plugins::Retry
-
-    @retry_limit = 2
-    @retry_delay = 1
-    @retry_exceptions = [IOError]
-
-    unique do |foo_var, params|
-      params[:foo]
-    end
-
-    queue :default
-
-    def self.execute(foo_var, params)
-      sleep 0.2
-      Resque.logger.info 'Hello, world'
-    end
-  end
-
-  let(:worker) { Resque::Worker.new(:default) }
-  let(:job) { Resque::Job.new(:default, {'class' => 'JobUniqueWithRetry', 'args' => ['abcd', 1, {foo: 'bar'}]}) }
-
-  before do
-    worker.working_on(job)
-  end
-
-  it do
-    expect { worker.unregister_worker }.not_to raise_error
-
-    expect(Resque::Failure.count).to eq 1
-    expect(Resque::Failure.all['exception']).to eq 'Resque::DirtyExit'
-  end
-end
