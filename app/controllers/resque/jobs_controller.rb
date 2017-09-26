@@ -1,5 +1,7 @@
 module Resque
   class JobsController < ActionController::Metal
+    include ActionController::ConditionalGet
+
     JOB_ID_PATTERN = /([a-f0-9]{32})/
 
     def show
@@ -23,6 +25,7 @@ module Resque
       self.status = 200
       self.content_type = "application/json; charset=utf-8"
       self.response_body = MultiJson.dump(data)
+      expires_now
     end
 
     private

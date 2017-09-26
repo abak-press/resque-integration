@@ -1,4 +1,15 @@
-# v1.16.1
+# v1.16.3
+
+* 2017-09-11 [2de30b3](../../commit/2de30b3) - __(Andrew N. Shalaev)__ Release v1.16.3 
+* 2017-09-11 [7902ea0](../../commit/7902ea0) - __(Andrew N. Shalaev)__ Revert "feature: test of Resque::DirtyExit exception for uniq worker with retry" 
+This reverts commit d3d423f549a3b5015741d71a56a26ff9f840e970.
+
+* 2017-09-11 [3b55c58](../../commit/3b55c58) - __(Andrew N. Shalaev)__ Revert "fix: keep meta_id on_failure_retry callback if Resque::DirtyExit occurred" 
+This reverts commit 1ff2f4eb5839a5d6da61f0c7d47e0a697954cd3c.
+
+* 2017-09-07 [ddfaf30](../../commit/ddfaf30) - __(korotaev)__ Release 1.16.2 
+* 2017-09-06 [92531ff](../../commit/92531ff) - __(korotaev)__ fix(controller): disable browser cache 
+https://jira.railsc.ru/browse/GOODS-819
 
 * 2017-09-04 [c47c07d](../../commit/c47c07d) - __(Dmitry Bochkarev)__ Release 1.16.1 
 * 2017-09-04 [949023c](../../commit/949023c) - __(Dmitry Bochkarev)__ fix: использоание параметров по умолчанию 
