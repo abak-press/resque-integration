@@ -1,5 +1,7 @@
-# v1.16.3
+# v1.16.4
 
+* 2017-10-23 [deec7c2](../../commit/deec7c2) - __(Andrew N. Shalaev)__ Release v1.16.4 
+* 2017-10-23 [3b1cff6](../../commit/3b1cff6) - __(Andrew N. Shalaev)__ feature: optional constraint for resque job_status route 
 * 2017-09-11 [2de30b3](../../commit/2de30b3) - __(Andrew N. Shalaev)__ Release v1.16.3 
 * 2017-09-11 [7902ea0](../../commit/7902ea0) - __(Andrew N. Shalaev)__ Revert "feature: test of Resque::DirtyExit exception for uniq worker with retry" 
 This reverts commit d3d423f549a3b5015741d71a56a26ff9f840e970.
