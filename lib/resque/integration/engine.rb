@@ -87,5 +87,9 @@ module Resque::Integration
     initializer "resque-integration.extensions" do
       ::Resque::Worker.send :include, ::Resque::Integration::Extensions::Worker
     end
+
+    initializer 'resque-integration.application', before: :load_config_initializers do |app|
+      app.config.resque_job_status = {route_constraints: {domain: :current}}
+    end
   end # class Engine
 end # module Resque::Integration
