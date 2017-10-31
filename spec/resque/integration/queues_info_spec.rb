@@ -338,35 +338,63 @@ describe Resque::Integration::QueuesInfo do
       expect(queue_info.data).to eq [
         {
           '{#QUEUE}' => 'first',
+
+          '{#CHANNEL}' => 'first',
           '{#THRESHOLD_AGE}' => 20,
           '{#THRESHOLD_SIZE}' => 100,
           '{#THRESHOLD_FAILURES_PER_5M}' => 15,
           '{#THRESHOLD_FAILURES_PER_1H}' => 90,
-          '{#CHANNEL}' => 'first'
+
+          '{#WARNING_CHANNEL}' => 'first_warnings',
+          '{#WARNING_AGE}' => 10,
+          '{#WARNING_SIZE}' => 50,
+          '{#WARNING_FAILURES_PER_5M}' => 7,
+          '{#WARNING_FAILURES_PER_1H}' => 45
         },
         {
           '{#QUEUE}' => 'third',
+
+          '{#CHANNEL}' => 'first',
           '{#THRESHOLD_AGE}' => 30,
           '{#THRESHOLD_SIZE}' => 100,
           '{#THRESHOLD_FAILURES_PER_5M}' => 15,
           '{#THRESHOLD_FAILURES_PER_1H}' => 70,
-          '{#CHANNEL}' => 'first'
+
+          '{#WARNING_CHANNEL}' => 'first_warnings',
+          '{#WARNING_AGE}' => 15,
+          '{#WARNING_SIZE}' => 50,
+          '{#WARNING_FAILURES_PER_5M}' => 7,
+          '{#WARNING_FAILURES_PER_1H}' => 35
         },
         {
           '{#QUEUE}' => 'second_queue',
+
+          '{#CHANNEL}' => 'first second',
           '{#THRESHOLD_AGE}' => 10,
           '{#THRESHOLD_SIZE}' => 10,
           '{#THRESHOLD_FAILURES_PER_5M}' => 5,
           '{#THRESHOLD_FAILURES_PER_1H}' => 60,
-          '{#CHANNEL}' => 'first second'
+
+          '{#WARNING_CHANNEL}' => 'first_warnings second_warnings',
+          '{#WARNING_AGE}' => 8,
+          '{#WARNING_SIZE}' => 7,
+          '{#WARNING_FAILURES_PER_5M}' => 3,
+          '{#WARNING_FAILURES_PER_1H}' => 30
         },
         {
           '{#QUEUE}' => 'without_channel',
+
+          '{#CHANNEL}' => 'default',
           '{#THRESHOLD_AGE}' => 10,
           '{#THRESHOLD_SIZE}' => 10,
           '{#THRESHOLD_FAILURES_PER_5M}' => 5,
           '{#THRESHOLD_FAILURES_PER_1H}' => 60,
-          '{#CHANNEL}' => 'default'
+
+          '{#WARNING_CHANNEL}' => 'default_warnings',
+          '{#WARNING_AGE}' => 8,
+          '{#WARNING_SIZE}' => 7,
+          '{#WARNING_FAILURES_PER_5M}' => 3,
+          '{#WARNING_FAILURES_PER_1H}' => 30
         }
       ]
     end
