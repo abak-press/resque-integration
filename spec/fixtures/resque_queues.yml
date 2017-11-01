@@ -5,6 +5,12 @@ defaults:
   max_failures_count_per_1h: 60
   channel: default
 
+  warn_age: 8
+  warn_size: 7
+  warn_failures_count_per_5m: 3
+  warn_failures_count_per_1h: 30
+  warn_channel: default_warnings
+
 queues:
   ?
   >
@@ -12,17 +18,28 @@ queues:
     third
   :
     max_age: 20
+    warn_age: 10
+
     max_size: 100
+    warn_size: 50
+
     max_failures_count_per_5m: 15
+    warn_failures_count_per_5m: 7
+
     max_failures_count_per_1h: 90
+    warn_failures_count_per_1h: 45
+
     channel: first
+    warn_channel: first_warnings
 
   third:
     max_age: 30
+    warn_age: 15
     max_failures_count_per_1h: 70
+    warn_failures_count_per_1h: 35
 
   second_queue:
     channel: [first, second]
+    warn_channel: [first_warnings, second_warnings]
 
   without_channel: {}
-
