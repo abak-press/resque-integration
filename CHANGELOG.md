@@ -1,4 +1,8 @@
-# v1.16.4
+# v1.17.0
+
+* 2017-11-01 [0bd7ab2](../../commit/0bd7ab2) - __(Simeon Movchan)__ Release 1.17.0 
+* 2017-10-31 [6d011ea](../../commit/6d011ea) - __(Simeon Movchan)__ feat: warning levels support in queues monitoring 
+https://jira.railsc.ru/browse/SERVICES-2051
 
 * 2017-10-23 [deec7c2](../../commit/deec7c2) - __(Andrew N. Shalaev)__ Release v1.16.4 
 * 2017-10-23 [3b1cff6](../../commit/3b1cff6) - __(Andrew N. Shalaev)__ feature: optional constraint for resque job_status route 
