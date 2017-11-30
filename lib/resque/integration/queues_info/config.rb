@@ -14,16 +14,33 @@ module Resque
           threshold(queue, 'max_age')
         end
 
+        def warn_age(queue)
+          threshold(queue, 'warn_age')
+        end
+
         def max_size(queue)
           threshold(queue, 'max_size')
+        end
+
+        def warn_size(queue)
+          threshold(queue, 'warn_size')
         end
 
         def max_failures_count(queue, period)
           threshold(queue, "max_failures_count_per_#{period}")
         end
 
+        def warn_failures_count(queue, period)
+          threshold(queue, "warn_failures_count_per_#{period}")
+        end
+
         def channel(queue)
-          channel = @queues[queue].try(:[], 'channel') || @defaults['channel']
+          channel = threshold(queue, 'channel')
+          Array.wrap(channel).join(' ')
+        end
+
+        def warn_channel(queue)
+          channel = threshold(queue, 'warn_channel')
           Array.wrap(channel).join(' ')
         end
 
@@ -31,11 +48,18 @@ module Resque
           @data ||= @queues.map do |queue_name, _queue_params|
             {
               '{#QUEUE}' => queue_name,
+
+              '{#CHANNEL}' => channel(queue_name),
               '{#THRESHOLD_AGE}' => max_age(queue_name),
               '{#THRESHOLD_SIZE}' => max_size(queue_name),
               '{#THRESHOLD_FAILURES_PER_5M}' => max_failures_count(queue_name, '5m'),
               '{#THRESHOLD_FAILURES_PER_1H}' => max_failures_count(queue_name, '1h'),
-              '{#CHANNEL}' => channel(queue_name)
+
+              '{#WARNING_CHANNEL}' => warn_channel(queue_name),
+              '{#WARNING_AGE}' => warn_age(queue_name),
+              '{#WARNING_SIZE}' => warn_size(queue_name),
+              '{#WARNING_FAILURES_PER_5M}' => warn_failures_count(queue_name, '5m'),
+              '{#WARNING_FAILURES_PER_1H}' => warn_failures_count(queue_name, '1h')
             }
           end
         end

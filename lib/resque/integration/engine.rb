@@ -88,5 +88,9 @@ module Resque::Integration
       ::Resque::Worker.send :include, ::Resque::Integration::Extensions::Worker
       ::Resque::Job.singleton_class.prepend(::Resque::Integration::Extensions::Job)
     end
+
+    initializer 'resque-integration.application', before: :load_config_initializers do |app|
+      app.config.resque_job_status = {route_constraints: {domain: :current}}
+    end
   end # class Engine
 end # module Resque::Integration
