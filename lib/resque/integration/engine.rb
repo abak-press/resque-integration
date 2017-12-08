@@ -85,7 +85,7 @@ module Resque::Integration
     end
 
     initializer "resque-integration.extensions" do
-      ::Resque::Worker.send :include, ::Resque::Integration::Extensions::Worker
+      ::Resque::Worker.prepend ::Resque::Integration::Extensions::Worker
     end
 
     initializer 'resque-integration.application', before: :load_config_initializers do |app|
