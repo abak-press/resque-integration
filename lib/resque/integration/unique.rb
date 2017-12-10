@@ -115,28 +115,18 @@ module Resque
         !meta.working?
       end
 
+      # Before enqueue acquire a lock
+      #
+      # Returns boolean
       def before_enqueue_lock(*args)
-        key = lock(*args)
-        now = ::Time.current.to_i
-        timeout = now + lock_timeout + 1
-
-        # return true if we successfully acquired the lock
-        return true if ::Resque.redis.setnx(key, timeout)
-
-        # see if the existing timeout is still valid and return false if it is
-        # (we cannot acquire the lock during the timeout period)
-        return false if now <= ::Resque.redis.get(key).to_i
-
-        # otherwise set the timeout and ensure that no other worker has
-        # acquired the lock
-        now > ::Resque.redis.getset(key, timeout).to_i
+        ::Resque.redis.set(lock(*args), 1, ex: lock_timeout, nx: true)
       end
 
       def around_perform_lock(*args)
         yield
       ensure
         # Always clear the lock when we're done, even if there is an error.
-        ::Resque.redis.del(lock(*args))
+        unlock(*args)
       end
 
       # When job is dequeued we should remove lock
@@ -163,10 +153,7 @@ module Resque
 
       # Returns true if resque job is in locked state
       def locked?(*args)
-        key = lock(nil, *args)
-        now = Time.now.to_i
-
-        ::Resque.redis.exists(key) && now <= ::Resque.redis.get(key).to_i
+        ::Resque.redis.exists(lock(nil, *args))
       end
 
       # Dequeue unique job
