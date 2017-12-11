@@ -1,5 +1,5 @@
-# coding: utf-8
 require 'bundler/setup'
+require 'pry-byebug'
 require 'rspec'
 require 'resque'
 require 'simplecov'

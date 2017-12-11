@@ -1,5 +1,3 @@
-# coding: utf-8
-
 module Resque
   module Integration
     # Continuous job can re-enqueue self with respect to resque-lock and resque-meta.
@@ -59,11 +57,12 @@ module Resque
             args
           end
 
-          Resque.enqueue(self, *args)
+          ::Resque.enqueue(self, *args)
         end
       end
 
       private
+
       def continued?
         !@continued.nil?
       end

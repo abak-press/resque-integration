@@ -1,5 +1,3 @@
-# coding: utf-8
-
 require 'spec_helper'
 
 describe Resque::Integration::Unique, '#meta_id, #lock' do
@@ -49,8 +47,6 @@ describe Resque::Integration::Unique, '#enqueue, #enqueued?' do
   end
 
   it 'returns new meta when job is enqueued' do
-    JobEnqueueTest.should_receive(:enqueue_without_check).and_call_original
-
     meta = JobEnqueueTest.enqueue(1)
     meta.should be_a Resque::Plugins::Meta::Metadata
 
