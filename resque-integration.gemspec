@@ -1,4 +1,3 @@
-# coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'resque/integration/version'
@@ -37,6 +36,7 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency 'bundler'
   gem.add_development_dependency 'rspec', '~> 2.14'
+  gem.add_development_dependency 'rspec-its'
   gem.add_development_dependency 'simplecov'
   gem.add_development_dependency 'appraisal', '>= 1.0.2'
   gem.add_development_dependency 'combustion', '>= 0.5.5'
