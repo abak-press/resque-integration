@@ -1,5 +1,3 @@
-# coding: utf-8
-
 require 'redis'
 require 'redis/version'
 require 'rails/engine'
@@ -12,6 +10,7 @@ module Resque::Integration
     rake_tasks do
       load 'resque/integration/tasks/hooks.rake'
       load 'resque/integration/tasks/resque.rake'
+      load 'resque/integration/tasks/lock.rake'
     end
 
     # Читает конфиг-файлы config/resque.yml и config/resque.local.yml,
