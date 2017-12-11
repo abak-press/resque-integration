@@ -33,25 +33,25 @@ describe Resque::Integration::Configuration do
 
   describe '#resque_scheduler?' do
     context 'when default' do
-      it { expect(config.resque_scheduler?).to be_true }
+      it { expect(config.resque_scheduler?).to be_truthy }
     end
 
     context 'when defined' do
       let(:config_yaml) { {'resque' => {'scheduler' => 'no'}} }
 
-      it { expect(config.resque_scheduler?).to be_false }
+      it { expect(config.resque_scheduler?).to be_falsey }
     end
   end
 
   describe '#run_at_exit_hooks?' do
     context 'when default' do
-      it { expect(config.resque_scheduler?).to be_true }
+      it { expect(config.resque_scheduler?).to be_truthy }
     end
 
     context 'when defined' do
       let(:config_yaml) { {'resque' => {'run_at_exit_hooks' => 'no'}} }
 
-      it { expect(config.run_at_exit_hooks?).to be_false }
+      it { expect(config.run_at_exit_hooks?).to be_falsey }
     end
   end
 end
@@ -61,7 +61,7 @@ describe Resque::Integration::Configuration::Notifier do
     subject(:config) { described_class::new(nil) }
 
     it { should_not be_enabled }
-    its(:include_payload?) { should be_true }
+    its(:include_payload?) { should be_truthy }
     its(:to) { should be_empty }
     its(:from) { should eq 'no_reply@gmail.com' }
     its(:mail) { should eq :alert }
@@ -81,7 +81,7 @@ describe Resque::Integration::Configuration::Notifier do
     subject(:config) { described_class::new(configuration) }
 
     it { should_not be_enabled }
-    its(:include_payload?) { should be_false }
+    its(:include_payload?) { should be_falsey }
     its(:to) { should include 'to1@mail' }
     its(:to) { should include 'to2@mail' }
     its(:from) { should eq 'from@mail' }

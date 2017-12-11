@@ -56,6 +56,7 @@ module Resque
     autoload :QueuesInfo, 'resque/integration/queues_info'
     autoload :Extensions, 'resque/integration/extensions'
     autoload :FailureBackends, 'resque/integration/failure_backends'
+    autoload :Priority, 'resque/integration/priority'
 
     extend ActiveSupport::Concern
 
@@ -88,6 +89,11 @@ module Resque
       end
 
       def unique?
+        false
+      end
+
+      # Public: job used priority queues
+      def priority?
         false
       end
 

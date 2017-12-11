@@ -69,6 +69,8 @@ RSpec.describe Resque::Integration do
       end
 
       describe 'unlock' do
+        include_context 'resque inline'
+
         class UniqueJobWithBlock
           include Resque::Integration
 
@@ -78,15 +80,6 @@ RSpec.describe Resque::Integration do
           def self.execute(id, params)
             DummyService.call
           end
-        end
-
-        around do |example|
-          inline = Resque.inline
-          Resque.inline = true
-
-          example.run
-
-          Resque.inline = inline
         end
 
         it 'unlocks uniq job with args and without block' do
