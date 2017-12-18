@@ -60,7 +60,7 @@ describe Resque::Integration::Continuous do
       job2.payload['args'][1..-1].should eq [1, 2]
 
       # clean the queue
-      Resque.dequeue(ContinuousUniqueJobTest)
+      ContinuousUniqueJobTest.dequeue(1)
     end
 
     it 'should not finish meta' do
@@ -78,7 +78,7 @@ describe Resque::Integration::Continuous do
       meta2.should be_working
 
       # clean the queue
-      Resque.dequeue(ContinuousUniqueJobTest)
+      ContinuousUniqueJobTest.dequeue(2)
     end
 
     it 'should enqueue job with the same meta_id' do

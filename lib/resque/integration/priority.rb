@@ -5,9 +5,13 @@ module Resque
     # Examples:
     #   class MyJob
     #     include Resque::Integration
-    #     include Resque::Integration::Priority
     #
     #     queue :foo
+    #     prioritized
+    #
+    #     def self.perform(arg)
+    #       heavy_lifting_work
+    #     end
     #   end
     #
     #   MyJob.enqueue_with_priority(:high, 1, another_param: 2) # enqueue job to :foo_high queue
@@ -15,10 +19,10 @@ module Resque
     #
     #   class MyUniqueJob
     #     include Resque::Integration
-    #     include Resque::Integration::Priority
     #
     #     queue :foo
     #     unique
+    #     prioritized
     #
     #     def self.execute(*args)
     #       meta = get_meta
@@ -29,18 +33,11 @@ module Resque
     #     end
     #   end
     module Priority
-      def self.included(base)
-        base.extend(ClassMethods)
-        base.singleton_class.prepend(Enqueue)
+      def self.extended(base)
+        base.singleton_class.prepend(Overrides)
       end
 
-      module ClassMethods
-        def priority?
-          true
-        end
-      end
-
-      module Enqueue
+      module Overrides
         # Public: enqueue job with normal priority
         #
         # Example:
@@ -61,31 +58,31 @@ module Resque
           end
         end
 
-        # Public: enqueue job to priority queue
-        #
-        # Example:
-        #   MyJob.enqueue_with_priority(:high, 1)
-        def enqueue_with_priority(priority, *args)
-          queue = priority_queue(priority)
-
-          if unique?
-            enqueue_to(queue, *args, priority)
-          else
-            Resque.enqueue_to(queue, self, *args, priority)
-          end
-        end
-
-        def priority_queue(priority)
-          priority.to_sym == :normal ? queue : "#{queue}_#{priority}".to_sym
-        end
-
         def perform(*args, _priority)
-          if unique?
-            super(*args)
-          else
-            execute(*args)
-          end
+          super(*args)
         end
+      end
+
+      def priority?
+        true
+      end
+
+      # Public: enqueue job to priority queue
+      #
+      # Example:
+      #   MyJob.enqueue_with_priority(:high, 1)
+      def enqueue_with_priority(priority, *args)
+        queue = priority_queue(priority)
+
+        if unique?
+          enqueue_to(queue, *args, priority)
+        else
+          Resque.enqueue_to(queue, self, *args, priority)
+        end
+      end
+
+      def priority_queue(priority)
+        priority.to_sym == :normal ? queue : "#{queue}_#{priority}".to_sym
       end
     end
   end

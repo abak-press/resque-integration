@@ -30,12 +30,18 @@ module Resque
       ARGS_EXPIRATION = 1.week
 
       def self.extended(base)
-        base.extend ClassMethods
+        unless base.singleton_class.include?(::Resque::Integration::Unique)
+          base.extend ::Resque::Integration::Unique
+        end
+
+        unless base.singleton_class.include?(::Resque::Integration::Continuous)
+          base.extend ::Resque::Integration::Continuous
+        end
 
         base.singleton_class.class_eval do
           attr_accessor :max_iterations, :uniqueness
 
-          alias_method_chain :enqueue, :ordered
+          prepend Overrides
         end
       end
 
@@ -73,24 +79,24 @@ module Resque
         end
       end
 
-      module ClassMethods
-        def enqueue_with_ordered(*args)
-          meta = enqueue_without_ordered(*args)
+      module Overrides
+        def enqueue(*args)
+          meta = super
 
           if uniqueness && ordered_meta_id = uniqueness.ordered_meta_id(meta.meta_id, args)
             return get_meta(ordered_meta_id)
           end
 
-          ordered_meta = Resque::Plugins::Meta::Metadata.new('meta_id' => ordered_meta_id(args), 'job_class' => self)
+          ordered_meta = ::Resque::Plugins::Meta::Metadata.new('meta_id' => ordered_meta_id(args), 'job_class' => self)
           ordered_meta.save
 
           uniqueness.set(meta.meta_id, args, ordered_meta.meta_id) if uniqueness
           args.unshift(ordered_meta.meta_id)
-          encoded_args = Resque.encode(args)
+          encoded_args = ::Resque.encode(args)
           args_key = ordered_queue_key(meta.meta_id)
 
-          Resque.redis.rpush(args_key, encoded_args)
-          Resque.redis.expire(args_key, ARGS_EXPIRATION)
+          ::Resque.redis.rpush(args_key, encoded_args)
+          ::Resque.redis.expire(args_key, ARGS_EXPIRATION)
 
           ordered_meta
         end
@@ -98,8 +104,8 @@ module Resque
         def perform(meta_id, *)
           args_key = ordered_queue_key(meta_id)
           i = 1
-          while job_args = Resque.redis.lpop(args_key)
-            job_args = Resque.decode(job_args)
+          while job_args = ::Resque.redis.lpop(args_key)
+            job_args = ::Resque.decode(job_args)
             ordered_meta = get_meta(job_args.shift)
             ordered_meta.start!
 
@@ -118,18 +124,18 @@ module Resque
             return continue if max_iterations && i > max_iterations && ordered_queue_size(meta_id) > 0
           end
         end
+      end
 
-        def ordered_queue_size(meta_id)
-          Resque.redis.llen(ordered_queue_key(meta_id)).to_i
-        end
+      def ordered_queue_size(meta_id)
+        Resque.redis.llen(ordered_queue_key(meta_id)).to_i
+      end
 
-        def ordered_queue_key(meta_id)
-          "ordered:#{meta_id}"
-        end
+      def ordered_queue_key(meta_id)
+        "ordered:#{meta_id}"
+      end
 
-        def ordered_meta_id(args)
-          Digest::SHA1.hexdigest([Time.now.to_f, rand, self, args].join)
-        end
+      def ordered_meta_id(args)
+        Digest::SHA1.hexdigest([Time.now.to_f, rand, self, args].join)
       end
     end
   end
