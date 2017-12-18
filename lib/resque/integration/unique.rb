@@ -9,10 +9,10 @@ module Resque
     #
     # @example
     #   class MyJob
-    #     extend Resque::Integration::Unique
+    #     include Resque::Integration
     #
     #     # jobs are considered as equal if their first argument is the same
-    #     lock_on { |*args| args.first }
+    #     unique { |*args| args.first }
     #
     #     def self.execute(image_id)
     #       # do it
@@ -67,8 +67,8 @@ module Resque
       #  - если метод вызывается в пользовательском коде(и @meta_id отсутствует), то meta_id нельзя передавать.
       def retry_identifier(*args)
         return if args.empty?
-        meta_id_arg = args.shift if @meta_id.is_a?(String) && !@meta_id.empty? && @meta_id == args.first
-        lock(meta_id_arg, *args)
+        args.shift if @meta_id.is_a?(String) && !@meta_id.empty? && @meta_id == args.first
+        lock_id(*args)
       end
 
       # Get or set proc returning unique arguments
@@ -82,8 +82,8 @@ module Resque
 
       # LockID should be independent from MetaID
       # @api private
-      def lock(meta_id, *args)
-        args = [args[0..-2], args.last.with_indifferent_access] if args.last.is_a?(Hash)
+      def lock_id(*args)
+        args = args.map { |i| i.is_a?(Hash) ? i.with_indifferent_access : i }
         locked_args = lock_on.call(*args)
         encoded_args = ::Digest::SHA1.hexdigest(obj_to_string(locked_args))
         "lock:#{name}-#{encoded_args}"
@@ -104,7 +104,7 @@ module Resque
       end
 
       # When job is failed we should remove lock
-      def on_failure_lock(e, *args)
+      def on_failure_lock(_e, _meta_id, *args)
         unlock(*args)
       end
 
@@ -118,11 +118,11 @@ module Resque
       # Before enqueue acquire a lock
       #
       # Returns boolean
-      def before_enqueue_lock(*args)
-        ::Resque.redis.set(lock(*args), 1, ex: lock_timeout, nx: true)
+      def before_enqueue_lock(_meta_id, *args)
+        ::Resque.redis.set(lock_id(*args), 1, ex: lock_timeout, nx: true)
       end
 
-      def around_perform_lock(*args)
+      def around_perform_lock(_meta_id, *args)
         yield
       ensure
         # Always clear the lock when we're done, even if there is an error.
@@ -130,7 +130,7 @@ module Resque
       end
 
       # When job is dequeued we should remove lock
-      def after_dequeue_lock(*args)
+      def after_dequeue_lock(_meta_id, *args)
         unlock(*args) unless args.empty?
       end
 
@@ -153,7 +153,7 @@ module Resque
 
       # Returns true if resque job is in locked state
       def locked?(*args)
-        ::Resque.redis.exists(lock(nil, *args))
+        ::Resque.redis.exists(lock_id(*args))
       end
 
       # Dequeue unique job
@@ -176,7 +176,7 @@ module Resque
 
       # Remove lock for job with given +args+
       def unlock(*args)
-        ::Resque.redis.del(lock(*args))
+        ::Resque.redis.del(lock_id(*args))
       end
 
       def secret_token
