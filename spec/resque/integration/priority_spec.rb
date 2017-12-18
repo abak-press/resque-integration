@@ -3,22 +3,22 @@ require 'spec_helper'
 RSpec.describe Resque::Integration::Priority do
   class JobWithPriority
     include Resque::Integration
-    include Resque::Integration::Priority
 
     queue :foo
+    prioritized
 
-    def self.execute(id, params)
+    def self.perform(id, params)
     end
   end
 
   class UniqueJobWithPriority
     include Resque::Integration
-    include Resque::Integration::Priority
 
     queue :foo
     unique do |id, params|
       [id, params["param"]]
     end
+    prioritized
 
     def self.execute(id, params)
     end
@@ -77,8 +77,8 @@ RSpec.describe Resque::Integration::Priority do
     include_context 'resque inline'
 
     it 'executes job' do
-      expect(JobWithPriority).to receive(:execute).with(1, 'param' => 'one').once.and_call_original
-      expect(JobWithPriority).to receive(:execute).with(2, 'param' => 'two').once.and_call_original
+      expect(JobWithPriority).to receive(:perform).with(1, 'param' => 'one')
+      expect(JobWithPriority).to receive(:perform).with(2, 'param' => 'two')
 
       JobWithPriority.enqueue_with_priority(:high, 1, param: 'one')
       JobWithPriority.enqueue_with_priority(:high, 2, param: 'two')

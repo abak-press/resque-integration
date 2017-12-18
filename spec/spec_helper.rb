@@ -1,4 +1,5 @@
 require 'bundler/setup'
+require 'pry-byebug'
 require 'rspec'
 require 'rspec/its'
 require 'resque'
