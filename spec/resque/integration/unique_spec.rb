@@ -7,12 +7,12 @@ describe Resque::Integration::Unique, '#meta_id, #lock' do
   context 'when unique arguments are not set' do
     it 'returns same results when equal arguments given' do
       job.meta_id('a', 'b').should eq job.meta_id('a', 'b')
-      job.lock(nil, 'a', 'b').should eq job.lock(nil, 'a', 'b')
+      job.lock_id('a', 'b').should eq job.lock_id('a', 'b')
     end
 
     it 'returns different results when different arguments given' do
       job.meta_id('a', 'b').should_not eq job.meta_id('a', 'c')
-      job.lock(nil, 'a', 'b').should_not eq job.lock(nil, 'a', 'c')
+      job.lock_id('a', 'b').should_not eq job.lock_id('a', 'c')
     end
   end
 
@@ -22,15 +22,17 @@ describe Resque::Integration::Unique, '#meta_id, #lock' do
 
     it 'returns same results when equal arguments given' do
       job.meta_id('a', 'b').should eq job.meta_id('a', 'b')
-      job.lock(nil, 'a', 'b').should eq job.lock(nil, 'a', 'b')
+      job.lock_id('a', 'b').should eq job.lock_id('a', 'b')
+      job.lock_id('a', foo: 1).should eq job.lock_id('a', foo: 1)
 
       job.meta_id('a', 'b').should eq job.meta_id('c', 'b')
-      job.lock(nil, 'a', 'b').should eq job.lock(nil, 'c', 'b')
+      job.lock_id('a', 'b').should eq job.lock_id('c', 'b')
+      job.lock_id('a', foo: 1).should eq job.lock_id('c', foo: 1)
     end
 
     it 'returns different results when different arguments given' do
       job.meta_id('a', 'b').should_not eq job.meta_id('a', 'c')
-      job.lock(nil, 'a', 'b').should_not eq job.lock(nil, 'a', 'c')
+      job.lock_id('a', 'b').should_not eq job.lock_id('a', 'c')
     end
   end
 end
