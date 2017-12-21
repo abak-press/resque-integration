@@ -21,5 +21,6 @@ build:
     pull: true
     when:
       event: push
+      branch: master
     commands:
       - release-gem
