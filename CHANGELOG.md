@@ -1,6 +1,21 @@
-# v1.18.0
+# v2.0.0
+
+* 2017-12-21 [1073796](../../commit/1073796) - __(Dmitry Bochkarev)__ Release 2.0.0 
+https://github.com/abak-press/pulscen/releases/tag/20171220
+
+* 2017-12-18 [dd2f2c5](../../commit/dd2f2c5) - __(Michail Merkushin)__ fix: Properly encode lock's args with Hashes 
+https://jira.railsc.ru/browse/GOODS-1001
+
+* 2017-12-11 [b0adbfa](../../commit/b0adbfa) - __(Michail Merkushin)__ feat: Add task for expire all resque locks 
+https://jira.railsc.ru/browse/PC4-21159
 
 * 2017-12-11 [8eab793](../../commit/8eab793) - __(Nikolay Kondratyev)__ Release 1.18.0 
+* 2017-12-10 [9339287](../../commit/9339287) - __(Michail Merkushin)__ fix: Expire unique lock unless it deleted 
+https://jira.railsc.ru/browse/PC4-21159
+
+* 2017-12-08 [cdc53a0](../../commit/cdc53a0) - __(Michail Merkushin)__ chore: Refactor. Remove ugly monkey patching. Remove gem resque-lock. 
+https://jira.railsc.ru/browse/PC4-21159
+
 * 2017-11-01 [0bd7ab2](../../commit/0bd7ab2) - __(Simeon Movchan)__ Release 1.17.0 
 * 2017-10-31 [6d011ea](../../commit/6d011ea) - __(Simeon Movchan)__ feat: warning levels support in queues monitoring 
 https://jira.railsc.ru/browse/SERVICES-2051
