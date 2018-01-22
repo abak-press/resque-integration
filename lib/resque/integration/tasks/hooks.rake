@@ -39,11 +39,6 @@ namespace :resque do
     # Support for resque-multi-job-forks
     require 'resque-multi-job-forks' if ENV['JOBS_PER_FORK'] || ENV['MINUTES_PER_FORK']
 
-    if Resque.config.resque_scheduler? && Resque.config.schedule_exists?
-      config = ERB.new(File.read(Resque.config.schedule_file)).result
-      Resque.schedule = YAML.load(config)
-    end
-
     if Resque.config.run_at_exit_hooks? && ENV['RUN_AT_EXIT_HOOKS'].nil?
       ENV['RUN_AT_EXIT_HOOKS'] = '1'
     end
