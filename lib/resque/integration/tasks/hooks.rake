@@ -10,6 +10,9 @@ namespace :resque do
     # (rails 3 не делают этого при запуске из rake-задачи)
     Rails.application.eager_load! if Rails::VERSION::MAJOR < 4
 
+    # Включаем логирование в resque
+    ENV['VERBOSE'] = '1'
+
     # перенаправление вывода в файл
     Resque::Integration::LogsRotator.redirect_std
     # слушать HUP сигнал для ротации логов
