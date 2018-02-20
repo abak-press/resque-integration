@@ -56,6 +56,7 @@ module Resque
     autoload :QueuesInfo, 'resque/integration/queues_info'
     autoload :Extensions, 'resque/integration/extensions'
     autoload :FailureBackends, 'resque/integration/failure_backends'
+    autoload :Priority, 'resque/integration/priority'
 
     extend ActiveSupport::Concern
 
@@ -77,7 +78,7 @@ module Resque
 
       # Mark Job as unique and set given +callback+ or +block+ as Unique Arguments procedure
       def unique(callback = nil, &block)
-        extend Unique
+        extend Unique unless unique?
 
         lock_on(&(callback || block))
       end
@@ -88,6 +89,11 @@ module Resque
       end
 
       def unique?
+        false
+      end
+
+      # Public: job used priority queues
+      def priority?
         false
       end
 
@@ -111,12 +117,14 @@ module Resque
 
       # Mark Job as ordered
       def ordered(options = {})
-        unique unless unique?
-        continuous
         extend Ordered
 
         self.max_iterations = options.fetch(:max_iterations, 20)
         self.uniqueness = Ordered::Uniqueness.new(&options[:unique]) if options.key?(:unique)
+      end
+
+      def prioritized
+        extend Priority
       end
     end
   end # module Integration

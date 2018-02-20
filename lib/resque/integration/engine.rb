@@ -1,5 +1,3 @@
-# coding: utf-8
-
 require 'redis'
 require 'redis/version'
 require 'rails/engine'
@@ -12,6 +10,7 @@ module Resque::Integration
     rake_tasks do
       load 'resque/integration/tasks/hooks.rake'
       load 'resque/integration/tasks/resque.rake'
+      load 'resque/integration/tasks/lock.rake'
     end
 
     # Читает конфиг-файлы config/resque.yml и config/resque.local.yml,
@@ -85,7 +84,12 @@ module Resque::Integration
     end
 
     initializer "resque-integration.extensions" do
-      ::Resque::Worker.send :include, ::Resque::Integration::Extensions::Worker
+      ::Resque::Worker.prepend ::Resque::Integration::Extensions::Worker
+      ::Resque::Job.singleton_class.prepend ::Resque::Integration::Extensions::Job
+    end
+
+    initializer 'resque-integration.application', before: :load_config_initializers do |app|
+      app.config.resque_job_status = {route_constraints: {domain: :current}}
     end
   end # class Engine
 end # module Resque::Integration

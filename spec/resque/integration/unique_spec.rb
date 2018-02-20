@@ -1,5 +1,3 @@
-# coding: utf-8
-
 require 'spec_helper'
 
 describe Resque::Integration::Unique, '#meta_id, #lock' do
@@ -9,12 +7,12 @@ describe Resque::Integration::Unique, '#meta_id, #lock' do
   context 'when unique arguments are not set' do
     it 'returns same results when equal arguments given' do
       job.meta_id('a', 'b').should eq job.meta_id('a', 'b')
-      job.lock(nil, 'a', 'b').should eq job.lock(nil, 'a', 'b')
+      job.lock_id('a', 'b').should eq job.lock_id('a', 'b')
     end
 
     it 'returns different results when different arguments given' do
       job.meta_id('a', 'b').should_not eq job.meta_id('a', 'c')
-      job.lock(nil, 'a', 'b').should_not eq job.lock(nil, 'a', 'c')
+      job.lock_id('a', 'b').should_not eq job.lock_id('a', 'c')
     end
   end
 
@@ -24,15 +22,17 @@ describe Resque::Integration::Unique, '#meta_id, #lock' do
 
     it 'returns same results when equal arguments given' do
       job.meta_id('a', 'b').should eq job.meta_id('a', 'b')
-      job.lock(nil, 'a', 'b').should eq job.lock(nil, 'a', 'b')
+      job.lock_id('a', 'b').should eq job.lock_id('a', 'b')
+      job.lock_id('a', foo: 1).should eq job.lock_id('a', foo: 1)
 
       job.meta_id('a', 'b').should eq job.meta_id('c', 'b')
-      job.lock(nil, 'a', 'b').should eq job.lock(nil, 'c', 'b')
+      job.lock_id('a', 'b').should eq job.lock_id('c', 'b')
+      job.lock_id('a', foo: 1).should eq job.lock_id('c', foo: 1)
     end
 
     it 'returns different results when different arguments given' do
       job.meta_id('a', 'b').should_not eq job.meta_id('a', 'c')
-      job.lock(nil, 'a', 'b').should_not eq job.lock(nil, 'a', 'c')
+      job.lock_id('a', 'b').should_not eq job.lock_id('a', 'c')
     end
   end
 end
@@ -49,8 +49,6 @@ describe Resque::Integration::Unique, '#enqueue, #enqueued?' do
   end
 
   it 'returns new meta when job is enqueued' do
-    JobEnqueueTest.should_receive(:enqueue_without_check).and_call_original
-
     meta = JobEnqueueTest.enqueue(1)
     meta.should be_a Resque::Plugins::Meta::Metadata
 
@@ -125,41 +123,5 @@ describe Resque::Integration::Unique, '#dequeue' do
     JobDequeueTest.should be_enqueued(1)
 
     worker.join
-  end
-end
-
-describe Resque::Integration::Unique, '#on_failure_retry_with_keep_meta_id' do
-  class JobUniqueWithRetry
-    include Resque::Integration
-    extend Resque::Plugins::Retry
-
-    @retry_limit = 2
-    @retry_delay = 1
-    @retry_exceptions = [IOError]
-
-    unique do |foo_var, params|
-      params[:foo]
-    end
-
-    queue :default
-
-    def self.execute(foo_var, params)
-      sleep 0.2
-      Resque.logger.info 'Hello, world'
-    end
-  end
-
-  let(:worker) { Resque::Worker.new(:default) }
-  let(:job) { Resque::Job.new(:default, {'class' => 'JobUniqueWithRetry', 'args' => ['abcd', 1, {foo: 'bar'}]}) }
-
-  before do
-    worker.working_on(job)
-  end
-
-  it do
-    expect { worker.unregister_worker }.not_to raise_error
-
-    expect(Resque::Failure.count).to eq 1
-    expect(Resque::Failure.all['exception']).to eq 'Resque::DirtyExit'
   end
 end

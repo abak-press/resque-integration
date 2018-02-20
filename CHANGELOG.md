@@ -1,4 +1,33 @@
-# v1.16.2
+# v2.0.0
+
+* 2017-12-21 [1073796](../../commit/1073796) - __(Dmitry Bochkarev)__ Release 2.0.0 
+https://github.com/abak-press/pulscen/releases/tag/20171220
+
+* 2017-12-18 [dd2f2c5](../../commit/dd2f2c5) - __(Michail Merkushin)__ fix: Properly encode lock's args with Hashes 
+https://jira.railsc.ru/browse/GOODS-1001
+
+* 2017-12-11 [b0adbfa](../../commit/b0adbfa) - __(Michail Merkushin)__ feat: Add task for expire all resque locks 
+https://jira.railsc.ru/browse/PC4-21159
+
+* 2017-12-11 [8eab793](../../commit/8eab793) - __(Nikolay Kondratyev)__ Release 1.18.0 
+* 2017-12-10 [9339287](../../commit/9339287) - __(Michail Merkushin)__ fix: Expire unique lock unless it deleted 
+https://jira.railsc.ru/browse/PC4-21159
+
+* 2017-12-08 [cdc53a0](../../commit/cdc53a0) - __(Michail Merkushin)__ chore: Refactor. Remove ugly monkey patching. Remove gem resque-lock. 
+https://jira.railsc.ru/browse/PC4-21159
+
+* 2017-11-01 [0bd7ab2](../../commit/0bd7ab2) - __(Simeon Movchan)__ Release 1.17.0 
+* 2017-10-31 [6d011ea](../../commit/6d011ea) - __(Simeon Movchan)__ feat: warning levels support in queues monitoring 
+https://jira.railsc.ru/browse/SERVICES-2051
+
+* 2017-10-23 [deec7c2](../../commit/deec7c2) - __(Andrew N. Shalaev)__ Release v1.16.4 
+* 2017-10-23 [3b1cff6](../../commit/3b1cff6) - __(Andrew N. Shalaev)__ feature: optional constraint for resque job_status route 
+* 2017-09-11 [2de30b3](../../commit/2de30b3) - __(Andrew N. Shalaev)__ Release v1.16.3 
+* 2017-09-11 [7902ea0](../../commit/7902ea0) - __(Andrew N. Shalaev)__ Revert "feature: test of Resque::DirtyExit exception for uniq worker with retry" 
+This reverts commit d3d423f549a3b5015741d71a56a26ff9f840e970.
+
+* 2017-09-11 [3b55c58](../../commit/3b55c58) - __(Andrew N. Shalaev)__ Revert "fix: keep meta_id on_failure_retry callback if Resque::DirtyExit occurred" 
+This reverts commit 1ff2f4eb5839a5d6da61f0c7d47e0a697954cd3c.
 
 * 2017-09-07 [ddfaf30](../../commit/ddfaf30) - __(korotaev)__ Release 1.16.2 
 * 2017-09-06 [92531ff](../../commit/92531ff) - __(korotaev)__ fix(controller): disable browser cache 
@@ -12,6 +41,8 @@ https://jira.railsc.ru/browse/GOODS-819
 https://jira.railsc.ru/browse/BPC-10431
 
 * 2017-08-31 [d3d423f](../../commit/d3d423f) - __(Andrew N. Shalaev)__ feature: test of Resque::DirtyExit exception for uniq worker with retry 
+* 2017-08-01 [e6d9605](../../commit/e6d9605) - __(Nikolay Kondratyev)__ test: remove duplicated requiring 
+* 2017-08-01 [743bd72](../../commit/743bd72) - __(Nikolay Kondratyev)__ test: eliminate deprecation warnings 
 * 2017-07-18 [d4485c4](../../commit/d4485c4) - __(Dmitry Bochkarev)__ Release 1.15.0 
 Опрос статуса джоба перенесен из приложения на sinatra в контроллер.
 Добавлена возможность передавать в хэлпер job_status_url идентификатор
@@ -33,6 +64,14 @@ https://jira.railsc.ru/browse/SERVICES-1909
 * 2017-07-17 [b1c5b8b](../../commit/b1c5b8b) - __(Dmitry Bochkarev)__ feature: контроллер для опроса статуса джобов 
 https://jira.railsc.ru/browse/SERVICES-1909
 
+* 2017-07-04 [0b3a1f1](../../commit/0b3a1f1) - __(Semyon Pupkov)__ fix: proper convert hash in args with priority in retry 
+* 2017-06-23 [77168c9](../../commit/77168c9) - __(Semyon Pupkov)__ fix: proper implementation for allow dequeue job (#106) 
+- Remove meta, meta should be only in unique job
+- Save priority value in args for allowing dequeue job
+
+https://jira.railsc.ru/browse/USERS-421
+* 2017-06-21 [2d6bcef](../../commit/2d6bcef) - __(Semyon Pupkov)__ feature: allow to use priority queues (#105) 
+https://jira.railsc.ru/browse/USERS-421
 * 2017-04-24 [d2fb358](../../commit/d2fb358) - __(Michail Merkushin)__ Release 1.14.1 
 * 2017-04-24 [ffa3563](../../commit/ffa3563) - __(Michail Merkushin)__ fix: Always schedule to specific queue 
 https://jira.railsc.ru/browse/PC4-19474
