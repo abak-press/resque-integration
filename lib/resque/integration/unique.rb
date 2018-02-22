@@ -119,6 +119,13 @@ module Resque
         !meta.working?
       end
 
+      def on_failure_retry(exception, *args)
+        # Keep meta_id if kill -9 (or ABRT)
+        @meta_id = args.first if exception.is_a?(::Resque::DirtyExit)
+
+        super
+      end
+
       # Before enqueue acquire a lock
       #
       # Returns boolean
