@@ -1,4 +1,14 @@
-# v2.0.0
+# v3.0.0
+
+* 2018-03-16 [e57b3bd](../../commit/e57b3bd) - __(Michail Merkushin)__ Release 3.0.0 
+* 2018-01-25 [927f57e](../../commit/927f57e) - __(Dmitry Bochkarev)__ fix: включение логирования в джобах 
+https://jira.railsc.ru/browse/PC4-21241
+https://github.com/abak-press/pulscen/pull/16402#issuecomment-360086865
+
+* 2018-01-22 [27b7b31](../../commit/27b7b31) - __(Dmitry Bochkarev)__ feature: обновление resque, resque-scheduler 
+https://jira.railsc.ru/browse/PC4-21241
+
+resque-scheduler требует версию resque >= 1.26
 
 * 2017-12-21 [1073796](../../commit/1073796) - __(Dmitry Bochkarev)__ Release 2.0.0 
 https://github.com/abak-press/pulscen/releases/tag/20171220

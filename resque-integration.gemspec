@@ -17,7 +17,7 @@ Gem::Specification.new do |gem|
 
   gem.metadata['allowed_push_host'] = 'https://gems.railsc.ru'
 
-  gem.add_runtime_dependency 'resque', '= 1.25.2'
+  gem.add_runtime_dependency 'resque', '>= 1.25.2'
   gem.add_runtime_dependency 'railties', '>= 3.0.0', '< 5'
   gem.add_runtime_dependency 'activerecord', '>= 3.0.0', '< 5'
   gem.add_runtime_dependency 'actionpack', '>= 3.0.0', '< 5'
@@ -26,7 +26,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'resque-progress', '~> 1.0.1'
   gem.add_runtime_dependency 'resque-multi-job-forks', '~> 0.4.2'
   gem.add_runtime_dependency 'resque-failed-job-mailer', '~> 0.0.3'
-  gem.add_runtime_dependency 'resque-scheduler', '~> 4.0', '< 4.2.1'
+  gem.add_runtime_dependency 'resque-scheduler', '~> 4.0'
   gem.add_runtime_dependency 'resque-retry', '~> 1.5'
   gem.add_runtime_dependency 'god', '~> 0.13.4'
 
