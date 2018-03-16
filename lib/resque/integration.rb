@@ -11,6 +11,7 @@ require 'multi_json'
 require 'resque'
 silence_warnings { require 'resque/plugins/meta' }
 
+require 'resque/integration/monkey_patch/verbose_formatter'
 require 'resque/integration/hooks'
 
 require 'resque/scheduler'

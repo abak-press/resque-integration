@@ -22,6 +22,14 @@ module Resque::Integration
       Resque.config = Resque::Integration::Configuration.new(*paths.map(&:to_s))
     end
 
+    # Читает конфиг-файл config/resque_schedule.yml
+    initializer 'resque-integration.schedule_config' do
+      if Resque.config.resque_scheduler? && Resque.config.schedule_exists?
+        config = ERB.new(File.read(Resque.config.schedule_file)).result
+        Resque.schedule = YAML.load(config)
+      end
+    end
+
     # Устанавливает для Resque соединение с Редисом,
     # данные берутся из конфига (см. выше)
     initializer 'resque-integration.redis' do
