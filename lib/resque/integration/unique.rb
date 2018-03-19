@@ -120,6 +120,8 @@ module Resque
       end
 
       def on_failure_retry(exception, *args)
+        return unless defined?(super)
+
         # Keep meta_id if kill -9 (or ABRT)
         @meta_id = args.first if exception.is_a?(::Resque::DirtyExit)
 

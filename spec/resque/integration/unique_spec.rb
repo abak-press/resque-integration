@@ -153,12 +153,11 @@ describe Resque::Integration::Unique, '#on_failure_retry' do
     unique
 
     def self.execute
-      raise 'Some exception in Job'
+      raise ArgumentError.new('Some exception in Job')
     end
   end
 
   let(:worker) { Resque::Worker.new(:default) }
-
 
   context 'when unique with retry' do
     let(:job) { Resque::Job.new(:default, 'class' => 'JobUniqueWithRetry', 'args' => ['abcd', 1, {foo: 'bar'}]) }
@@ -177,7 +176,8 @@ describe Resque::Integration::Unique, '#on_failure_retry' do
     let(:job) { Resque::Job.new(:default, 'class' => 'JobOnlyUnique', 'args' => ['abcd']) }
 
     it do
-      expect { job.perform }.to raise_error(RuntimeError, /no superclass method `on_failure_retry'/)
+      expect { job.perform }.not_to raise_error(RuntimeError, /no superclass method `on_failure_retry'/)
+      expect { job.perform }.to raise_error(ArgumentError)
     end
   end
 end
