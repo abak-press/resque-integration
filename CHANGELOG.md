@@ -1,6 +1,14 @@
-# v3.0.0
+# v3.0.1
 
+* 2018-03-20 [ecf1c49](../../commit/ecf1c49) - __(Andrew N. Shalaev)__ Release v3.0.1 
+* 2018-03-19 [0837474](../../commit/0837474) - __(Andrew N. Shalaev)__ fix: pass on_failure_retry hook if retry is not defined 
+https://jira.railsc.ru/browse/BPC-11091
+
+* 2018-03-19 [eeacf88](../../commit/eeacf88) - __(Andrew N. Shalaev)__ feature: spec on missing superclass for on_failure_retry 
 * 2018-03-16 [e57b3bd](../../commit/e57b3bd) - __(Michail Merkushin)__ Release 3.0.0 
+* 2018-02-22 [bd45620](../../commit/bd45620) - __(Andrew N. Shalaev)__ fix: keep meta_id on_failure_retry callback if Resque::DirtyExit occurred 
+https://jira.railsc.ru/browse/BPC-10431
+
 * 2018-01-25 [927f57e](../../commit/927f57e) - __(Dmitry Bochkarev)__ fix: включение логирования в джобах 
 https://jira.railsc.ru/browse/PC4-21241
 https://github.com/abak-press/pulscen/pull/16402#issuecomment-360086865
