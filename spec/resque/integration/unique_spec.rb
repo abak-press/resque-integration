@@ -125,3 +125,59 @@ describe Resque::Integration::Unique, '#dequeue' do
     worker.join
   end
 end
+
+describe Resque::Integration::Unique, '#on_failure_retry' do
+  class JobUniqueWithRetry
+    include Resque::Integration
+    extend Resque::Plugins::Retry
+
+    @retry_limit = 2
+    @retry_delay = 1
+    @retry_exceptions = [IOError]
+
+    unique do |foo_var, params|
+      params[:foo]
+    end
+
+    queue :default
+
+    def self.execute(foo_var, params)
+      sleep 0.2
+      Resque.logger.info 'Hello, world'
+    end
+  end
+
+  class JobOnlyUnique
+    include Resque::Integration
+
+    unique
+
+    def self.execute
+      raise ArgumentError.new('Some exception in Job')
+    end
+  end
+
+  let(:worker) { Resque::Worker.new(:default) }
+
+  context 'when unique with retry' do
+    let(:job) { Resque::Job.new(:default, 'class' => 'JobUniqueWithRetry', 'args' => ['abcd', 1, {foo: 'bar'}]) }
+
+    before { worker.working_on(job) }
+
+    it do
+      expect { worker.unregister_worker }.not_to raise_error
+
+      expect(Resque::Failure.count).to eq 1
+      expect(Resque::Failure.all['exception']).to eq 'Resque::DirtyExit'
+    end
+  end
+
+  context 'when only unique' do
+    let(:job) { Resque::Job.new(:default, 'class' => 'JobOnlyUnique', 'args' => ['abcd']) }
+
+    it do
+      expect { job.perform }.not_to raise_error(RuntimeError, /no superclass method `on_failure_retry'/)
+      expect { job.perform }.to raise_error(ArgumentError)
+    end
+  end
+end
