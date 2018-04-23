@@ -13,7 +13,7 @@ namespace :resque do
     if god_running?
       puts `#{god} start resque`
     else
-      puts `#{god} -c #{Resque.config.config_file} -P #{Resque.config.pid_file} -l #{Resque.config.log_file}`
+      puts `#{god} -c #{Resque.config.config_file} -P #{Resque.config.pid_file} --log #{Resque.config.god_log_file} --log-level #{Resque.config.god_log_level} --no-syslog`
     end
   end
 
