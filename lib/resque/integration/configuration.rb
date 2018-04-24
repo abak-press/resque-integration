@@ -201,6 +201,14 @@ module Resque
         template.result(binding)
       end
 
+      def god_log_file
+        self['resque.god_log_file'] || ::Rails.root.join('log/god.log').to_s
+      end
+
+      def god_log_level
+        self['resque.god_log_level'] || 'info'
+      end
+
       private
       def load(path)
         if File.exists?(path)
