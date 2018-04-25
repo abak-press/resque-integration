@@ -1,7 +1,9 @@
-# v3.1.0
+# v3.2.0
 
+* 2018-04-25 [b8c4563](../../commit/b8c4563) - __(Artem Napolskih)__ Release v3.2.0 
 * 2018-04-23 [5228147](../../commit/5228147) - __(Andrew N. Shalaev)__ Release v3.1.0 
 * 2018-04-23 [19d47b4](../../commit/19d47b4) - __(Andrew N. Shalaev)__ feature: separate log file for god 
+* 2018-04-16 [3acf8f0](../../commit/3acf8f0) - __(Artem Napolskih)__ fix: use current rake tasks 
 * 2018-03-20 [ecf1c49](../../commit/ecf1c49) - __(Andrew N. Shalaev)__ Release v3.0.1 
 * 2018-03-19 [0837474](../../commit/0837474) - __(Andrew N. Shalaev)__ fix: pass on_failure_retry hook if retry is not defined 
 https://jira.railsc.ru/browse/BPC-11091
