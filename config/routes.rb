@@ -6,7 +6,7 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/_job_(/:id)',
+  get "#{Rails.application.config.resque_job_status.fetch(:route_path)}(/:id)",
       to: 'resque/jobs#show',
       as: 'job_status',
       constraints: ::Rails.application.config.resque_job_status.fetch(:route_constraints)
