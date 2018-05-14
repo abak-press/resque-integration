@@ -1,4 +1,8 @@
-# v3.2.0
+# v3.3.0
+
+* 2018-05-14 [e4e32bc](../../commit/e4e32bc) - __(Zhidkov Denis)__ Release 3.3.0 
+* 2018-05-14 [cc0877a](../../commit/cc0877a) - __(Zhidkov Denis)__ feat: allow to customize path to job status metal 
+https://jira.railsc.ru/browse/ORDERS-1674
 
 * 2018-04-25 [b8c4563](../../commit/b8c4563) - __(Artem Napolskih)__ Release v3.2.0 
 * 2018-04-23 [5228147](../../commit/5228147) - __(Andrew N. Shalaev)__ Release v3.1.0 
