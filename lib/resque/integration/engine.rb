@@ -97,7 +97,7 @@ module Resque::Integration
     end
 
     initializer 'resque-integration.application', before: :load_config_initializers do |app|
-      app.config.resque_job_status = {route_constraints: {domain: :current}}
+      app.config.resque_job_status = {route_constraints: {domain: :current}, route_path: '/_job_'}
     end
   end # class Engine
 end # module Resque::Integration
