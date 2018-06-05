@@ -98,11 +98,22 @@ module Resque
         false
       end
 
-      # extend resque-retry
+      # Extend resque-retry.
       #
       # options - Hash
-      #           :limit - Integer (default: 2)
-      #           :delay - Integer (default: 60)
+      #
+      #   :limit - Integer (default: 2)
+      #   :delay - Integer (default: 60)
+      #   :expire_retry_key_after - Integer (default: 3200), истечение ключа в секундах. Если
+      #
+      #     t - среднее время выполнения одного джоба
+      #     n - текущее кол-во джобов в очереди
+      #     k - кол-во воркеров
+      #
+      #     то expire_retry_key_after >= t * n / k
+      #
+      #     Иначе ключ истечет, прежде чем джоб отработает.
+      #
       #
       # Returns nothing
       def retrys(options = {})
@@ -114,6 +125,7 @@ module Resque
 
         @retry_limit = options.fetch(:limit, 2)
         @retry_delay = options.fetch(:delay, 60)
+        @expire_retry_key_after = options.fetch(:expire_retry_key_after, 1.hour.seconds)
       end
 
       # Mark Job as ordered

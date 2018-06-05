@@ -134,6 +134,7 @@ describe Resque::Integration::Unique, '#on_failure_retry' do
     @retry_limit = 2
     @retry_delay = 1
     @retry_exceptions = [IOError]
+    @expire_retry_key_after = 300
 
     unique do |foo_var, params|
       params[:foo]
