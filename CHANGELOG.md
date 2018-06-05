@@ -1,4 +1,16 @@
-# v3.3.0
+# v3.4.0
+
+* 2018-06-05 [3fc2608](../../commit/3fc2608) - __(Pavel Galkin)__ Release 3.4.0 
+* 2018-06-05 [6ec7a38](../../commit/6ec7a38) - __(Pavel Galkin)__ feat: resque:expire task 
+https://jira.railsc.ru/browse/PC4-21225
+
+Без теста, потому что тест писать это выносить count в аргумент, парсить
+из строки с дефолтом, тут еще mock редис... Сложно.
+
+* 2018-06-05 [236379c](../../commit/236379c) - __(Pavel Galkin)__ fix: add expiration time for retry counters 
+https://jira.railsc.ru/browse/PC4-21225
+
+В тест тоже добавил, т.к. неизвестно очищается ли оттуда.
 
 * 2018-05-14 [e4e32bc](../../commit/e4e32bc) - __(Zhidkov Denis)__ Release 3.3.0 
 * 2018-05-14 [cc0877a](../../commit/cc0877a) - __(Zhidkov Denis)__ feat: allow to customize path to job status metal 
