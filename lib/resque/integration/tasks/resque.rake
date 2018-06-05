@@ -1,5 +1,3 @@
-# coding: utf-8
-
 namespace :resque do
   desc 'Generate God configuration file'
   task :conf => :environment do
@@ -49,6 +47,25 @@ namespace :resque do
   desc 'Shows Resque status'
   task :status do
     puts `#{god} status resque`
+  end
+
+  desc 'Установить время истечения resque:resque-retry:*'
+  task :expire => :environment do
+    cursor = 0
+    redis = Redis.current
+
+    loop do
+      cursor, keys = redis.scan(cursor, count: 10_000, match: 'resque:resque-retry:*')
+      cursor = cursor.to_i
+
+      unless keys.empty?
+        redis.pipelined do
+          keys.each { |key| redis.expire(key, 1.hour.seconds) }
+        end
+      end
+
+      break if cursor.zero?
+    end
   end
 
   namespace :logs do
