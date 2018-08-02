@@ -1,4 +1,3 @@
-# coding: utf-8
 require 'spec_helper'
 
 RSpec.describe Resque::Integration do
@@ -98,6 +97,37 @@ RSpec.describe Resque::Integration do
           UniqueJobWithBlock.enqueue(1, one: 1, two: 2)
 
           expect(UniqueJobWithBlock.locked?(1, one: 1, two: 2)).to eq(false)
+        end
+      end
+    end
+  end
+
+  describe 'retries' do
+    context 'with default params' do
+      let(:job) { Resque::Job.new(:test_retries, 'class' => 'RetriesJob', 'args' => ['meta']) }
+
+      it do
+        expect { job.perform }.to raise_error StandardError
+        expect(Resque.delayed_queue_schedule_size).to eq 1
+      end
+    end
+
+    context 'with custom params' do
+      context 'with StandardError in exceptions' do
+        let(:job) { Resque::Job.new(:test_retries, 'class' => 'RetriesStandardErrorJob', 'args' => ['meta']) }
+
+        it do
+          expect { job.perform }.to raise_error StandardError
+          expect(Resque.delayed_queue_schedule_size).to eq 1
+        end
+      end
+
+      context 'with ArgumentError in exceptions' do
+        let(:job) { Resque::Job.new(:test_retries, 'class' => 'RetriesArgumentErrorJob', 'args' => ['meta']) }
+
+        it do
+          expect { job.perform }.to raise_error StandardError
+          expect(Resque.delayed_queue_schedule_size).to eq 0
         end
       end
     end
