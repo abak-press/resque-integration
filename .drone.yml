@@ -10,7 +10,7 @@ build:
       - COMPOSE_FILE_EXT=drone
       - RUBY_IMAGE_TAG=2.2-latest
     commands:
-      - wrapdocker docker -v
+      - prepare-build
 
       - fetch-images --image abakpress/ruby-app:$RUBY_IMAGE_TAG
       - dip provision

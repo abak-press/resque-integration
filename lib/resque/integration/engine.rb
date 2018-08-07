@@ -73,7 +73,7 @@ module Resque::Integration
     end
 
     # Глушим ошибки, по которым происходит автоматический перезапуск
-    initializer 'resque-integration.retrys' do
+    initializer 'resque-integration.retrys' do |app|
       require 'resque/failure'
       require 'resque/failure/redis'
 
@@ -89,6 +89,11 @@ module Resque::Integration
       end
 
       Resque::Failure.backend = Resque::Failure::MultipleWithRetrySuppression
+      # Hash - temporary exceptions
+      #
+      # example:
+      #   {PG::TRDeadlockDetected => 20, Net::OpenTimeout => 123}
+      app.config.temporary_exceptions = {}
     end
 
     initializer "resque-integration.extensions" do
