@@ -122,7 +122,7 @@ module Resque
           @retry_exceptions = @retry_exceptions && @retry_exceptions.dup || {}
           @retry_exceptions = @retry_exceptions.product([@retry_delay]).to_h if @retry_exceptions.is_a? Array
 
-          @retry_exceptions.reverse_merge!(Rails.application.config.temporary_exceptions)
+          @retry_exceptions.reverse_merge!(Resque.config.temporary_exceptions)
         end
 
         @expire_retry_key_after = options.fetch(:expire_retry_key_after, 1.hour.seconds)

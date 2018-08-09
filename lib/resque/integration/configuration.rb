@@ -209,6 +209,24 @@ module Resque
         self['resque.god_log_level'] || 'info'
       end
 
+      # Public: Temporary exceptions.
+      #
+      # Examples
+      #
+      #   temporary_exceptions
+      #   # => {PG::TRDeadlockDetected => 20, Net::OpenTimeout => 123}
+      #
+      # Returns Hash.
+      def temporary_exceptions
+        return @temporary_exceptions if defined?(@temporary_exceptions)
+
+        return {} unless self['resque.temporary_exceptions']
+
+        @temporary_exceptions = self['resque.temporary_exceptions'].each_with_object({}) do |(key, value), result|
+          result[key.constantize] = value
+        end
+      end
+
       private
       def load(path)
         if File.exists?(path)
