@@ -1,5 +1,7 @@
-# v3.4.0
+# v3.4.1
 
+* 2018-08-21 [b56dcc8](../../commit/b56dcc8) - __(Artem Napolskih)__ chore: Add automatic publication 
+* 2018-08-15 [5e90b55](../../commit/5e90b55) - __(Artem Napolskih)__ feat: rails 5-x support added 
 * 2018-06-05 [3fc2608](../../commit/3fc2608) - __(Pavel Galkin)__ Release 3.4.0 
 * 2018-06-05 [6ec7a38](../../commit/6ec7a38) - __(Pavel Galkin)__ feat: resque:expire task 
 https://jira.railsc.ru/browse/PC4-21225
