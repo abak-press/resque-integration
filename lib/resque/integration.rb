@@ -100,33 +100,34 @@ module Resque
 
       # Extend resque-retry.
       #
-      # options - Hash
+      # options - Hash of retry options (default: {}):
+      #           :limit                  - Integer max number of retry attempts (default: 2)
+      #           :delay                  - Integer seconds between retry attempts (default: 60)
+      #           :exceptions             - Array or Hash of specific exceptions to retry (optional)
+      #           :temporary              - boolean retry on temporary exceptions list (default: false)
+      #           :expire_retry_key_after - Integer expire of retry key in redis (default: 3200)
       #
-      #   :limit - Integer (default: 2)
-      #   :delay - Integer (default: 60)
-      #   :expire_retry_key_after - Integer (default: 3200), истечение ключа в секундах. Если
-      #
-      #     t - среднее время выполнения одного джоба
-      #     n - текущее кол-во джобов в очереди
-      #     k - кол-во воркеров
-      #
-      #     то expire_retry_key_after >= t * n / k
-      #
-      #     Иначе ключ истечет, прежде чем джоб отработает.
-      #
-      #
-      # Returns nothing
+      # Returns nothing.
       def retrys(options = {})
-        if unique?
-          raise '`retrys` should be declared higher in code than `unique`'
-        end
+        raise '`retries` should be declared higher in code than `unique`' if unique?
 
         extend Resque::Plugins::Retry
 
         @retry_limit = options.fetch(:limit, 2)
         @retry_delay = options.fetch(:delay, 60)
+
+        @retry_exceptions = options[:exceptions] if options.key? :exceptions
+
+        if options[:temporary]
+          @retry_exceptions = @retry_exceptions && @retry_exceptions.dup || {}
+          @retry_exceptions = @retry_exceptions.product([@retry_delay]).to_h if @retry_exceptions.is_a? Array
+
+          @retry_exceptions.reverse_merge!(Resque.config.temporary_exceptions)
+        end
+
         @expire_retry_key_after = options.fetch(:expire_retry_key_after, 1.hour.seconds)
       end
+      alias retries retrys
 
       # Mark Job as ordered
       def ordered(options = {})
