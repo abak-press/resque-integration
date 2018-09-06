@@ -54,6 +54,18 @@ describe Resque::Integration::Configuration do
       it { expect(config.run_at_exit_hooks?).to be_falsey }
     end
   end
+
+  describe '#temporary_exceptions' do
+    context 'when default' do
+      it { expect(config.temporary_exceptions).to eq({}) }
+    end
+
+    context 'when defined' do
+      let(:config_yaml) { {'resque' => {'temporary_exceptions' => {'StandardError' => 12}}} }
+
+      it { expect(config.temporary_exceptions).to eq(StandardError => 12) }
+    end
+  end
 end
 
 describe Resque::Integration::Configuration::Notifier do
