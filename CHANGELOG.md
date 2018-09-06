@@ -1,7 +1,14 @@
-# v3.4.1
+# v3.5.0
 
+* 2018-09-06 [49717a5](../../commit/49717a5) - __(Mikhail Nelaev)__ Release 3.5.0 
 * 2018-08-21 [b56dcc8](../../commit/b56dcc8) - __(Artem Napolskih)__ chore: Add automatic publication 
 * 2018-08-15 [5e90b55](../../commit/5e90b55) - __(Artem Napolskih)__ feat: rails 5-x support added 
+* 2018-08-09 [3fa8ce0](../../commit/3fa8ce0) - __(terentev)__ feat: move temporary_exceptions to yml config 
+https://jira.railsc.ru/browse/GOODS-1418
+
+* 2018-08-02 [528feab](../../commit/528feab) - __(terentev)__ feat: adds ability for retry jobs after temporary errors 
+https://jira.railsc.ru/browse/GOODS-1418
+
 * 2018-06-05 [3fc2608](../../commit/3fc2608) - __(Pavel Galkin)__ Release 3.4.0 
 * 2018-06-05 [6ec7a38](../../commit/6ec7a38) - __(Pavel Galkin)__ feat: resque:expire task 
 https://jira.railsc.ru/browse/PC4-21225
