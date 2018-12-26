@@ -26,7 +26,12 @@ namespace :resque do
     end
 
     Resque.before_fork do
-      Resque.redis.client.disconnect
+      client = if Gem::Version.new(::Redis::VERSION) < Gem::Version.new('4')
+                 Resque.redis.client
+               else
+                 Resque.redis._client
+               end
+      client.disconnect
 
       ActiveRecord::Base.connection_handler.clear_all_connections!
     end
@@ -36,7 +41,12 @@ namespace :resque do
 
       ActiveRecord::Base.establish_connection
 
-      Resque.redis.client.connect
+      client = if Gem::Version.new(::Redis::VERSION) < Gem::Version.new('4')
+                 Resque.redis.client
+               else
+                 Resque.redis._client
+               end
+      client.connect
     end
 
     # Support for resque-multi-job-forks
