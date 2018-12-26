@@ -1,5 +1,7 @@
-# v3.5.0
+# v3.5.1
 
+* 2018-12-21 [c2b890d](../../commit/c2b890d) - __(Andrew N. Shalaev)__ Release v3.5.1 
+* 2018-12-21 [d7478c2](../../commit/d7478c2) - __(Andrew N. Shalaev)__ fix: add support for redis >= v4 
 * 2018-09-06 [49717a5](../../commit/49717a5) - __(Mikhail Nelaev)__ Release 3.5.0 
 * 2018-08-21 [b56dcc8](../../commit/b56dcc8) - __(Artem Napolskih)__ chore: Add automatic publication 
 * 2018-08-15 [5e90b55](../../commit/5e90b55) - __(Artem Napolskih)__ feat: rails 5-x support added 
