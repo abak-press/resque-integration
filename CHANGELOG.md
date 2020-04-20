@@ -1,5 +1,11 @@
-# v3.5.1
+# v3.5.2
 
+* 2020-04-20 [d36e4b2](../../commit/d36e4b2) - __(TamarinEA)__ chore: use drone 1.6 
+* 2020-04-19 [e33faa6](../../commit/e33faa6) - __(TamarinEA)__ Release 3.5.2 
+* 2020-04-16 [35eafa2](../../commit/35eafa2) - __(TamarinEA)__ fix: reload ordered meta before save 
+https://jira.railsc.ru/browse/GOODS-2326
+
+* 2020-04-16 [0c53eef](../../commit/0c53eef) - __(TamarinEA)__ chore: lock gems for support ruby 2.2 
 * 2018-12-21 [c2b890d](../../commit/c2b890d) - __(Andrew N. Shalaev)__ Release v3.5.1 
 * 2018-12-21 [d7478c2](../../commit/d7478c2) - __(Andrew N. Shalaev)__ fix: add support for redis >= v4 
 * 2018-09-06 [49717a5](../../commit/49717a5) - __(Mikhail Nelaev)__ Release 3.5.0 
