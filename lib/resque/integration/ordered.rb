@@ -112,12 +112,14 @@ module Resque
             begin
               execute(ordered_meta, *job_args)
             rescue Exception
+              ordered_meta.reload!
               ordered_meta.fail!
               raise
             ensure
               uniqueness.remove(meta_id, job_args) if uniqueness
             end
 
+            ordered_meta.reload!
             ordered_meta.finish!
 
             i += 1

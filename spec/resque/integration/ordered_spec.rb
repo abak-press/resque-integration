@@ -6,6 +6,15 @@ describe Resque::Integration::Ordered do
 
     unique { |company_id, param1| [company_id] }
     ordered max_iterations: 2
+
+    def self.execute(ordered_meta, arg1, arg2)
+      old_meta = @meta_id
+      @meta_id = ordered_meta.meta_id
+
+      at(arg1, arg2, 'some message')
+
+      @meta_id = old_meta
+    end
   end
 
   class UniqueTestJob
@@ -60,6 +69,16 @@ describe Resque::Integration::Ordered do
     meta_id = TestJob.meta_id(1, 10)
     TestJob.perform(meta_id)
     expect(TestJob.ordered_queue_size(meta_id)).to eq 2
+  end
+
+  it 'save ordered meta' do
+    ordered_meta_id = TestJob.enqueue(1, 10).meta_id
+    meta_id = TestJob.meta_id(1, 10)
+    TestJob.perform(meta_id)
+    ordered_meta = TestJob.get_meta(ordered_meta_id)
+
+    expect(ordered_meta).to be_finished
+    expect(ordered_meta.progress).to eq(num: 1, total: 10, percent: 10, message: 'some message')
   end
 
   context 'uniqueness' do

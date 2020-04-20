@@ -1,28 +1,54 @@
-build:
-  test:
-    image: abakpress/dind-testing
-    pull: true
-    privileged: true
-    volumes:
-      - /home/data/drone/images:/images
-      - /home/data/drone/gems:/bundle
+name: build
+
+kind: pipeline
+type: docker
+
+volumes:
+  - name: images
+    host:
+      path: /home/data/drone/images
+  - name: bundle
+    host:
+      path: /home/data/drone/gems
+
+spec_step_common: &spec_step_common
+  image: abakpress/dind-testing
+  pull: always
+  privileged: true
+  volumes:
+    - name: images
+      path: /images
+    - name: bundle
+      path: /bundle
+  commands:
+    - prepare-build
+    - fetch-images --image abakpress/ruby-app:$RUBY_IMAGE_TAG
+    - dip provision
+    - dip rspec
+
+steps:
+  - name: Tests Ruby 2.2
     environment:
-      - COMPOSE_FILE_EXT=drone
-      - RUBY_IMAGE_TAG=2.2-latest
-    commands:
-      - prepare-build
+      COMPOSE_FILE_EXT: drone
+      DOCKER_RUBY_VERSION: 2.2
+      RUBY_IMAGE_TAG: 2.2-latest
+      RAILS_ENV: test
+    <<: *spec_step_common
 
-      - fetch-images --image abakpress/ruby-app:$RUBY_IMAGE_TAG
-      - dip provision
-      - dip rspec
+  - name: Tests Ruby 2.3
+    environment:
+      COMPOSE_FILE_EXT: drone
+      DOCKER_RUBY_VERSION: 2.3
+      RUBY_IMAGE_TAG: 2.3-latest
+      RAILS_ENV: test
+    <<: *spec_step_common
 
-  release:
-    image: abakpress/gem-publication
+  - name: release
+    image: abakpress/gem-publication:latest
     pull: true
     when:
       event: push
       branch: master
-    volumes:
-      - /home/data/drone/rubygems:/root/.gem
+      status: success
     commands:
-      - release-gem --public
+      - release-gem
