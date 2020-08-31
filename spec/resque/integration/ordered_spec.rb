@@ -103,4 +103,42 @@ describe Resque::Integration::Ordered do
       expect(meta.meta_id).to_not eq UniqueTestJob.enqueue(1, 20).meta_id
     end
   end
+
+  describe '#in_ordered_queue?' do
+    before do
+      allow(TestJob).to receive(:rand).and_return(123)
+
+      Timecop.freeze
+    end
+
+    it do
+      TestJob.enqueue(1, 10)
+      TestJob.enqueue(1, 20)
+
+      expect(TestJob.in_ordered_queue?(1, 10)).to be_instance_of(Resque::Plugins::Meta::Metadata)
+      expect(TestJob.in_ordered_queue?(1, 10).meta_id).to eq TestJob.ordered_meta_id([1, 10])
+      expect(TestJob.in_ordered_queue?(1, 20)).to be_instance_of(Resque::Plugins::Meta::Metadata)
+      expect(TestJob.in_ordered_queue?(1, 20).meta_id).to eq TestJob.ordered_meta_id([1, 20])
+      expect(TestJob.in_ordered_queue?(1, 30)).to be_falsey
+    end
+
+    context 'when some complex arg' do
+      let(:complex_arg) { [Integer, {a: 1, 'b' => '2'}, 10] }
+
+      it do
+        expect(TestJob.in_ordered_queue?(1, complex_arg)).to be_falsey
+
+        TestJob.enqueue(1, complex_arg)
+
+        expect(TestJob.in_ordered_queue?(1, complex_arg)).to be_instance_of(Resque::Plugins::Meta::Metadata)
+        expect(TestJob.in_ordered_queue?(1, complex_arg).meta_id).to eq TestJob.ordered_meta_id([1, complex_arg])
+
+        TestJob.perform(TestJob.meta_id(1, complex_arg))
+
+        expect(TestJob.in_ordered_queue?(1, complex_arg)).to be_falsey
+      end
+    end
+
+    after { Timecop.return }
+  end
 end
