@@ -139,6 +139,31 @@ module Resque
       def ordered_meta_id(args)
         Digest::SHA1.hexdigest([Time.now.to_f, rand, self, args].join)
       end
+
+      def in_ordered_queue?(*args)
+        meta = enqueued?(*args)
+        return false unless meta
+
+        decoded_args = Resque.decode(Resque.encode(args))
+
+        args_key = ordered_queue_key(meta.meta_id)
+
+        args_meta_id = nil
+
+        ::Resque.redis.lrange(args_key, 0, -1).each do |job_args|
+          job_args = ::Resque.decode(job_args)
+          meta_id = job_args.shift
+
+          if job_args == decoded_args
+            args_meta_id = meta_id
+            break
+          end
+        end
+
+        return false unless args_meta_id
+
+        get_meta(args_meta_id)
+      end
     end
   end
 end
