@@ -1,8 +1,12 @@
-# v3.6.0
+# v3.7.0
 
+* 2020-10-05 [05e046b](../../commit/05e046b) - __(TamarinEA)__ Relesae 3.7.0 
 * 2020-10-05 [6f12054](../../commit/6f12054) - __(Andrew N. Shalaev)__ Release v3.6.0 
 * 2020-09-04 [ee6104e](../../commit/ee6104e) - __(Zhidkov Denis)__ fix: change resque restart command to avoid unwatched workers appearance 
 https://jira.railsc.ru/browse/BPC-17334
+
+* 2020-08-30 [7676652](../../commit/7676652) - __(TamarinEA)__ feature: add ordered queue check 
+https://jira.railsc.ru/browse/GOODS-2471
 
 * 2020-04-20 [d36e4b2](../../commit/d36e4b2) - __(TamarinEA)__ chore: use drone 1.6 
 * 2020-04-19 [e33faa6](../../commit/e33faa6) - __(TamarinEA)__ Release 3.5.2 
