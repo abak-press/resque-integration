@@ -26,4 +26,5 @@ end
 
 appraise 'rails5.2' do
   gem 'rails', '~> 5.2.0', '< 5.2.4.1'
+  gem 'mimemagic', '<= 0.3.9' if RUBY_VERSION < '2.3'
 end
