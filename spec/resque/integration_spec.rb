@@ -37,34 +37,49 @@ RSpec.describe Resque::Integration do
         end
       end
 
-      it 'enqueues only one job' do
-        UniqueJob.enqueue(1, param: 'one')
+      let(:redis) { Resque.redis }
+      let(:travel_redis) do
+        ->(time) do
+          redis.keys.each do |key|
+            ttl = redis.ttl(key)
+            next if ttl <= 0
 
-        Timecop.travel(10.hours.since) do
-          UniqueJob.enqueue(1, param: 'one')
-
-          expect(Resque.peek(:test, 0, 100).size).to eq(1)
+            redis.expire(key, ttl - time.to_i)
+          end
         end
       end
 
-      it 'enqueues two jobs with differ args' do
-        UniqueJob.enqueue(1, param: 'one')
+      context 'when enqueues only one job' do
+        before do
+          UniqueJob.enqueue(1, param: 'one')
 
-        Timecop.travel(10.hours.since) do
+          travel_redis.call(10.hours)
+
+          UniqueJob.enqueue(1, param: 'one')
+        end
+
+        it { expect(Resque.peek(:test, 0, 100).size).to eq(1) }
+      end
+
+      context 'when enqueues two jobs with differ args' do
+        before do
+          UniqueJob.enqueue(1, param: 'one')
           UniqueJob.enqueue(1, param: 'two')
-
-          expect(Resque.peek(:test, 0, 100).size).to eq(2)
         end
+
+        it { expect(Resque.peek(:test, 0, 100).size).to eq(2) }
       end
 
-      it 'enqueues two jobs after expire lock timeout' do
-        UniqueJob.enqueue(1, param: 'one')
-
-        Timecop.travel(4.days.since) do
+      context 'when enqueues two jobs after expire lock timeout' do
+        before do
           UniqueJob.enqueue(1, param: 'one')
 
-          expect(Resque.peek(:test, 0, 100).size).to eq(2)
+          travel_redis.call(4.days)
+
+          UniqueJob.enqueue(1, param: 'one')
         end
+
+        it { expect(Resque.peek(:test, 0, 100).size).to eq(2) }
       end
 
       describe 'unlock' do

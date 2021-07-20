@@ -4,12 +4,13 @@ require 'rspec'
 require 'rspec/its'
 require 'resque'
 require 'simplecov'
-require 'mock_redis'
 require 'timecop'
 require 'pry-byebug'
 require 'combustion'
 
-Resque.redis = MockRedis.new
+redis = Redis.new(host: ENV['TEST_REDIS_HOST'])
+Redis.current = redis
+Resque.redis = redis
 
 SimpleCov.start
 

@@ -5,6 +5,13 @@ services:
     image: abakpress/ruby-app:$RUBY_IMAGE_TAG
     environment:
       - BUNDLE_PATH=/bundle/$DOCKER_RUBY_VERSION
+      - TEST_REDIS_HOST=redis
     command: bash
     volumes:
       - .:/app
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:$REDIS_IMAGE_TAG
+    command: 'redis-server --bind 0.0.0.0'
