@@ -12,8 +12,8 @@ volumes:
       path: /home/data/drone/gems
 
 spec_step_common: &spec_step_common
-  image: abakpress/dind-testing
-  pull: always
+  image: abakpress/dind-testing:1.0.3
+  pull: if-not-exists
   privileged: true
   volumes:
     - name: images
@@ -43,12 +43,20 @@ steps:
       RAILS_ENV: test
     <<: *spec_step_common
 
+  - name: Tests Ruby 2.4
+    environment:
+      COMPOSE_FILE_EXT: drone
+      DOCKER_RUBY_VERSION: 2.4
+      RUBY_IMAGE_TAG: 2.4-latest
+      RAILS_ENV: test
+    <<: *spec_step_common
+
   - name: release
     image: abakpress/gem-publication:latest
-    pull: true
+    pull: if-not-exists
     when:
       event: push
       branch: master
       status: success
     commands:
-      - release-gem
+      - release-gem --public
