@@ -10,6 +10,9 @@ volumes:
   - name: bundle
     host:
       path: /home/data/drone/gems
+  - name: rubygems
+    host:
+      path: /home/data/drone/rubygems
 
 spec_step_common: &spec_step_common
   image: abakpress/dind-testing:1.0.3
@@ -22,7 +25,10 @@ spec_step_common: &spec_step_common
       path: /bundle
   commands:
     - prepare-build
-    - fetch-images --image abakpress/ruby-app:$RUBY_IMAGE_TAG
+
+    - fetch-images
+      --image abakpress/ruby-app:$RUBY_IMAGE_TAG
+      --image redis:$REDIS_IMAGE_TAG
     - dip provision
     - dip rspec
 
@@ -32,6 +38,7 @@ steps:
       COMPOSE_FILE_EXT: drone
       DOCKER_RUBY_VERSION: 2.2
       RUBY_IMAGE_TAG: 2.2-latest
+      REDIS_IMAGE_TAG: 4-alpine
       RAILS_ENV: test
     <<: *spec_step_common
 
@@ -40,6 +47,7 @@ steps:
       COMPOSE_FILE_EXT: drone
       DOCKER_RUBY_VERSION: 2.3
       RUBY_IMAGE_TAG: 2.3-latest
+      REDIS_IMAGE_TAG: 4-alpine
       RAILS_ENV: test
     <<: *spec_step_common
 
@@ -48,6 +56,7 @@ steps:
       COMPOSE_FILE_EXT: drone
       DOCKER_RUBY_VERSION: 2.4
       RUBY_IMAGE_TAG: 2.4-latest
+      REDIS_IMAGE_TAG: 4-alpine
       RAILS_ENV: test
     <<: *spec_step_common
 
@@ -58,5 +67,8 @@ steps:
       event: push
       branch: master
       status: success
+    volumes:
+      - name: rubygems
+        path: /root/.gem
     commands:
       - release-gem --public
