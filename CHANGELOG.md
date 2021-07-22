@@ -1,5 +1,11 @@
-# v3.7.0
+# v3.7.1
 
+* 2021-07-22 [0caf11c](../../commit/0caf11c) - __(TamarinEA)__ chore: fetch redis image and add rubygems volume 
+* 2021-07-21 [7b94d0e](../../commit/7b94d0e) - __(TamarinEA)__ chore: release public gem 
+* 2021-07-20 [c51d9ab](../../commit/c51d9ab) - __(TamarinEA)__ chore: lock mimemagic for ruby 2.2 
+* 2021-07-20 [843c787](../../commit/843c787) - __(TamarinEA)__ Release 3.7.1 
+* 2021-07-20 [933115d](../../commit/933115d) - __(TamarinEA)__ chore: use redis image istead of mock 
+* 2021-07-20 [21aa6ba](../../commit/21aa6ba) - __(TamarinEA)__ chore: add ruby 2.4 support 
 * 2020-10-05 [05e046b](../../commit/05e046b) - __(TamarinEA)__ Relesae 3.7.0 
 * 2020-10-05 [6f12054](../../commit/6f12054) - __(Andrew N. Shalaev)__ Release v3.6.0 
 * 2020-09-04 [ee6104e](../../commit/ee6104e) - __(Zhidkov Denis)__ fix: change resque restart command to avoid unwatched workers appearance 
