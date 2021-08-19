@@ -1,14 +1,6 @@
 if RUBY_VERSION < '2.4'
-  appraise 'rails3.2' do
-    gem 'rails', '~> 3.2.0'
-  end
-
   appraise 'rails4.0' do
     gem 'rails', '~> 4.0.13'
-  end
-
-  appraise 'rails4.1' do
-    gem 'rails', '~> 4.1.16'
   end
 end
 
