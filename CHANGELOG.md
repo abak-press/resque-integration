@@ -1,5 +1,7 @@
-# v3.7.1
+# v3.8.0
 
+* 2021-08-19 [27ad006](../../commit/27ad006) - __(Andrew N. Shalaev)__ Release v3.8.0 
+* 2021-08-19 [03eab18](../../commit/03eab18) - __(Andrew N. Shalaev)__ fix: use Redis#exists? for get boolean value 
 * 2021-07-22 [0caf11c](../../commit/0caf11c) - __(TamarinEA)__ chore: fetch redis image and add rubygems volume 
 * 2021-07-21 [7b94d0e](../../commit/7b94d0e) - __(TamarinEA)__ chore: release public gem 
 * 2021-07-20 [c51d9ab](../../commit/c51d9ab) - __(TamarinEA)__ chore: lock mimemagic for ruby 2.2 
