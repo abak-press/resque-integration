@@ -35,7 +35,7 @@ module Resque::Integration
     initializer 'resque-integration.redis' do
       redis = Resque.config.redis
 
-      if redis.any?
+      if redis.present?
         Resque.redis = Redis.new(redis)
         Resque.redis.namespace = redis[:namespace] if redis[:namespace]
       end
