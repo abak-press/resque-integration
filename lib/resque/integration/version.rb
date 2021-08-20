@@ -1,5 +1,5 @@
 module Resque
   module Integration
-    VERSION = '3.8.0'.freeze
+    VERSION = '3.8.1'.freeze
   end
 end
