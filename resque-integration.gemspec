@@ -28,8 +28,6 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'multi_json'
   gem.add_runtime_dependency 'rake'
 
-  gem.add_runtime_dependency 'redis'
-
   gem.add_development_dependency 'bundler'
   gem.add_development_dependency 'rspec', '~> 2.14'
   gem.add_development_dependency 'rspec-its'

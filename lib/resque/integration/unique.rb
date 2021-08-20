@@ -165,12 +165,8 @@ module Resque
       end
 
       # Returns true if resque job is in locked state
-      #
-      # Returns Boolean
       def locked?(*args)
-        redis = ::Resque.redis
-
-        redis.respond_to?(:exists?) ? redis.exists?(lock_id(*args)) : redis.exists(lock_id(*args))
+        ::Resque.redis.exists(lock_id(*args))
       end
 
       # Dequeue unique job
