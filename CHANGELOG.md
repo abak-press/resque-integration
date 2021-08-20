@@ -1,4 +1,8 @@
-# v3.8.0
+# v3.8.1
+
+* 2021-08-20 [1b6b16a](../../commit/1b6b16a) - __(Andrew N. Shalaev)__ Release v3.8.1 
+* 2021-08-20 [557a16f](../../commit/557a16f) - __(Andrew N. Shalaev)__ Revert "fix: use Redis#exists? for get boolean value" 
+This reverts commit 03eab1866908ead61ad044e4f36fb5b943817d46.
 
 * 2021-08-19 [27ad006](../../commit/27ad006) - __(Andrew N. Shalaev)__ Release v3.8.0 
 * 2021-08-19 [03eab18](../../commit/03eab18) - __(Andrew N. Shalaev)__ fix: use Redis#exists? for get boolean value 
