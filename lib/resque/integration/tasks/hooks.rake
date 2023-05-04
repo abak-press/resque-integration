@@ -37,7 +37,7 @@ namespace :resque do
     end
 
     Resque.after_fork do |job|
-      $0 = "resque-#{Resque::Version}: Processing #{job.queue}/#{job.payload['class']} since #{Time.now.to_s(:db)}"
+      $0 = "resque-#{Resque::Version}: Processing #{job.queue}/#{job.payload['class']} since #{Time.now.to_s}"
 
       ActiveRecord::Base.establish_connection
 
