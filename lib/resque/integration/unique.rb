@@ -166,7 +166,7 @@ module Resque
 
       # Returns true if resque job is in locked state
       def locked?(*args)
-        ::Resque.redis.exists(lock_id(*args))
+        ::Resque.redis.exists?(lock_id(*args))
       end
 
       # Dequeue unique job
