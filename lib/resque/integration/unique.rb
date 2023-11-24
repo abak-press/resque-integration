@@ -144,7 +144,7 @@ module Resque
 
       # When job is dequeued we should remove lock
       def after_dequeue_lock(_meta_id, *args)
-        unlock(*args) unless args.empty?
+        unlock(*args)
       end
 
       # Fail metadata if dequeue succeed

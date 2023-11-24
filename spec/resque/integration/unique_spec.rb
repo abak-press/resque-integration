@@ -88,7 +88,7 @@ describe Resque::Integration::Unique, '#dequeue' do
 
     @queue = :queue2
 
-    def self.execute(x)
+    def self.execute(*params)
       sleep 0.1
     end
   end
@@ -105,14 +105,24 @@ describe Resque::Integration::Unique, '#dequeue' do
     meta.should be_failed
   end
 
+  it 'dequeues and unlocks job without args if job is not in work now' do
+    JobDequeueTest.enqueue
+    JobDequeueTest.should be_enqueued
+
+    JobDequeueTest.dequeue
+    JobDequeueTest.should_not be_enqueued
+    JobDequeueTest.should_not be_locked
+
+    meta = JobDequeueTest.get_meta(JobDequeueTest.meta_id)
+    meta.should be_failed
+  end
+
   it 'does not dequeue jobs in progress' do
     meta = JobDequeueTest.enqueue(1)
 
     job = Resque.reserve(:queue2)
 
-    worker = Thread.new {
-      job.perform
-    }
+    worker = Thread.new { job.perform }
 
     sleep 0.01 # give a worker some time to start
     meta.reload!
@@ -121,6 +131,24 @@ describe Resque::Integration::Unique, '#dequeue' do
     JobDequeueTest.dequeue(1)
     JobDequeueTest.should be_locked(1)
     JobDequeueTest.should be_enqueued(1)
+
+    worker.join
+  end
+
+  it 'does not dequeue jobs without args in progress' do
+    meta = JobDequeueTest.enqueue
+
+    job = Resque.reserve(:queue2)
+
+    worker = Thread.new { job.perform }
+
+    sleep 0.01 # give a worker some time to start
+    meta.reload!
+    meta.should be_working
+
+    JobDequeueTest.dequeue
+    JobDequeueTest.should be_locked
+    JobDequeueTest.should be_enqueued
 
     worker.join
   end
