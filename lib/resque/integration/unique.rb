@@ -166,7 +166,11 @@ module Resque
 
       # Returns true if resque job is in locked state
       def locked?(*args)
-        ::Resque.redis.exists(lock_id(*args))
+        if Gem::Version.new(Redis::VERSION) < Gem::Version.new('4.3')
+          ::Resque.redis.exists(lock_id(*args))
+        else
+          ::Resque.redis.exists?(lock_id(*args))
+        end
       end
 
       # Dequeue unique job
