@@ -144,7 +144,7 @@ module Resque
 
       # When job is dequeued we should remove lock
       def after_dequeue_lock(_meta_id, *args)
-        unlock(*args) unless args.empty?
+        unlock(*args)
       end
 
       # Fail metadata if dequeue succeed
@@ -166,7 +166,11 @@ module Resque
 
       # Returns true if resque job is in locked state
       def locked?(*args)
-        ::Resque.redis.exists(lock_id(*args))
+        if Gem::Version.new(Redis::VERSION) < Gem::Version.new('4.3')
+          ::Resque.redis.exists(lock_id(*args))
+        else
+          ::Resque.redis.exists?(lock_id(*args))
+        end
       end
 
       # Dequeue unique job
