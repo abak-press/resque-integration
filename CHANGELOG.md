@@ -1,4 +1,11 @@
-# v3.8.1
+# v3.8.2
+
+* 2024-01-09 [65d9f82](../../commit/65d9f82) - __(git2-railsc)__ Release 3.8.2 
+* 2023-11-27 [de6c686](../../commit/de6c686) - __(Mikhail Nelaev)__ chore: do not ignore gemfiles 
+* 2023-11-27 [e2df248](../../commit/e2df248) - __(Mikhail Nelaev)__ chore: use exists or exists? depending on redis version 
+* 2023-05-04 [fa65369](../../commit/fa65369) - __(Mikhail Nelaev)__ chore: drop old rubies 
+* 2023-11-24 [2380cf0](../../commit/2380cf0) - __(Mikhail Nelaev)__ fix: unlock unique jobs without args 
+https://jira.railsc.ru/browse/GOODS-2302
 
 * 2021-08-20 [1b6b16a](../../commit/1b6b16a) - __(Andrew N. Shalaev)__ Release v3.8.1 
 * 2021-08-20 [557a16f](../../commit/557a16f) - __(Andrew N. Shalaev)__ Revert "fix: use Redis#exists? for get boolean value" 
