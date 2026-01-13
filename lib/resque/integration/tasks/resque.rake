@@ -20,7 +20,7 @@ namespace :resque do
     if god_stopped?
       Rake::Task['resque:start'].invoke
     else
-      puts `#{god} stop resque && #{god} load #{Resque.config.config_file} stop && #{god} start resque`
+      puts `#{god} stop resque && #{god} load #{Resque.config.config_file} && #{god} start resque`
     end
   end
 
