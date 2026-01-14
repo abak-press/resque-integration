@@ -142,7 +142,7 @@ module Resque
       end
 
       def pid_file
-        "#{pids}/resque-god.pid"
+        self['resque.god_pid'] || "#{pids}/resque-god.pid"
       end
 
       def pids
