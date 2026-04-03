@@ -1,4 +1,9 @@
-# v3.8.2
+# v3.9.0
+
+* 2026-04-03 [5cea488](../../commit/5cea488) - __(git1-railsc)__ Release 3.9.0 
+* 2026-01-14 [3f9ab78](../../commit/3f9ab78) - __(Mikhail Nelaev)__ chore: lock nio4r 
+* 2026-01-13 [c62731b](../../commit/c62731b) - __(Mikhail Nelaev)__ feat: use common pid for GOD 
+https://jira.railsc.ru/browse/GOODS-4862
 
 * 2024-01-09 [65d9f82](../../commit/65d9f82) - __(git2-railsc)__ Release 3.8.2 
 * 2023-11-27 [de6c686](../../commit/de6c686) - __(Mikhail Nelaev)__ chore: do not ignore gemfiles 
